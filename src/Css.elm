@@ -6,15 +6,21 @@ module Css exposing
 
     -- pseudo-classes
     , pseudoClass
-    , active, checked, disabled, empty, enabled
-    , firstChild, firstOfType, focus, fullscreen, hover, inRange
+    , active, checked, default, defined, disabled, empty, enabled
+    , first, firstChild, firstOfType, focus, fullscreen, hover, inRange
     , indeterminate, invalid, lastChild, lastOfType, link, onlyChild
     , onlyOfType, outOfRange, readOnly, readWrite, required
     , root, scope, target, valid, visited
 
+    -- pseudo-classes with args
+    , dir
+
     -- pseudo-elements
     , pseudoElement
-    , before, after, backdrop, cue, marker, placeholder, selection
+    , after, backdrop, before, cue, firstLetter, firstLine
+    , marker, placeholder, selection
+
+    -- pseudo-elements with args
 
     -- common value groups
     , BaseValue
@@ -259,7 +265,7 @@ module Css exposing
     , textOverflow, textOverflow2, ellipsis
     , hyphens, manual
     , hangingPunctuation, hangingPunctuation2, hangingPunctuation3
-    , first, last, forceEnd, allowEnd
+    , first_, last, forceEnd, allowEnd
 
     -- Text decoration + transform
     , textDecoration, textDecoration2, textDecoration3
@@ -383,7 +389,7 @@ module Css exposing
     -- cursors
     , CursorKeyword
     , cursor, cursor2, cursor4
-    , pointer, default, contextMenu, help, progress, wait, cell
+    , pointer, default_, contextMenu, help, progress, wait, cell
     , crosshair, verticalText, alias, copy, move, noDrop
     , notAllowed, allScroll, colResize, rowResize, nResize, eResize, sResize
     , wResize, neResize, nwResize, seResize, swResize, ewResize, nsResize
@@ -515,17 +521,21 @@ functions let you define custom properties and selectors, respectively.
 # Pseudo-Classes
 
 @docs pseudoClass
-@docs active, checked, disabled, empty, enabled
-@docs firstChild, firstOfType, focus, fullscreen, hover, inRange
+@docs active, checked, default, defined, disabled, empty, enabled
+@docs first, firstChild, firstOfType, focus, fullscreen, hover, inRange
 @docs indeterminate, invalid, lastChild, lastOfType, link, onlyChild
 @docs onlyOfType, outOfRange, readOnly, readWrite, required
 @docs root, scope, target, valid, visited
 
+# Pseudo-Classes with arguments
+
+@docs dir
 
 # Pseudo-Elements
 
 @docs pseudoElement
-@docs before, after, backdrop, cue, marker, placeholder, selection
+@docs after, backdrop, before, cue, firstLetter, firstLine
+@docs marker, placeholder, selection
 
 
 ------------------------------------------------------
@@ -1073,7 +1083,7 @@ Other values you can use for flex item alignment:
 @docs textOverflow, textOverflow2, ellipsis
 @docs hyphens, manual
 @docs hangingPunctuation, hangingPunctuation2, hangingPunctuation3
-@docs first, last, forceEnd, allowEnd
+@docs first_, last, forceEnd, allowEnd
 
 
 ------------------------------------------------------
@@ -1298,7 +1308,7 @@ Other values you can use for flex item alignment:
 
 [`text`](#text) is also a supported value for `cursor`.
 
-@docs pointer, default, contextMenu, help, progress, wait, cell
+@docs pointer, default_, contextMenu, help, progress, wait, cell
 @docs crosshair, verticalText, alias, copy, move, noDrop
 @docs notAllowed, allScroll, colResize, rowResize, nResize, eResize, sResize
 @docs wResize, neResize, nwResize, seResize, swResize, ewResize, nsResize
@@ -1693,6 +1703,28 @@ checked =
     pseudoClass "checked"
 
 
+{-| A [`:default`](https://developer.mozilla.org/en-US/docs/Web/CSS/:default)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    default [ color (hex "#ff0000") ]
+
+-}
+default : List Style -> Style
+default =
+    pseudoClass "default"
+
+
+{-| A [`:defined`](https://developer.mozilla.org/en-US/docs/Web/CSS/:defined)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    defined [ fontStyle italic ]
+
+-}
+defined : List Style -> Style
+defined =
+    pseudoClass "defined"
+
+
 {-| A [`:disabled`](https://developer.mozilla.org/en-US/docs/Web/CSS/:disabled)
 [pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
 
@@ -1728,6 +1760,19 @@ empty =
 enabled : List Style -> Style
 enabled =
     pseudoClass "enabled"
+
+
+{-| A [`:first`](https://developer.mozilla.org/en-US/docs/Web/CSS/:first)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    first
+        [ marginTop (pct 30)
+        ]
+
+-}
+first : List Style -> Style
+first =
+    pseudoClass "first"
 
 
 {-| A [`:first-of-type`](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-child)
@@ -1934,6 +1979,54 @@ readOnly =
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
+--------------------- PSEUDO-CLASSES WITH ARGUMENTS --------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+
+{-| A [`:dir()`](https://developer.mozilla.org/en-US/docs/Web/CSS/:dir)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    dir rtl
+        [ backgroundColor (hex "#ff0000")
+        ]
+
+-}
+dir : 
+    Value
+        { ltr : Supported 
+        , rtl : Supported
+        }
+    -> List Style
+    -> Style
+dir (Value arg) =
+    pseudoClass <| "dir(" ++ arg ++ ")"
+
+
+
+
+
+-- put something here! --
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 --------------------------- PSEUDO-ELEMENTS ----------------------------
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
@@ -1978,19 +2071,6 @@ after =
     pseudoElement "after"
 
 
-{-| A [`::before`](https://css-tricks.com/almanac/selectors/a/after-and-before/)
-[pseudo-element](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements).
-
-    div [ before [ content "hi!" ] ]
-
---TODO : Introduce a way to do [`content`](https://developer.mozilla.org/en-US/docs/Web/CSS/content) - lots of options there, not just text. Also it's overloaded with `flexBasis content`.
-
--}
-before : List Style -> Style
-before =
-    pseudoElement "before"
-
-
 {-| A [`::backdrop`](https://developer.mozilla.org/en-US/docs/Web/CSS/::backdrop)
 [pseudo-element](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements).
 
@@ -2002,6 +2082,19 @@ before =
 backdrop : List Style -> Style
 backdrop =
     pseudoElement "backdrop"
+
+
+{-| A [`::before`](https://css-tricks.com/almanac/selectors/a/after-and-before/)
+[pseudo-element](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements).
+
+    div [ before [ content "hi!" ] ]
+
+--TODO : Introduce a way to do [`content`](https://developer.mozilla.org/en-US/docs/Web/CSS/content) - lots of options there, not just text. Also it's overloaded with `flexBasis content`.
+
+-}
+before : List Style -> Style
+before =
+    pseudoElement "before"
 
 
 {-| A [`::cue`](https://developer.mozilla.org/en-US/docs/Web/CSS/::cue)
@@ -2016,6 +2109,32 @@ backdrop =
 cue : List Style -> Style
 cue =
     pseudoElement "cue"
+
+
+{-| A [`::first-letter`](https://developer.mozilla.org/en-US/docs/Web/CSS/::first-letter)
+[pseudo-element](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements).
+
+    firstLetter
+        [ fontSize (rem 2)
+        ]
+
+-}
+firstLetter : List Style -> Style
+firstLetter =
+    pseudoElement "first-letter"
+
+
+{-| A [`::first-line`](https://developer.mozilla.org/en-US/docs/Web/CSS/::first-line)
+[pseudo-element](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements).
+
+    firstLine
+        [ fontWeight (int 600)
+        ]
+
+-}
+firstLine : List Style -> Style
+firstLine =
+    pseudoElement "first-line"
 
 
 {-| A [`::marker`](https://developer.mozilla.org/en-US/docs/Web/CSS/::marker)
@@ -2062,6 +2181,40 @@ placeholder =
 selection : List Style -> Style
 selection =
     pseudoElement "selection"
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+--------------------- PSEUDO-ELEMENTS WITH ARGUMENTS -------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+-- put something here! --
+
+
+
+
+
+
+
+
+
 
 
 ------------------------------------------------------------------------
@@ -14074,7 +14227,7 @@ manual =
 hangingPunctuation :
     BaseValue
         { none : Supported
-        , first : Supported
+        , first_ : Supported
         , forceEnd : Supported
         , allowEnd : Supported
         , last : Supported
@@ -14091,12 +14244,12 @@ hangingPunctuation (Value val) =
 -}
 hangingPunctuation2 :
     Value
-        { first : Supported
+        { first_ : Supported
         , last : Supported
         }
     ->
         Value
-            { first : Supported
+            { first_ : Supported
             , forceEnd : Supported
             , allowEnd : Supported
             , last : Supported
@@ -14113,7 +14266,7 @@ hangingPunctuation2 (Value val1) (Value val2) =
 -}
 hangingPunctuation3 :
     Value
-        { first : Supported
+        { first_ : Supported
         , last : Supported
         }
     ->
@@ -14123,7 +14276,7 @@ hangingPunctuation3 :
             }
     ->
         Value
-            { first : Supported
+            { first_ : Supported
             , last : Supported
             }
     -> Style
@@ -14133,11 +14286,15 @@ hangingPunctuation3 (Value val1) (Value val2) (Value val3) =
 
 {-| Sets `first` value for usage with [`hangingPunctuation`](#hangingPunctuation).
 
-      hangingPunctuation first
+      hangingPunctuation first_
+
+
+This is called `first_` instead of `first` because
+[`first` is already a pseudo-class function](#first).
 
 -}
-first : Value { provides | first : Supported }
-first =
+first_ : Value { provides | first_ : Supported }
+first_ =
     Value "first"
 
 
@@ -18479,6 +18636,7 @@ cursor4 :
         Value
             { num : Supported
             , zero : Supported
+            , default_ : Supported
             }
     ->
         Value
@@ -18508,9 +18666,12 @@ pointer =
 
 
 {-| The `default` value for the [`cursor`](#cursor) property.
+
+This value is called `default_` instead of `default` because
+[`default` is already a pseudo-class function](#default).
 -}
-default : Value { provides | default : Supported }
-default =
+default_ : Value { provides | default_ : Supported }
+default_ =
     Value "default"
 
 
