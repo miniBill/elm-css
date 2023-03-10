@@ -194,6 +194,7 @@ module Css exposing
     , gridColumn, gridColumnLine, gridColumn2Lines
     , gridColumnStart, gridColumnStartLine
     , gridColumnEnd, gridColumnEndLine
+    , gridTemplate
     , gridTemplateAreas, gridTemplateAreasList
     , gridTemplateRows, gridTemplateRowsList
     , gridTemplateColumns, gridTemplateColumnsList
@@ -936,6 +937,8 @@ Other values you can use for flex item alignment:
 
 # Grid
 
+## Grid areas
+
 @docs gridAutoRows, gridAutoColumns, gridAutoFlow, gridAutoFlow2
 @docs GridLine
 @docs gridArea, gridAreaLine, gridArea2Lines, gridArea3Lines, gridArea4Lines
@@ -945,9 +948,16 @@ Other values you can use for flex item alignment:
 @docs gridColumn, gridColumnLine, gridColumn2Lines
 @docs gridColumnStart, gridColumnStartLine
 @docs gridColumnEnd, gridColumnEndLine
+
+## Grid templates
+
+@docs gridTemplate
 @docs gridTemplateAreas, gridTemplateAreasList
 @docs gridTemplateRows, gridTemplateRowsList
 @docs gridTemplateColumns, gridTemplateColumnsList
+
+## Grid value functions
+
 @docs lineNames, repeatedTrackList, autoFill, autoFit
 @docs dense
 
@@ -11400,6 +11410,26 @@ gridColumnEndLine :
     -> Style
 gridColumnEndLine gl =
     AppendProperty ("grid-column-end:" ++ unwrapGridLine gl)
+
+
+
+
+{-| The single-argument variant of the [`grid-template`](https://css-tricks.com/almanac/properties/g/grid-template/) property.
+
+    gridTemplate initial
+
+    gridTemplate none
+
+-}
+
+gridTemplate :
+    BaseValue
+        { none : Supported
+        }
+    -> Style
+gridTemplate (Value value) =
+    AppendProperty ("grid-template:" ++ value)
+
 
 
 {-| The [`grid-template-areas`](https://css-tricks.com/almanac/properties/g/grid-template-areas/)
