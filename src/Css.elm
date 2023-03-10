@@ -195,7 +195,10 @@ module Css exposing
     , gridColumnStart, gridColumnStartLine
     , gridColumnEnd, gridColumnEndLine
     , gridTemplateAreas, gridTemplateAreasList
+    , gridTemplateRows, gridTemplateRowsList
+    , gridTemplateColumns, gridTemplateColumnsList
     --
+    , lineNames, repeatedTrackList, autoFill, autoFit
     , dense
 
     -- gaps
@@ -943,6 +946,9 @@ Other values you can use for flex item alignment:
 @docs gridColumnStart, gridColumnStartLine
 @docs gridColumnEnd, gridColumnEndLine
 @docs gridTemplateAreas, gridTemplateAreasList
+@docs gridTemplateRows, gridTemplateRowsList
+@docs gridTemplateColumns, gridTemplateColumnsList
+@docs lineNames, repeatedTrackList, autoFill, autoFit
 @docs dense
 
 
@@ -10803,7 +10809,11 @@ gridAutoFlow2 (Value val1) (Value val2) =
         ++ val2
 
 
-{-| A type wrapping all of the possibilities of a `<grid-line>`.
+{-| A type wrapping all of the possibilities of a grid line.
+
+A grid line value is one that specifies the properties of
+the border lines that a grid is contructed with, as opposed to
+a grid track, which specifies the space between grid lines.
 
 No `Int` should be zero - if it's zero, it won't work.
 
@@ -11433,6 +11443,280 @@ gridTemplateAreasList listStr =
         |> List.map enquoteString
         |> String.join " "
         )
+
+
+
+
+
+
+
+{-| A single-argument version of the
+[`grid-template-rows`](https://css-tricks.com/almanac/properties/g/grid-template-rows/) property.
+
+    gridTemplateRows inherit
+
+    gridTemplateRows none
+
+    gridTemplateRowsList [px 200, fr 1, px 180]
+
+    gridTemplateRowsList
+        [ lineNames["line1", "line2"]
+        , px 300
+        , lineNames["line3"]
+        ]
+
+    gridTemplateRowsList
+        [ repeatedTrackList (num 4) [px 520]
+        ]
+
+    gridTemplateRowsList
+        [ minmax (px 210) maxContent
+        , repeatedTrackList autoFill [px 200]
+        , pct 20
+        ]
+
+-}
+
+gridTemplateRows :
+    BaseValue
+        { none : Supported
+        , auto : Supported
+        , minmax : Supported
+        , fitContentTo : Supported
+        , repeatedTrackList : Supported
+        }
+    -> Style
+gridTemplateRows (Value val) =
+    AppendProperty <| "grid-template-rows:" ++ val
+
+
+{-| A multi-argument version of the
+[`grid-template-rows`](https://css-tricks.com/almanac/properties/g/grid-template-rows/) property.
+
+This is an extremely complicated CSS property with a lot of possible variants, and its too
+much variation to enforce, so while what kinds of types you can put in are enforced,
+the amounts of things you put in and the order in which you do it are not.
+
+    gridTemplateRows inherit
+
+    gridTemplateRows none
+
+    gridTemplateRowsList [px 200, fr 1, px 180]
+
+    gridTemplateRowsList
+        [ lineNames["line1", "line2"]
+        , px 300
+        , lineNames["line3"]
+        ]
+
+    gridTemplateRowsList
+        [ repeatedTrackList (num 4) [px 520]
+        ]
+
+    gridTemplateRowsList
+        [ minmax (px 210) maxContent
+        , repeatedTrackList autoFill [px 200]
+        , pct 20
+        ]
+-}
+gridTemplateRowsList :
+    List ( Value
+        ( LengthSupported
+            { pct : Supported
+            , fr : Supported
+            , minmax : Supported
+            , fitContentTo : Supported
+            , lineNames : Supported
+            , repeatedTrackList : Supported
+            }
+        )
+    )
+    -> Style
+gridTemplateRowsList list =
+    AppendProperty <| "grid-template-rows:" ++ (String.join " " <| List.map unpackValue list)
+
+
+
+{-| A single-argument version of the
+[`grid-template-columns`](https://css-tricks.com/almanac/properties/g/grid-template-columns/) property.
+
+    gridTemplateColumns inherit
+
+    gridTemplateColumns none
+
+    gridTemplateColumnsList [px 200, fr 1, px 180]
+
+    gridTemplateColumnsList
+        [ lineNames["line1", "line2"]
+        , px 300
+        , lineNames["line3"]
+        ]
+
+    gridTemplateColumnsList
+        [ repeatedTrackList (num 4) [px 520]
+        ]
+
+    gridTemplateColumnsList
+        [ minmax (px 210) maxContent
+        , repeatedTrackList autoFill [px 200]
+        , pct 20
+        ]
+
+-}
+
+gridTemplateColumns :
+    BaseValue
+        { none : Supported
+        , auto : Supported
+        , minmax : Supported
+        , fitContentTo : Supported
+        , repeatedTrackList : Supported
+        }
+    -> Style
+gridTemplateColumns (Value val) =
+    AppendProperty <| "grid-template-columns:" ++ val
+
+
+{-| A multi-argument version of the
+[`grid-template-columns`](https://css-tricks.com/almanac/properties/g/grid-template-columns/) property.
+
+This is an extremely complicated CSS property with a lot of possible variants, and its too
+much variation to enforce, so while what kinds of types you can put in are enforced,
+the amounts of things you put in and the order in which you do it are not.
+
+    gridTemplateColumns inherit
+
+    gridTemplateColumns none
+
+    gridTemplateColumnsList [px 200, fr 1, px 180]
+
+    gridTemplateColumnsList
+        [ lineNames["line1", "line2"]
+        , px 300
+        , lineNames["line3"]
+        ]
+
+    gridTemplateColumnsList
+        [ repeatedTrackList (num 4) [px 520]
+        ]
+
+    gridTemplateColumnsList
+        [ minmax (px 210) maxContent
+        , repeatedTrackList autoFill [px 200]
+        , pct 20
+        ]
+-}
+gridTemplateColumnsList :
+    List ( Value
+        ( LengthSupported
+            { pct : Supported
+            , fr : Supported
+            , minmax : Supported
+            , fitContentTo : Supported
+            , lineNames : Supported
+            , repeatedTrackList : Supported
+            }
+        )
+    )
+    -> Style
+gridTemplateColumnsList list =
+    AppendProperty <| "grid-template-columns:" ++ (String.join " " <| List.map unpackValue list)
+
+
+
+
+
+
+
+
+{-| Custom ident(s) that are only used in grid area definitions,
+for naming lines of a grid layout. A line may have multiple names.
+
+Line names are case sensitive.
+
+    gridTemplateColumnsList
+        [ lineNames["line1", "line2"]
+        , px 300
+        , lineNames["line3"]
+        ]
+
+    --- grid-template-colums: [line1 line2] 300px [line3];
+-}
+lineNames : List String -> Value { provides | lineNames : Supported }
+lineNames list =
+    Value <| "[" ++ String.join " " list ++ "]"
+
+
+{-| Performs the `repeat()` function used in CSS Grid track lists. This lets you
+repeat a pattern of grid lines in CSS Grid without duplicating code.
+
+You must specify a `num`, `autoFit`, or `autoFill` before specifying the track
+list pattern you want to repeat.
+
+    gridTemplateRows <|
+        repeatedTrackList (num 4)
+            [ px 10
+            , lineNames["row-start"]
+            , px 250
+            , lineNames["row-end"]
+            ]
+
+Note: This had to be named differently from the original function because
+[`repeat`](#repeat) is already a value function that does something
+completely different.
+
+-}
+repeatedTrackList : 
+    Value
+        { num : Supported
+        , autoFill : Supported
+        , autoFit : Supported
+        }
+    -> List ( Value
+        ( LengthSupported
+            { pct : Supported
+            , fr : Supported
+            , minmax : Supported
+            , lineNames : Supported
+            }
+        )
+    )
+    -> Value { provides | repeatedTrackList : Supported }
+repeatedTrackList (Value firstArg) trackList =
+    Value <| "repeat(" ++ firstArg ++ ", " ++ (String.join " " <| List.map unpackValue trackList) ++ ")"
+
+
+{-| The `auto-fill` value [used in the `repeat()` function](https://developer.mozilla.org/en-US/docs/Web/CSS/repeat#values).
+
+    gridTemplateColumnsList
+        [ minmax (px 210) maxContent
+        , repeatedTrackList autoFill [px 200]
+        , pct 20
+        ]
+
+(Note: due to a naming conflict, the `repeat()` function is
+called [`repeatedTrackList`](#repeatedTrackList) in this package.)
+-}
+autoFill : Value { provides | autoFill : Supported }
+autoFill =
+    Value "auto-fill"
+
+
+{-| The `auto-fit` value [used in the `repeat()` function](https://developer.mozilla.org/en-US/docs/Web/CSS/repeat#values).
+
+    gridTemplateColumnsList
+        [ minmax (px 210) maxContent
+        , repeatedTrackList autoFit [px 200]
+        , pct 20
+        ]
+
+(Note: due to a naming conflict, the `repeat()` function is
+called [`repeatedTrackList`](#repeatedTrackList) in this package.)
+-}
+autoFit : Value { provides | autoFit : Supported }
+autoFit =
+    Value "auto-fit"
+
 
 
 {-| The `dense` value for the [`grid-auto-flow`](#gridAutoFlow) property.
