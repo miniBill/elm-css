@@ -8,12 +8,13 @@ module Css exposing
     , pseudoClass
     , active, checked, default, defined, disabled, empty, enabled
     , first, firstChild, firstOfType, focus, fullscreen, hover, inRange
-    , indeterminate, invalid, lastChild, lastOfType, link, onlyChild
-    , onlyOfType, outOfRange, readOnly, readWrite, required
+    , indeterminate, invalid, lastChild, lastOfType, leftHandPage, link, onlyChild
+    , onlyOfType, outOfRange, readOnly, readWrite, required, rightHandPage
     , root, scope, target, valid, visited
 
     -- pseudo-classes with args
-    , dir
+    , dir, lang, not
+    , nthChild, nthLastChild, nthOfType, nthLastOfType
 
     -- pseudo-elements
     , pseudoElement
@@ -21,6 +22,7 @@ module Css exposing
     , marker, placeholder, selection
 
     -- pseudo-elements with args
+    , slotted
 
     -- common value groups
     , BaseValue
@@ -517,9 +519,7 @@ functions let you define custom properties and selectors, respectively.
 @docs important
 
 
-
 ------------------------------------------------------
-
 
 
 # Pseudo-Classes
@@ -527,19 +527,24 @@ functions let you define custom properties and selectors, respectively.
 @docs pseudoClass
 @docs active, checked, default, defined, disabled, empty, enabled
 @docs first, firstChild, firstOfType, focus, fullscreen, hover, inRange
-@docs indeterminate, invalid, lastChild, lastOfType, link, onlyChild
-@docs onlyOfType, outOfRange, readOnly, readWrite, required
+@docs indeterminate, invalid, lastChild, lastOfType, leftHandPage, link, onlyChild
+@docs onlyOfType, outOfRange, readOnly, readWrite, required, rightHandPage
 @docs root, scope, target, valid, visited
 
 # Pseudo-Classes with arguments
 
-@docs dir
+@docs dir, lang, not
+@docs nthChild, nthLastChild, nthOfType, nthLastOfType
 
 # Pseudo-Elements
 
 @docs pseudoElement
 @docs after, backdrop, before, cue, firstLetter, firstLine
 @docs marker, placeholder, selection
+
+# Pseudo-Elements with arguments
+
+@docs slotted
 
 
 ------------------------------------------------------
@@ -1923,6 +1928,21 @@ lastOfType =
     pseudoClass "last-of-type"
 
 
+{-| A [`:left`](https://developer.mozilla.org/en-US/docs/Web/CSS/:left)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    leftHandPage
+        [ color (rgb 100 100 100)
+        ]
+
+Note: This is called `leftHandPage` instead of `left` or `left_` is
+because both of those are taken by property and value keyword functions.
+-}
+leftHandPage : List Style -> Style
+leftHandPage =
+    pseudoClass "left"
+
+
 {-| A [`:link`](https://developer.mozilla.org/en-US/docs/Web/CSS/:link)
 [pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
 
@@ -1989,6 +2009,113 @@ readOnly =
     pseudoClass "read-only"
 
 
+{-| A [`:read-write`](https://developer.mozilla.org/en-US/docs/Web/CSS/:read-write)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    readWrite
+        [ backgroundColor (rgb 0 50 150)
+        ]
+
+-}
+readWrite : List Style -> Style
+readWrite =
+    pseudoClass "read-write"
+
+
+{-| A [`:required`](https://developer.mozilla.org/en-US/docs/Web/CSS/:required)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    required
+        [ border (px 2) solid (rgb 100 100 100)
+        ]
+
+-}
+required : List Style -> Style
+required =
+    pseudoClass "required"
+
+
+{-| A [`:right`](https://developer.mozilla.org/en-US/docs/Web/CSS/:right)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    rightHandPage
+        [ color (rgb 100 100 100)
+        ]
+
+Note: This is called `rightHandPage` instead of `right` or `right_` is
+because both of those are taken by property and value keyword functions.
+-}
+rightHandPage : List Style -> Style
+rightHandPage =
+    pseudoClass "right"
+
+
+{-| A [`:root`](https://developer.mozilla.org/en-US/docs/Web/CSS/:root)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    root
+        [ backgroundColor (rgb 0 200 200)
+        ]
+
+-}
+root : List Style -> Style
+root =
+    pseudoClass "root"
+
+
+{-| A [`:scope`](https://developer.mozilla.org/en-US/docs/Web/CSS/:scope)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    scope
+        [ backgroundColor (rgb 0 200 200)
+        ]
+
+-}
+scope : List Style -> Style
+scope =
+    pseudoClass "scope"
+
+
+{-| A [`:target`](https://developer.mozilla.org/en-US/docs/Web/CSS/:target)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    target
+        [ fontWeight bold
+        , border3 (px 2) dotted (rgb 255 0 0)
+        ]
+
+-}
+target : List Style -> Style
+target =
+    pseudoClass "target"
+
+
+{-| A [`:valid`](https://developer.mozilla.org/en-US/docs/Web/CSS/:valid)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    valid
+        [ border3 (px 1) solid (rgb 0 255 0)
+        ]
+
+-}
+valid : List Style -> Style
+valid =
+    pseudoClass "valid"
+
+
+{-| A [`:visited`](https://developer.mozilla.org/en-US/docs/Web/CSS/:visited)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    visited
+        [ color (rgb 150 0 255)
+        ]
+
+-}
+visited : List Style -> Style
+visited =
+    pseudoClass "visited"
+
+
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
@@ -2023,18 +2150,86 @@ dir (Value arg) =
     pseudoClass <| "dir(" ++ arg ++ ")"
 
 
+{-| A [`:lang()`](https://developer.mozilla.org/en-US/docs/Web/CSS/:lang)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    lang "en-GB"
+        [ backgroundColor (hex "#ff0000")
+        ]
+
+-}
+lang : String -> List Style -> Style
+lang langStr =
+    pseudoClass <| "lang(" ++ langStr ++ ")"
 
 
+{-| A [`:not()`](https://developer.mozilla.org/en-US/docs/Web/CSS/:not)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
 
--- put something here! --
+The first argument is a list of selectors to not select.
+
+    not ["p.notthis", ".notthat"]
+        [ backgroundColor (hex "#ff0000")
+        ]
+
+-}
+not : List String -> List Style -> Style
+not selectors =
+    pseudoClass <| "not(" ++ String.join ", " selectors ++ ")"
 
 
+{-| An [`:nth-child()`](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-child)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    nthChild "3"
+        [ backgroundColor (hex "#ff0000")
+        ]
+
+-}
+nthChild : String -> List Style -> Style
+nthChild positions =
+    pseudoClass <| "nth-child(" ++ positions ++ ")"
 
 
+{-| An [`:nth-last-child()`](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-child)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+This is the same as [`nthChild`](#nthChild), but counting from the end rather than the start.
+
+    nthLastChild "3n+4"
+        [ backgroundColor (hex "#ff0000")
+        ]
+
+-}
+nthLastChild : String -> List Style -> Style
+nthLastChild positions =
+    pseudoClass <| "nth-last-child(" ++ positions ++ ")"
 
 
+{-| An [`:nth-of-type()`](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    nthOfType "odd"
+        [ backgroundColor (hex "#ff0000")
+        ]
+
+-}
+nthOfType : String -> List Style -> Style
+nthOfType positions =
+    pseudoClass <| "nth-of-type(" ++ positions ++ ")"
 
 
+{-| An [`:nth-last-of-type()`](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-of-type)
+[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
+
+    nthLastOfType "0n+1"
+        [ backgroundColor (hex "#ff0000")
+        ]
+
+-}
+nthLastOfType : String -> List Style -> Style
+nthLastOfType positions =
+    pseudoClass <| "nth-last-of-type(" ++ positions ++ ")"
 
 
 ------------------------------------------------------------------------
@@ -2214,23 +2409,17 @@ selection =
 ------------------------------------------------------------------------
 
 
+{-| A [`::slotted()`](https://developer.mozilla.org/en-US/docs/Web/CSS/::slotted)
+[pseudo-element](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements).
 
+    slotted "*"
+        [ backgroundColor (rgb 200 140 15)
+        ]
 
-
-
-
-
-
--- put something here! --
-
-
-
-
-
-
-
-
-
+-}
+slotted : String -> List Style -> Style
+slotted selector =
+    pseudoElement <| "selection(" ++ selector ++ ")"
 
 
 ------------------------------------------------------------------------
@@ -6581,143 +6770,6 @@ insetInlineEnd :
     -> Style
 insetInlineEnd (Value val) =
     AppendProperty ("inset-inline-end:" ++ val)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{-| A [`:read-write`](https://developer.mozilla.org/en-US/docs/Web/CSS/:read-write)
-[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
-
-    readWrite
-        [ backgroundColor (rgb 0 50 150)
-        ]
-
--}
-readWrite : List Style -> Style
-readWrite =
-    pseudoClass "read-write"
-
-
-{-| A [`:required`](https://developer.mozilla.org/en-US/docs/Web/CSS/:required)
-[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
-
-    required
-        [ border (px 2) solid (rgb 100 100 100)
-        ]
-
--}
-required : List Style -> Style
-required =
-    pseudoClass "required"
-
-
-{-| A [`:root`](https://developer.mozilla.org/en-US/docs/Web/CSS/:root)
-[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
-
-    root
-        [ backgroundColor (rgb 0 200 200)
-        ]
-
--}
-root : List Style -> Style
-root =
-    pseudoClass "root"
-
-
-{-| A [`:scope`](https://developer.mozilla.org/en-US/docs/Web/CSS/:scope)
-[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
-
-    scope
-        [ backgroundColor (rgb 0 200 200)
-        ]
-
--}
-scope : List Style -> Style
-scope =
-    pseudoClass "scope"
-
-
-{-| A [`:target`](https://developer.mozilla.org/en-US/docs/Web/CSS/:target)
-[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
-
-    target
-        [ fontWeight bold
-        , border3 (px 2) dotted (rgb 255 0 0)
-        ]
-
--}
-target : List Style -> Style
-target =
-    pseudoClass "target"
-
-
-{-| A [`:valid`](https://developer.mozilla.org/en-US/docs/Web/CSS/:valid)
-[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
-
-    valid
-        [ border3 (px 1) solid (rgb 0 255 0)
-        ]
-
--}
-valid : List Style -> Style
-valid =
-    pseudoClass "valid"
-
-
-{-| A [`:visited`](https://developer.mozilla.org/en-US/docs/Web/CSS/:visited)
-[pseudo-class](https://css-tricks.com/pseudo-class-selectors/).
-
-    visited
-        [ color (rgb 150 0 255)
-        ]
-
--}
-visited : List Style -> Style
-visited =
-    pseudoClass "visited"
 
 
 ------------------------------------------------------------------------
