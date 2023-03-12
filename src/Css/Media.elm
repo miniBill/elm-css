@@ -76,13 +76,16 @@ module Css.Media exposing
 
 -------------------------------
 
-# Media Types
+# Media types
 
 @docs screen, print, speech
 
 -------------------------------
 
-# Viewport/Page Dimensions Media Features
+# Size media features
+
+For querying either the size of the viewport
+or the size of a printed page.
 
 @docs width, minWidth, maxWidth
 @docs height, minHeight, maxHeight
@@ -255,10 +258,13 @@ unparameterizedFeature key =
 
 
 {-| Combines media queries that are nested under selectors into a `@media` rule.
+
     css
         [ withMedia [ only screen [ Media.minWidth (px 300), Media.maxWidth (px 800) ] ]
             [ Css.maxWidth (px 300) ]
-The above code translates into the following CSS.
+
+The above code translates into the following CSS:
+
 ```css
 @media only screen and (min-width: 300px) and (max-width: 800px) {
     ._c9f0fd {
@@ -274,11 +280,14 @@ withMedia =
 
 {-| Manually specify a `@media` rule that is nested under an element or class
 using a List of strings.
+
     body
         [ withMediaQuery [ "screen and (min-width: 320px)", "screen and (max-height: 400px)" ]
             [ fontSize (px 14 px) ]
         ]
-The above code translates into the following CSS.
+
+The above code translates into the following CSS:
+
 ```css
 @media screen and (min-width: 320px), screen and (max-height: 400px) {
     body {
@@ -387,7 +396,8 @@ not =
 ------------------------------------------------------------------------
 
 
-{-| Media type for printers.
+{-| Css [media type](https://developer.mozilla.org/en-US/docs/Web/CSS/@media#media_types)
+for printers.
 
     withMedia print [ a [ color (hex 0), textDecoration none ] ]
 -}
@@ -396,7 +406,8 @@ print =
     Structure.Print
 
 
-{-| Media type for any device not matched by print or speech.
+{-| CSS [media type](https://developer.mozilla.org/en-US/docs/Web/CSS/@media#media_types)
+for any device not matched by print or speech.
 
     withMedia (and screen (maxWidth (px 600)) [ Css.class mobileNav display none ]
 -}
@@ -405,7 +416,10 @@ screen =
     Structure.Screen
 
 
-{-| Media type for screenreaders and similar devices that read out a page.
+{-| CSS [media type](https://developer.mozilla.org/en-US/docs/Web/CSS/@media#media_types)
+for screenreaders and similar devices that read out a page.
+
+Note: support for this may be patchy
 
     withMedia (not speech) [ Css.class screenReaderOnly [ display none ] ]
 -}
@@ -430,7 +444,7 @@ speech =
 
 
 {-| The [`width`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/width)
-Media Feature.
+media feature.
 
     withMedia (Media.width (px 200)) [ ... ]
 -}
@@ -444,7 +458,7 @@ width (Value val) =
 
 
 {-| The [`min-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/width)
-CSS Media Feature.
+CSS media feature.
 
     withMedia (Media.minWidth (px 600)) [ Css.class Container [ Css.maxWidth (px 500) ] ]
 -}
@@ -458,7 +472,7 @@ minWidth (Value val) =
 
 
 {-| The [`max-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/width)
-CSS Media Feature.
+CSS media feature.
 
     withMedia (Media.maxWidth (px 800)) [ Css.class MobileNav [ display none ] ]
 -}
@@ -472,7 +486,7 @@ maxWidth (Value val) =
 
 
 {-| The [`height`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/height)
-CSS Media Feature.
+CSS media feature.
 
     withMedia (Media.height (px 200)) [ ... ]
 -}
@@ -486,7 +500,7 @@ height (Value val) =
 
 
 {-| The [`min-height`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/height)
-CSS Media Feature.
+CSS media feature.
 
     withMedia (Media.minHeight (px 400)) [ Css.class TopBanner [ display block ] ]
 -}
@@ -500,7 +514,7 @@ minHeight (Value val) =
 
 
 {-| The [`max-height`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/height)
-CSS Media Feature.
+CSS media feature.
 
     withMedia (Media.maxHeight (px 399)) [ Css.class TopBanner [ display none ] ]
 -}
@@ -537,7 +551,7 @@ packRatio numerator denominator =
 
 
 {-| The [`aspect-ratio`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/aspect-ratio)
-CSS Media Feature.
+CSS media feature.
 
     withMedia (aspectRatio 16 10) [ ... ]
 -}
@@ -547,7 +561,7 @@ aspectRatio numerator denominator =
 
 
 {-| The [`min-aspect-ratio`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/aspect-ratio)
-CSS Media Feature.
+CSS media feature.
 
     withMedia (minAspectRatio 1 1) [ ... ]
 -}
@@ -557,7 +571,7 @@ minAspectRatio numerator denominator =
 
 
 {-| The [`max-aspect-ratio`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/aspect-ratio)
-CSS Media Feature.
+CSS media feature.
 
     withMedia (maxAspectRatio 16 9) [ ... ]
 -}
@@ -601,12 +615,12 @@ orientation (Value val) =
     feature "orientation" val
 
 
-{-| The `landscape` value for the [`orientation`](#orientation) CSS Media Feature.
+{-| The `landscape` value for the [`orientation`](#orientation) CSS media feature.
 -}
 landscape : Value { provides | landscape : Supported }
 landscape = Value "landscape"
 
-{-| The `portrait` value for the [`orientation`](#orientation) CSS Media Feature.
+{-| The `portrait` value for the [`orientation`](#orientation) CSS media feature.
 -}
 portrait : Value { provides | portrait : Supported }
 portrait = Value "portrait"
@@ -675,7 +689,7 @@ x val =
 
 
 {-| The [`resolution`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/resolution)
-CSS Media Feature.
+CSS media feature.
 
 It describes the resolution of the output device.
 
@@ -687,7 +701,7 @@ resolution (Value val) =
 
 
 {-| The [`min-resolution`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/resolution)
-CSS Media Feature.
+CSS media feature.
 
 It describes the minimum resolution of the output device.
 
@@ -699,7 +713,7 @@ minResolution (Value val) =
 
 
 {-| The [`max-resolution`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/resolution)
-CSS Media Feature.
+CSS media feature.
 
 It describes the maximum resolution of the output device.
 
@@ -741,7 +755,7 @@ type alias ScanningProcess =
     
 
 {-| The [`scan`](https://drafts.csswg.org/mediaqueries/#scan)
-CSS Media Feature.
+CSS media feature.
 
 Queries scanning process of the device. Accepts `innterlace` (some TVs) or `progressive` (most things).
 -}
@@ -782,7 +796,7 @@ interlace = Value "interlaced"
 
 
 {-| The [`grid`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/grid)
-CSS Media Feature.
+CSS media feature.
 
 Queries whether the output device's screen works on bitmaps or a character-based grids.
 -}
@@ -807,7 +821,7 @@ grid =
 
 
 {-| The [`overflow-block`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/overflow-block)
-CSS Media Feature.
+CSS media feature.
 
 It describes the behavior of the device when content overflows the
 initial containing block in the block axis.
@@ -825,7 +839,7 @@ overflowBlock (Value val) =
 
 
 {-| The [`overflow-inline`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/overflow-inline)
-CSS Media Feature.
+CSS media feature.
 
 It describes the behavior of the device when content overflows
 the initial containing block in the block axis.
@@ -872,7 +886,7 @@ paged = Value "paged"
 
 
 {-| The [`color`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/color)
-CSS Media Feature.
+CSS media feature.
 
     withMedia (not color) [ body [ Css.color (hex "000000") ] ]
 -}
@@ -882,7 +896,7 @@ color =
 
 
 {-| The [`min-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/color)
-CSS Media Feature.
+CSS media feature.
 
     withMedia (screen (minColor 256)) [ a [ Css.color (hex "D9534F") ] ]
 -}
@@ -892,7 +906,7 @@ minColor val =
 
 
 {-| The [`max-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/color)
-CSS Media Feature.
+CSS media feature.
 
     withMedia (and screen (maxColor 8)) [ a [ Css.color (hex "FF0000") ] ]
 -}
@@ -902,7 +916,7 @@ maxColor val =
 
 
 {-| The [`monochrome`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/monochrome)
-CSS Media Feature.
+CSS media feature.
 
     withMedia [ monochrome ] [ body [ Css.color (hex "000000") ] ]
 -}
@@ -912,7 +926,7 @@ monochrome =
 
 
 {-| The [`min-monochrome`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/monochrome)
-CSS Media Feature.
+CSS media feature.
 
 -}
 minMonochrome : Int -> Expression
@@ -921,7 +935,7 @@ minMonochrome val =
 
 
 {-| The [`max-monochrome`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/monochrome)
-CSS Media Feature.
+CSS media feature.
 
 -}
 maxMonochrome : Int -> Expression
@@ -930,7 +944,7 @@ maxMonochrome val =
 
 
 {-| The [`color-index`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/color-index)
-CSS Media Feature.
+CSS media feature.
 
 It queries the number of colors in the user agent's color lookup table.
 
@@ -942,7 +956,7 @@ colorIndex val =
 
 
 {-| The [`min-color-index`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/color-index)
-CSS Media Feature.
+CSS media feature.
 
 It queries the number of colors in the user agent's color lookup table.
 
@@ -954,7 +968,7 @@ minColorIndex val =
 
 
 {-| The [`max-color-index`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/color-index)
-CSS Media Feature.
+CSS media feature.
 
 It queries the number of colors in the user agent's color lookup table.
 
@@ -981,7 +995,7 @@ maxColorIndex val =
 
 
 {-| The [`color-gamut`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/color-gamut)
-CSS Media Feature.
+CSS media feature.
 
 The keyword values this supports in order of how wide each color gamut is:
 
@@ -1002,7 +1016,7 @@ colorGamut (Value val) =
     feature "color-gamut" val
 
 
-{-| The SRGB value for the [`colorGamut`](#colorGamut) CSS Media Feature.
+{-| The SRGB value for the [`colorGamut`](#colorGamut) CSS media feature.
 
 This will enable specific CSS for when a device is using the SRGB colour space.
 
@@ -1014,7 +1028,7 @@ srgb : Value { provides | srgb : Supported }
 srgb = Value "srgb"
 
 
-{-| The P3 value for the [`colorGamut`](#colorGamut) CSS Media Feature.
+{-| The P3 value for the [`colorGamut`](#colorGamut) CSS media feature.
 
 This will enable specific CSS for when a device is using the Apple P3 colour space.
 
@@ -1026,7 +1040,7 @@ p3 : Value { provides | p3 : Supported }
 p3 = Value "p3"
 
 
-{-| The SRGB value for the [`colorGamut`](#colorGamut) CSS Media Feature.
+{-| The SRGB value for the [`colorGamut`](#colorGamut) CSS media feature.
 
 This will enable specific CSS for when a device is using the ITU Recommendation BT.2020
 (or Rec. 2020 for short) colour space. This is often known as High Dynamic Range (HDR).
@@ -1070,7 +1084,7 @@ type alias PointingAccuracy =
 
 
 {-| The [`pointer`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/pointer)
-CSS Media Feature.
+CSS media feature.
 
 This queries whether the user has a pointing device, and if so, how accurate the **primary**
 pointing device is.
@@ -1092,7 +1106,7 @@ pointer (Value val) =
 
 
 {-| The [`any-pointer`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/any-pointer)
-CSS Media Feature.
+CSS media feature.
 
 This queries whether the user has **any** pointing device, and if so, how accurate it is.
 
@@ -1113,7 +1127,7 @@ anyPointer (Value val) =
 
 
 {-| The [`hover`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/hover)
-CSS Media Feature.
+CSS media feature.
 
 Queries the if the user agent's primary input mechanism has the ability to hover over elements.
 
@@ -1130,7 +1144,7 @@ hover (Value val) =
 
 
 {-| The [`any-hover`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/any-hover)
-CSS Media Feature.
+CSS media feature.
 
 Queries the if any of user agent's input mechanisms have the ability to hover over elements
 
@@ -1172,7 +1186,7 @@ This is for input mechanism(s) that are capable of hovering over interactable ob
 
     withMedia (Media.hover hover_) []
 
-Note: This is called `hover_` instead of `hover` because `hover` is already a CSS Media Feature.
+Note: This is called `hover_` instead of `hover` because `hover` is already a CSS media feature.
 -}
 hover_ : Value { provides | hover_ : Supported }
 hover_ = Value "hover"
@@ -1194,7 +1208,7 @@ hover_ = Value "hover"
 
 
 {-| The [`scripting`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/scripting)
-CSS Media Feature.
+CSS media feature.
 
 This tests whether scripting like JS is available.
 
@@ -1211,7 +1225,7 @@ scripting (Value val) =
     feature "scripting" val
 
 
-{-| The `initialOnly` value for the [`scripting`](#scripting) CSS Media Feature.
+{-| The `initialOnly` value for the [`scripting`](#scripting) CSS media feature.
 
 This is for scripting that is allowed only on initial page load.
 
@@ -1221,7 +1235,7 @@ initialOnly : Value { provides | initialOnly : Supported }
 initialOnly = Value "initialOnly"
 
 
-{-| The `enabled` value for the [`scripting`](#scripting) CSS Media Feature.
+{-| The `enabled` value for the [`scripting`](#scripting) CSS media feature.
 
 This is for scripting that is allowed and active on the current document.
 
