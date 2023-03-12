@@ -33,7 +33,6 @@ module Css exposing
     , Color, ColorSupported
     , LineStyle, LineStyleSupported
     , LineWidth, LineWidthSupported
-    , Resolution, ResolutionSupported
     , Time, TimeSupported
 
     -- calc
@@ -49,7 +48,6 @@ module Css exposing
     , rgb, rgba, hsl, hsla, hex, currentcolor
     , string, customIdent, url
     , circle, circleAt, circleAt2, ellipse, ellipseAt, ellipseAt2, closestSide, farthestSide, polygon, path
-    , dpi, dpcm, dppx
 
     -- common/shared/grouped keyword values
     , unset, initial, inherit, revert
@@ -589,10 +587,6 @@ functions let you define custom properties and selectors, respectively.
 ## Lines
 @docs LineStyle, LineStyleSupported
 @docs LineWidth, LineWidthSupported
-
-## Resolution
-
-@docs Resolution, ResolutionSupported, dpi, dpcm, dppx
 
 ## Calc
 
@@ -2628,23 +2622,6 @@ type alias BasicShape =
     BasicShapeSupported {}
 
 
-{-| A type alias used to accept a [resolution](https://developer.mozilla.org/en-US/docs/Web/CSS/resolution)
-among other values.
--}
-type alias ResolutionSupported supported =
-    { supported
-        | dpi : Supported
-        , dpcm : Supported
-        , dppx : Supported
-    }
-
-
-{-| A type alias used to accept a [resolution](https://developer.mozilla.org/en-US/docs/Web/CSS/resolution).
--}
-type alias Resolution =
-    ResolutionSupported {}
-
-
 {-| A type alias used to accept an [time](https://developer.mozilla.org/en-US/docs/Web/CSS/time)
 among other values.
 -}
@@ -3718,42 +3695,6 @@ The input string needs to be a valid SVG path string.
 path : String -> Value { provides | path : Supported }
 path svgPathDef =
     Value <| "path('" ++ svgPathDef ++ "')"
-
-
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-------------------------------------------------------------------------
------------------------------ RESOLUTION -------------------------------
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-
-
-{-| [`dpi`](https://developer.mozilla.org/en-US/docs/Web/CSS/resolution) resolution units.
--}
-dpi : Float -> Value { provides | dpi : Supported }
-dpi val =
-    Value <| String.fromFloat val ++ "dpi"
-
-
-{-| [`dpcm`](https://developer.mozilla.org/en-US/docs/Web/CSS/resolution) resolution units.
--}
-dpcm : Float -> Value { provides | dpcm : Supported }
-dpcm val =
-    Value <| String.fromFloat val ++ "dpcm"
-
-
-{-| [`dppx`](https://developer.mozilla.org/en-US/docs/Web/CSS/resolution) resolution units.
--}
-dppx : Float -> Value { provides | dppx : Supported }
-dppx val =
-    Value <| String.fromFloat val ++ "dppx"
 
 
 ------------------------------------------------------------------------

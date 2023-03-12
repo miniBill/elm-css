@@ -6,7 +6,8 @@
     "version": "17.0.0",
     "exposed-modules": {
       "Css": [
-        "Css"
+        "Css",
+        "Css.Media"
       ],
       "Html.Styled": [
         "Html.Styled",
