@@ -1,4 +1,4 @@
-module Css.Value exposing (Value(..), Supported, unpack)
+module Css.Value exposing (Value(..), Supported(..), unpack)
 {-| A module for handling elm-css's phantom types.
 
 @docs Value, unpack, Supported
