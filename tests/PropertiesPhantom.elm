@@ -1,11 +1,10 @@
 module PropertiesPhantom exposing (all)
 
 import Css exposing (..)
-import Css.Preprocess exposing (stylesheet, toPropertyStrings)
+import Css.Preprocess exposing (toPropertyStrings)
 import Css.Value exposing (Value(..), Supported)
 import Expect
 import Test exposing (Test)
-import TestUtil exposing (prettyPrint)
 
 
 all : Test
@@ -654,12 +653,15 @@ all =
         , testProperty1 cursor
             { functionName = "cursor", property = "cursor" }
             [ ( pointer, "pointer" )
-            , ( crosshair, "crosshair" )
+            , ( auto, "auto" )
+            , ( default_, "default" )
+            , ( none, "none" )
             , ( contextMenu, "context-menu" )
             , ( help, "help" )
             , ( Css.progress, "progress" )
             , ( wait, "wait" )
             , ( cell, "cell" )
+            , ( crosshair, "crosshair" )
             , ( text, "text" )
             , ( verticalText, "vertical-text" )
             , ( alias, "alias" )
@@ -667,28 +669,25 @@ all =
             , ( move, "move" )
             , ( noDrop, "no-drop" )
             , ( notAllowed, "not-allowed" )
-            , ( eResize, "e-resize" )
+            , ( allScroll, "all-scroll" )
+            , ( colResize, "col-resize" )
+            , ( rowResize, "row-resize" )
             , ( nResize, "n-resize" )
+            , ( eResize, "e-resize" )
+            , ( wResize, "w-resize" )
+            , ( sResize, "s-resize" )
             , ( neResize, "ne-resize" )
             , ( nwResize, "nw-resize" )
-            , ( sResize, "s-resize" )
             , ( seResize, "se-resize" )
             , ( swResize, "sw-resize" )
-            , ( wResize, "w-resize" )
             , ( ewResize, "ew-resize" )
             , ( nsResize, "ns-resize" )
             , ( neswResize, "nesw-resize" )
             , ( nwseResize, "nwse-resize" )
-            , ( colResize, "col-resize" )
-            , ( rowResize, "row-resize" )
-            , ( allScroll, "all-scroll" )
             , ( zoomIn, "zoom-in" )
             , ( zoomOut, "zoom-out" )
             , ( grab, "grab" )
             , ( grabbing, "grabbing" )
-            , ( default_, "default" )
-            , ( auto, "auto" )
-            , ( none, "none" )
             ]
         , testProperty { functionName = "cursor2", property = "cursor" }
             [ ( cursor2 (url "https://example.com") nwseResize, "url(https://example.com),nwse-resize" ) ]
@@ -714,7 +713,7 @@ all =
             , ( outline3 (pc 8.7) groove (hex "#356265"), "8.7pc groove #356265" )
             , ( outline3 (pt 15.5) ridge (hex "#feda"), "15.5pt ridge #feda" )
             , ( outline3 (q 5) ridge currentcolor, "5Q ridge currentcolor" )
-            , ( outline3 (rem 1.1) inset (hex "844c"), "1.1rem inset #844c" )
+            , ( outline3 (rem 1.1) inset_ (hex "844c"), "1.1rem inset #844c" )
             , ( outline3 (vh 1.2) outset (hex "ef5f7e9f"), "1.2vh outset #ef5f7e9f" )
             , ( outline3 (vw 2.1) solid (rgb 112 22 75), "2.1vw solid rgb(112,22,75)" )
             , ( outline3 (vmax 3.5) solid (rgb 112 22 75), "3.5vmax solid rgb(112,22,75)" )
@@ -1716,7 +1715,7 @@ testLineStyle :
                 , double : Supported
                 , groove : Supported
                 , ridge : Supported
-                , inset : Supported
+                , inset_ : Supported
                 , outset : Supported
             }
         , String

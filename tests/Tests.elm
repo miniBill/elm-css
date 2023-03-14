@@ -1,6 +1,6 @@
 module Tests exposing (atRule, attributeCombinator, backgrounds, borders, bug140, bug280, bug335, bug99, divWidthHeight, fonts, greenOnHoverStyle, keyValue, leftRightTopBottom, multiDescendent, multiSelector, nestedAtRule, nestedEach, pseudoClasses, pseudoElements, simpleEach, transformsStyle, underlineOnHoverManual, underlineOnHoverStyle, universal, unstyledDiv)
 
-import Expect exposing (Expectation)
+import Expect
 import Fixtures
 import Test exposing (..)
 import TestUtil exposing (outdented, prettyPrint)
@@ -59,7 +59,7 @@ simpleEach =
             }
 
             button {
-                color:rgb(22, 23, 24);
+                color:rgb(22,23,24);
                 padding:0;
             }
       """
@@ -247,7 +247,7 @@ borders =
         output =
             """
             button {
-                border-left:5px dashed rgb(11, 14, 17);
+                border-left:5px dashed rgb(11,14,17);
                 border-right:7px;
                 border-image-outset:3 4em;
             }
@@ -433,11 +433,11 @@ underlineOnHoverStyle =
         output =
             """
             a {
-                color:rgb(128, 127, 126);
+                color:rgb(128,127,126);
             }
 
             a:hover {
-                color:rgb(23, 24, 25);
+                color:rgb(23,24,25);
             }
             """
     in
@@ -458,11 +458,11 @@ underlineOnHoverManual =
         output =
             """
             a {
-                color:rgb(128, 127, 126);
+                color:rgb(128,127,126);
             }
 
             a:hover {
-                color:rgb(23, 24, 25);
+                color:rgb(23,24,25);
             }
             """
     in
@@ -483,11 +483,11 @@ greenOnHoverStyle =
         output =
             """
             button {
-                color:rgb(11, 22, 33);
+                color:rgb(11,22,33);
             }
 
             button:hover {
-                color:rgb(0, 0, 122);
+                color:rgb(0,0,122);
             }
             """
     in
@@ -509,12 +509,12 @@ transformsStyle =
             """
             body {
                 transform:none;
-                transform:matrix(1, 2, 3, 4, 5, 6) matrix3d(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-                transform:perspective(1);
-                transform:rotate(90deg) rotateX(3.14rad) rotateY(3.14grad) rotateZ(1turn) rotate3d(1, 1, 1, 90deg);
-                transform:scale(1) scale(1, 1) scaleX(1) scaleY(1) scale3d(1, 1, 1);
-                transform:skew(90deg) skew(90deg, 90deg) skewX(90deg) skewY(90deg);
-                transform:translate(1px) translate(1px, 1px) translateX(1px) translateY(1px) translate3d(1px, 1px, 1px);
+                transform:matrix(1,2,3,4,5,6) matrix3d(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16);
+                transform:perspective(100px);
+                transform:rotate(90deg) rotateX(3.14rad) rotateY(3.14grad) rotateZ(1turn) rotate3d(1,1,1,90deg);
+                transform:scale(1) scale(1,1) scaleX(1) scaleY(1) scale3d(1,1,1);
+                transform:skew(90deg) skew(90deg,90deg) skewX(90deg) skewY(90deg);
+                transform:translate(1px) translate(1px,1px) translateX(1px) translateY(1px) translate3d(1px,1px,1px);
                 transform-box:view-box;
                 transform-style:preserve-3d;
             }
@@ -539,7 +539,7 @@ fonts =
             body {
                 line-height:14px;
                 font-family:serif;
-                font-family:"Gill Sans Extrabold", Helvetica, sans-serif;
+                font-family:"Gill Sans Extrabold","Helvetica",sans-serif;
                 font-size:x-small;
                 font-style:italic;
                 font-weight:bold;
@@ -643,7 +643,7 @@ backgrounds =
         output =
             """
             div {
-                background-color:rgb(128, 127, 126);
+                background-color:rgb(128,127,126);
                 background-repeat:repeat-x;
                 background-repeat:repeat-y;
                 background-repeat:repeat no-repeat;
@@ -670,8 +670,8 @@ backgrounds =
                 background-clip:padding-box;
                 background-clip:content-box;
                 background-image:url(http://example.com/elm.png);
-                background-image:linear-gradient(#111, rgb(16, 32, 64), #222 25px);
-                background-image:linear-gradient(to left, #111, #222);
+                background-image:linear-gradient(#111,rgb(16,32,64),#222 25px);
+                background-image:linear-gradient(to left,#111,#222);
                 background-origin:border-box;
                 background-origin:padding-box;
                 background-origin:content-box;

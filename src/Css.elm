@@ -251,8 +251,8 @@ module Css exposing
     , FontVariantLigaturesSupported
     , fontVariantLigatures
     , commonLigatures, noCommonLigatures, discretionaryLigatures, noDiscretionaryLigatures, historicalLigatures, noHistoricalLigatures, contextual, noContextual
-    , FontVariantNumericSupported
-    , fontVariantNumeric, fontVariantNumeric4
+    , FontVariantNumericSupported, FontVariantNumeric
+    , fontVariantNumeric, fontVariantNumericList
     , ordinal, slashedZero, liningNums, oldstyleNums, proportionalNums, tabularNums, diagonalFractions, stackedFractions
     , FontVariantEmojiSupported
     , fontVariantEmoji, emoji, unicode
@@ -1062,8 +1062,8 @@ Other values you can use for flex item alignment:
     
 ### Numerical variants
 
-@docs FontVariantNumericSupported
-@docs fontVariantNumeric, fontVariantNumeric4
+@docs FontVariantNumericSupported, FontVariantNumeric
+@docs fontVariantNumeric, fontVariantNumericList
 @docs ordinal, slashedZero, liningNums, oldstyleNums, proportionalNums, tabularNums, diagonalFractions, stackedFractions
     
 ### Emoji variants
@@ -13483,7 +13483,7 @@ fontVariant :
         )
     -> Style
 fontVariant (Value val) =
-    AppendProperty <| "font-variant" ++ val
+    AppendProperty <| "font-variant:" ++ val
 
 
 {-| The [`font-variant`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant)
@@ -13514,7 +13514,7 @@ fontVariant2 :
     -> Value ( AllFontVariants )
     -> Style
 fontVariant2 (Value val1) (Value val2) =
-    AppendProperty <| "font-variant" ++ val1 ++ " " ++ val2
+    AppendProperty <| "font-variant:" ++ val1 ++ " " ++ val2
 
 
 {-| A type that encapsulates all caps font variant keywords plus additional types.
@@ -13948,11 +13948,18 @@ type alias FontVariantNumericSupported supported =
         , stackedFractions : Supported
     }
 
+
+{-| A type that encapsulates all numeric font variant keywords.
+-}
+type alias FontVariantNumeric =
+    FontVariantNumericSupported {}
+
+
 {-| Sets [`font-variant-numeric`](https://css-tricks.com/almanac/properties/f/font-variant-numeric/).
 
     fontVariantNumeric ordinal
 
-See [`fontVariantNumeric4`](#fontVariantNumeric4) for a more advanced version.
+    fontVariantNumericList [ slashedZero liningNums ]
 
 -}
 fontVariantNumeric :
@@ -13968,48 +13975,24 @@ fontVariantNumeric (Value str) =
 
 {-| Sets [`font-variant-numeric`](https://css-tricks.com/almanac/properties/f/font-variant-numeric/).
 
-This one can be tricky to use because many of the options are mutually exclusive.
-For example, `normal` cannot be used with any of the others, so the only way
-to get it from this function is to pass `Nothing` for everything. The other
-arguments are chosen such that you can choose between the mutually exclusive
-values, or leave that value off.
+This list-based version lets you add multiple numeric font variant keywords,
+but keep in mind that certain keywords are mutually exclusive with each other.
 
-    fontVariantNumeric4 Nothing Nothing Nothing Nothing -- "normal"
+    fontVariantNumeric ordinal
 
-    fontVariantNumeric4
-        (Just ordinal)
-        Nothing
-        (Just tabularNums)
-        Nothing
-        -- "ordinal tabular-nums"
-
-See [`fontVariantNumeric`](#fontVariantNumeric) for a more concise version.
+    fontVariantNumericList [ slashedZero liningNums ]
 
 -}
-fontVariantNumeric4 :
-    Maybe (Value { ordinal : Supported, slashedZero : Supported })
-    -> Maybe (Value { liningNums : Supported, oldstyleNums : Supported })
-    -> Maybe (Value { proportionalNums : Supported, tabularNums : Supported })
-    -> Maybe (Value { diagonalFractions : Supported, stackedFractions : Supported })
+fontVariantNumericList :
+    List (Value (FontVariantNumeric))
     -> Style
-fontVariantNumeric4 val1 val2 val3 val4 =
-    let
-        valueStr =
-            case
-                [ maybeValToString val1
-                , maybeValToString val2
-                , maybeValToString val3
-                , maybeValToString val4
-                ]
-                    |> List.filterMap identity
-            of
-                [] ->
-                    "normal"
-
-                strings ->
-                    String.join "," strings
-    in
-    AppendProperty ("font-variant-numeric:" ++ valueStr)
+fontVariantNumericList list =
+    AppendProperty <| "font-variant-numeric:"
+        ++
+        ( list
+        |> List.map (\(Value val) -> val)
+        |> String.join " "
+        )
 
 
 maybeValToString : Maybe (Value a) -> Maybe String
@@ -18980,7 +18963,7 @@ scrollPaddingInlineEnd (Value value) =
 type alias CursorKeyword =
     { pointer : Supported
     , auto : Supported
-    , default : Supported
+    , default_ : Supported
     , none : Supported
     , contextMenu : Supported
     , help : Supported
@@ -19928,22 +19911,21 @@ transform (Value val) =
 {-| Sets [`transform`](https://css-tricks.com/almanac/properties/t/transform/)
 with a series of transform-functions.
 
-    transforms (translate (px 12)) [ scale_ 2, skew (deg 20) ]
+    transforms [ translate (px 12), scale_ 2, skew (deg 20) ]
 
 -}
 transforms :
-    Value TransformFunction
-    -> List (Value TransformFunction)
+    List (Value TransformFunction)
     -> Style
-transforms head rest =
-    AppendProperty ("transform:" ++ plusListToString head rest)
+transforms list =
+    AppendProperty ("transform:" ++ plusListToString list)
 
 
 {-| Named after the plus symbol in the CSS specification [CSS-VALUES-3].
 -}
-plusListToString : Value a -> List (Value a) -> String
-plusListToString head rest =
-    (head :: rest)
+plusListToString : List (Value a) -> String
+plusListToString rest =
+    rest
         |> List.map Value.unpack
         |> String.join " "
 
@@ -20037,7 +20019,7 @@ transformStyle :
         }
     -> Style
 transformStyle (Value val) =
-    AppendProperty <| "transform-style" ++ val
+    AppendProperty <| "transform-style:" ++ val
 
 
 {-| The `flat` value used in the [`transformStyle`](#transformStyle) property.
@@ -20057,7 +20039,7 @@ flat =
 -}
 preserve3d : Value { provides | preserve3d : Supported }
 preserve3d =
-    Value "preserve3d"
+    Value "preserve-3d"
 
 
 {-| Sets `matrix` value for usage with [`transform`](#transform).
@@ -20079,15 +20061,15 @@ matrix a b c d tx ty =
     Value
         ("matrix("
             ++ String.fromFloat a
-            ++ " "
+            ++ ","
             ++ String.fromFloat b
-            ++ " "
+            ++ ","
             ++ String.fromFloat c
-            ++ " "
+            ++ ","
             ++ String.fromFloat d
-            ++ " "
+            ++ ","
             ++ String.fromFloat tx
-            ++ " "
+            ++ ","
             ++ String.fromFloat ty
             ++ ")"
         )
@@ -20340,7 +20322,7 @@ This is called `scale2_` instead of `scale2` because [`scale2` is already a prop
 -}
 scale2_ : Float -> Float -> Value { provides | scale2_ : Supported }
 scale2_ valX valY =
-    Value ("scale(" ++ String.fromFloat valX ++ ", " ++ String.fromFloat valY ++ ")")
+    Value ("scale(" ++ String.fromFloat valX ++ "," ++ String.fromFloat valY ++ ")")
 
 
 {-| Sets `scaleX` value for usage with [`transform`](#transform).
