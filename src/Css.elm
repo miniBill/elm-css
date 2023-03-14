@@ -1,6 +1,5 @@
 module Css exposing
     ( Style, batch
-    , Value, Supported
     , property
     , important
 
@@ -495,12 +494,6 @@ module Css exposing
 and [`Css.Global.selector`](http://package.elm-lang.org/packages/rtfeldman/elm-css/latest/Css-Global#selector)
 functions let you define custom properties and selectors, respectively.
 
-# Basic stuff
-
-## CSS Values
-
-@docs Value, BaseValue, Supported
-
 
 ## Reusable Styles
 
@@ -609,6 +602,7 @@ into a group of functionality (like Logical Values), so they're also grouped her
 
 All CSS properties can have the values `unset`, `initial`, `inherit` and `revert`.
 
+@docs BaseValue
 @docs unset, initial, inherit, revert
 
 
@@ -1499,7 +1493,7 @@ Other values you can use for flex item alignment:
 
 import Css.Preprocess as Preprocess exposing (Style(..))
 import Css.Structure as Structure
-
+import Css.Value as Value exposing (Value(..), Supported)
 
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
@@ -1538,40 +1532,6 @@ type alias Style =
     Preprocess.Style
 
 
-{-| A value that can be passed to a CSS property.
-
-    limeGreen : Value { supports | rgb : Supported }
-    limeGreen =
-        rgb 0 100 44
-
-The type variable value of `{ supports | rgb : Supported }` is there because
-CSS has so many overloaded values. For example, it's important that
-`display none` and `flex none` both compile, yet whereas `display block` should
-compile, `flex block` should not. Having open records in the type variables
-for `Value` makes satisfying these overlapping constraints possible.
-
-For convenience, there are type aliases for certain values which are often
-reused. [`Color`](#Color) is one of these.
-
-    limeGreen : Css.Color
-    limeGreen =
-        rgb 0 100 44
-
--}
-type Value supports
-    = Value String
-
-
-unpackValue : Value a -> String
-unpackValue (Value value) =
-    value
-
-
-
-{-| A type used to specify which properties and which values work together.
--}
-type Supported
-    = Supported
 
 
 -- CUSTOM PROPERTIES --
@@ -1647,7 +1607,7 @@ makeImportant str =
 hashListToString : Value a -> List (Value a) -> String
 hashListToString head rest =
     (head :: rest)
-        |> List.map unpackValue
+        |> List.map Value.unpack
         |> String.join ","
 
 
@@ -11556,7 +11516,7 @@ gridTemplateRowsList :
     )
     -> Style
 gridTemplateRowsList list =
-    AppendProperty <| "grid-template-rows:" ++ (String.join " " <| List.map unpackValue list)
+    AppendProperty <| "grid-template-rows:" ++ (String.join " " <| List.map Value.unpack list)
 
 
 
@@ -11643,7 +11603,7 @@ gridTemplateColumnsList :
     )
     -> Style
 gridTemplateColumnsList list =
-    AppendProperty <| "grid-template-columns:" ++ (String.join " " <| List.map unpackValue list)
+    AppendProperty <| "grid-template-columns:" ++ (String.join " " <| List.map Value.unpack list)
 
 
 
@@ -11706,7 +11666,7 @@ repeatedTrackList :
     )
     -> Value { provides | repeatedTrackList : Supported }
 repeatedTrackList (Value firstArg) trackList =
-    Value <| "repeat(" ++ firstArg ++ ", " ++ (String.join " " <| List.map unpackValue trackList) ++ ")"
+    Value <| "repeat(" ++ firstArg ++ ", " ++ (String.join " " <| List.map Value.unpack trackList) ++ ")"
 
 
 {-| The `auto-fill` value [used in the `repeat()` function](https://developer.mozilla.org/en-US/docs/Web/CSS/repeat#values).
@@ -13924,7 +13884,7 @@ fontVariantNumeric4 val1 val2 val3 val4 =
 
 maybeValToString : Maybe (Value a) -> Maybe String
 maybeValToString =
-    Maybe.map unpackValue
+    Maybe.map Value.unpack
 
 
 {-| The `ordinal` [`font-variant-numeric` value](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-numeric).
@@ -19251,7 +19211,7 @@ linearGradient :
 linearGradient (Value firstStop) (Value secondStop) moreStops =
     let
         peeledStops =
-            List.map unpackValue moreStops
+            List.map Value.unpack moreStops
 
         stops =
             String.join "," (firstStop :: secondStop :: peeledStops)
@@ -19288,7 +19248,7 @@ linearGradient2 :
 linearGradient2 (Value angle) (Value firstStop) (Value secondStop) moreStops =
     let
         peeledStops =
-            List.map unpackValue moreStops
+            List.map Value.unpack moreStops
 
         stops =
             String.join "," (firstStop :: secondStop :: peeledStops)
@@ -19623,7 +19583,7 @@ boxShadowConfigToString config =
 
         colorVal =
             config.color
-                |> Maybe.map (unpackValue >> (++) " ")
+                |> Maybe.map (Value.unpack >> (++) " ")
                 |> Maybe.withDefault ""
     in
     insetStr ++ offsetX ++ " " ++ offsetY ++ blurRadius ++ spreadRadius ++ colorVal
@@ -19711,19 +19671,19 @@ textShadowConfigToString : TextShadowConfig -> String
 textShadowConfigToString config =
     let
         offsetX =
-            unpackValue config.offsetX
+            Value.unpack config.offsetX
 
         offsetY =
-            unpackValue config.offsetY
+            Value.unpack config.offsetY
 
         blurRadius =
             config.blurRadius
-                |> Maybe.map (unpackValue >> (++) " ")
+                |> Maybe.map (Value.unpack >> (++) " ")
                 |> Maybe.withDefault ""
 
         colorSetting =
             config.color
-                |> Maybe.map (unpackValue >> (++) " ")
+                |> Maybe.map (Value.unpack >> (++) " ")
                 |> Maybe.withDefault ""
     in
     offsetX ++ " " ++ offsetY ++ blurRadius ++ colorSetting
@@ -19836,7 +19796,7 @@ transforms head rest =
 plusListToString : Value a -> List (Value a) -> String
 plusListToString head rest =
     (head :: rest)
-        |> List.map unpackValue
+        |> List.map Value.unpack
         |> String.join " "
 
 
