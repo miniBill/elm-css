@@ -60,8 +60,8 @@ dreamwriter =
               box-sizing:border-box;
               margin:0;
               padding:8px;
-              background-color:rgb(100, 90, 128);
-              color:rgb(40, 35, 76);
+              background-color:rgb(100,90,128);
+              color:rgb(40,35,76);
             }
         """
     in

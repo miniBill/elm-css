@@ -12,7 +12,7 @@ import TestUtil exposing (outdented, prettyPrint)
 mediaTypes : Test
 mediaTypes =
     describe "media types"
-        [ testMediaType "screen" screen
+        [ testMediaType "screen" Media.screen
         , testMediaType "print" print
         , testMediaType "speech" speech
         ]
@@ -62,11 +62,11 @@ mediaFeatures =
             , ( Media.maxHeight (Css.rem 500), "500rem" )
             ]
         , testFeature "min-aspect-ratio"
-            [ ( minAspectRatio (ratio 4 3), "4/3" ) ]
+            [ ( minAspectRatio 4 3, "4/3" ) ]
         , testFeature "aspect-ratio"
-            [ ( aspectRatio (ratio 16 10), "16/10" ) ]
+            [ ( aspectRatio 16 10, "16/10" ) ]
         , testFeature "max-aspect-ratio"
-            [ ( maxAspectRatio (ratio 16 9), "16/9" ) ]
+            [ ( maxAspectRatio 16 9, "16/9" ) ]
         , testFeature "orientation"
             [ ( orientation landscape, "landscape" )
             , ( orientation portrait, "portrait" )
@@ -83,37 +83,32 @@ mediaFeatures =
             [ ( scan progressive, "progressive" )
             , ( scan interlace, "interlace" )
             ]
-        , testFeature "update"
-            [ ( update none, "none" )
-            , ( update slow, "slow" )
-            , ( update fast, "fast" )
-            ]
         , testFeature "overflow-block"
-            [ ( overflowBlock none, "none" )
-            , ( overflowBlock scroll, "scroll" )
-            , ( overflowBlock paged, "paged" )
-            , ( overflowBlock optionalPaged, "optional-paged" )
+            [ ( Media.overflowBlock none, "none" )
+            , ( Media.overflowBlock scroll, "scroll" )
+            , ( Media.overflowBlock paged, "paged" )
+            , ( Media.overflowBlock optionalPaged, "optional-paged" )
             ]
         , testFeature "overflow-inline"
-            [ ( overflowInline none, "none" )
-            , ( overflowInline scroll, "scroll" )
+            [ ( Media.overflowInline none, "none" )
+            , ( Media.overflowInline scroll, "scroll" )
             ]
         , testFeature "min-color"
-            [ ( minColor (bits 8), "8" ) ]
+            [ ( minColor 8, "8" ) ]
         , testUnparameterizedFeature "color" Media.color
         , testFeature "max-color"
-            [ ( maxColor (bits 24), "24" ) ]
+            [ ( maxColor 24, "24" ) ]
         , testFeature "min-color-index"
-            [ ( minColorIndex (int 256), "256" ) ]
+            [ ( minColorIndex 256, "256" ) ]
         , testFeature "color-index"
-            [ ( colorIndex (int 32768), "32768" ) ]
+            [ ( colorIndex 32768, "32768" ) ]
         , testFeature "max-color-index"
-            [ ( maxColorIndex (int 16777216), "16777216" ) ]
+            [ ( maxColorIndex 16777216, "16777216" ) ]
         , testFeature "min-monochrome"
-            [ ( minMonochrome (bits 1), "1" ) ]
-        , testUnparameterizedFeature "monochrome" monochrome
+            [ ( minMonochrome 1, "1" ) ]
+        , testUnparameterizedFeature "monochrome" (monochrome True)
         , testFeature "max-monochrome"
-            [ ( maxMonochrome (bits 4), "4" ) ]
+            [ ( maxMonochrome 4, "4" ) ]
         , testFeature "color-gamut"
             [ ( colorGamut srgb, "srgb" )
             , ( colorGamut p3, "p3" )
@@ -131,11 +126,11 @@ mediaFeatures =
             ]
         , testFeature "hover"
             [ ( Media.hover none, "none" )
-            , ( Media.hover canHover, "hover" )
+            , ( Media.hover hover_, "hover" )
             ]
         , testFeature "any-hover"
             [ ( anyHover none, "none" )
-            , ( anyHover canHover, "hover" )
+            , ( anyHover hover_, "hover" )
             ]
         , testFeature "scripting"
             [ ( scripting none, "none" )
@@ -193,13 +188,13 @@ testMedia =
             stylesheet
                 [ body [ padding zero ]
                 , media [ only print [] ] [ body [ margin (Css.em 2) ] ]
-                , media [ only screen [ Media.maxWidth (px 600) ] ]
+                , media [ only Media.screen [ Media.maxWidth (px 600) ] ]
                     [ body [ margin (Css.em 3) ] ]
                 , button [ margin auto ]
                 , media
-                    [ only screen [ Media.color, Media.pointer fine, scan interlace, grid ] ]
+                    [ only Media.screen [ Media.color, Media.pointer fine, scan interlace, Media.grid ] ]
                     [ p [ Css.color (hex "FF0000") ] ]
-                , media [ Media.not screen [ Media.color ] ] [ p [ Css.color (hex "000000") ] ]
+                , media [ Media.not Media.screen [ Media.color ] ] [ p [ Css.color (hex "000000") ] ]
                 ]
 
         output =
@@ -253,31 +248,31 @@ testWithMedia =
                 [ button [ padding zero ]
                 , body
                     [ Css.color (hex "333333")
-                    , withMedia [ only print [], Media.all [ monochrome ] ] [ Css.color (hex "000000") ]
+                    , withMedia [ only print [], Media.all [ monochrome True ] ] [ Css.color (hex "000000") ]
                     ]
                 , p
-                    [ withMedia [ only screen [] ] [ textDecoration underline ]
+                    [ withMedia [ only Media.screen [] ] [ textDecoration underline ]
                     , Css.color (hex "AA0000")
                     ]
                 , a
                     [ withMedia [ only print [] ] [ textDecoration none ]
-                    , withMedia [ only screen [] ] [ textDecoration underline ]
+                    , withMedia [ only Media.screen [] ] [ textDecoration underline ]
                     , Css.color (hex "BB0000")
                     ]
                 , ul
                     [ Css.color (hex "CC0000")
                     , withMedia [ only print [] ] [ textDecoration none ]
-                    , withMedia [ only screen [] ] [ textDecoration underline ]
+                    , withMedia [ only Media.screen [] ] [ textDecoration underline ]
                     ]
                 , li
                     [ Css.color (hex "DD0000")
                     , withMedia [ only print [] ] [ textDecoration none ]
-                    , withMedia [ only screen [] ] [ textDecoration underline ]
+                    , withMedia [ only Media.screen [] ] [ textDecoration underline ]
                     , Css.backgroundColor (hex "EE0000")
                     ]
                 , class "Container"
                     [ Css.maxWidth (px 800)
-                    , withMedia [ only screen [ Media.maxWidth (px 375) ], only screen [ Media.maxHeight (px 667) ] ]
+                    , withMedia [ only Media.screen [ Media.maxWidth (px 375) ], only Media.screen [ Media.maxHeight (px 667) ] ]
                         [ Css.maxWidth (px 300) ]
                     ]
                 ]
@@ -386,7 +381,7 @@ withMediaOutside =
                 [ body
                     [ Css.color (hex "ff0000")
                     , nthOfType "2n+1"
-                        [ withMedia [ only screen [ Media.minWidth (px 600) ] ]
+                        [ withMedia [ only Media.screen [ Media.minWidth (px 600) ] ]
                             [ marginRight (px 16) ]
                         ]
                     ]
@@ -421,7 +416,7 @@ withMediaOutsideAndOtherDeclarations =
                 [ body
                     [ Css.color (hex "ff0000")
                     , nthOfType "2n+1"
-                        [ withMedia [ only screen [ Media.minWidth (px 600) ] ]
+                        [ withMedia [ only Media.screen [ Media.minWidth (px 600) ] ]
                             [ marginRight (px 16) ]
                         ]
                     , Css.backgroundColor (hex "0000aa")
@@ -456,7 +451,7 @@ withMediaInside =
         input =
             stylesheet
                 [ body
-                    [ withMedia [ only screen [ Media.minWidth (px 600) ] ]
+                    [ withMedia [ only Media.screen [ Media.minWidth (px 600) ] ]
                         [ nthOfType "2n+1"
                             [ marginRight (px 16) ]
                         ]
@@ -487,7 +482,7 @@ withMediaInsideAndOtheDeclarations =
             stylesheet
                 [ body
                     [ Css.color (hex "ff0000")
-                    , withMedia [ only screen [ Media.minWidth (px 600) ] ]
+                    , withMedia [ only Media.screen [ Media.minWidth (px 600) ] ]
                         [ nthOfType "2n+1"
                             [ marginRight (px 16) ]
                         ]
@@ -526,7 +521,7 @@ bug352 =
                 , body
                     [ Css.color (hex "333333")
                     , nthOfType "2n+1"
-                        [ withMedia [ only screen [ Media.minWidth (px 600) ] ]
+                        [ withMedia [ only Media.screen [ Media.minWidth (px 600) ] ]
                             [ marginRight (px 16) ]
                         ]
                     ]
@@ -534,13 +529,13 @@ bug352 =
                     [ Css.color (hex "FF0000")
                     , withMedia [ only print [] ] [ textDecoration none ]
                     , nthOfType "2n+1"
-                        [ withMedia [ only screen [ Media.minWidth (px 600) ] ]
+                        [ withMedia [ only Media.screen [ Media.minWidth (px 600) ] ]
                             [ marginRight (px 16) ]
                         ]
                     ]
                 , class "Container"
                     [ Css.maxWidth (px 800)
-                    , withMedia [ only screen [ Media.maxWidth (px 375) ], only screen [ Media.maxHeight (px 667) ] ]
+                    , withMedia [ only Media.screen [ Media.maxWidth (px 375) ], only Media.screen [ Media.maxHeight (px 667) ] ]
                         [ Css.maxWidth (px 300) ]
                     , Css.maxHeight (px 600)
                     ]

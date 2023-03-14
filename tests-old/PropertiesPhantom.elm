@@ -2,6 +2,7 @@ module PropertiesPhantom exposing (all)
 
 import Css exposing (..)
 import Css.Preprocess exposing (stylesheet, toPropertyStrings)
+import Css.Value exposing (Value(..), Supported)
 import Expect
 import Test exposing (Test)
 import TestUtil exposing (prettyPrint)
@@ -112,7 +113,7 @@ all =
             , ( textIndent2 (cm 2) eachLine, "2cm each-line" )
             , ( textIndent2 (em 0.625) hanging, "0.625em hanging" )
             , ( textIndent2 (ex 3.14) eachLine, "3.14ex each-line" )
-            , ( textIndent2 (inches 2.54) hanging, "2.54in hanging" )
+            , ( textIndent2 (inch 2.54) hanging, "2.54in hanging" )
             , ( textIndent2 (mm 12.345) eachLine, "12.345mm each-line" )
             , ( textIndent2 (pc 7.7) hanging, "7.7pc hanging" )
             , ( textIndent2 (pt 65.4) eachLine, "65.4pt each-line" )
@@ -347,7 +348,7 @@ all =
             , ( flex2 (num 2) (cm 3.2), "2 3.2cm" )
             , ( flex2 (num 2) (em 1), "2 1em" )
             , ( flex2 (num 2) (ex 2), "2 2ex" )
-            , ( flex2 (num 2) (inches 0.75), "2 0.75in" )
+            , ( flex2 (num 2) (inch 0.75), "2 0.75in" )
             , ( flex2 (num 2) (mm 3.4), "2 3.4mm" )
             , ( flex2 (num 2) (pc 10), "2 10pc" )
             , ( flex2 (num 2) (pt 16), "2 16pt" )
@@ -377,7 +378,7 @@ all =
             , ( flex3 (num 2) (num 3) (cm 3.2), "2 3 3.2cm" )
             , ( flex3 (num 2) (num 3) (em 1), "2 3 1em" )
             , ( flex3 (num 2) (num 3) (ex 2), "2 3 2ex" )
-            , ( flex3 (num 2) (num 3) (inches 0.75), "2 3 0.75in" )
+            , ( flex3 (num 2) (num 3) (inch 0.75), "2 3 0.75in" )
             , ( flex3 (num 2) (num 3) (mm 3.4), "2 3 3.4mm" )
             , ( flex3 (num 2) (num 3) (pc 10), "2 3 10pc" )
             , ( flex3 (num 2) (num 3) (pt 16), "2 3 16pt" )
@@ -685,7 +686,7 @@ all =
             , ( zoomOut, "zoom-out" )
             , ( grab, "grab" )
             , ( grabbing, "grabbing" )
-            , ( default, "default" )
+            , ( default_, "default" )
             , ( auto, "auto" )
             , ( none, "none" )
             ]
@@ -708,7 +709,7 @@ all =
             , ( outline3 (cm 3.1) solid (rgb 112 22 75), "3.1cm solid rgb(112,22,75)" )
             , ( outline3 (em 0.2) dotted (rgba 112 22 75 0.1), "0.2em dotted rgba(112,22,75,0.1)" )
             , ( outline3 (ex 10.5) dashed (hex "fadffe"), "10.5ex dashed #fadffe" )
-            , ( outline3 (inches 1) solid (hex "eef"), "1in solid #eef" )
+            , ( outline3 (inch 1) solid (hex "eef"), "1in solid #eef" )
             , ( outline3 (mm 2.54) double (hex "#ddfead99"), "2.54mm double #ddfead99" )
             , ( outline3 (pc 8.7) groove (hex "#356265"), "8.7pc groove #356265" )
             , ( outline3 (pt 15.5) ridge (hex "#feda"), "15.5pt ridge #feda" )
@@ -757,7 +758,7 @@ all =
             , ( listStyle2 armenian inside, "armenian inside" )
             , ( listStyle2 bengali outside, "bengali outside" )
             , ( listStyle2 cambodian inside, "cambodian inside" )
-            , ( listStyle2 circle outside, "circle outside" )
+            , ( listStyle2 circle_ outside, "circle outside" )
             , ( listStyle2 cjkDecimal inside, "cjk-decimal inside" )
             , ( listStyle2 cjkEarthlyBranch outside, "cjk-earthly-branch outside" )
             , ( listStyle2 cjkHeavenlyStem inside, "cjk-heavenly-stem inside" )
@@ -816,7 +817,7 @@ all =
             , ( listStyle3 armenian inside none, "armenian inside none" )
             , ( listStyle3 bengali outside none, "bengali outside none" )
             , ( listStyle3 cambodian inside none, "cambodian inside none" )
-            , ( listStyle3 circle outside none, "circle outside none" )
+            , ( listStyle3 circle_ outside none, "circle outside none" )
             , ( listStyle3 cjkDecimal inside none, "cjk-decimal inside none" )
             , ( listStyle3 cjkEarthlyBranch outside none, "cjk-earthly-branch outside none" )
             , ( listStyle3 cjkHeavenlyStem inside none, "cjk-heavenly-stem inside none" )
@@ -1074,7 +1075,7 @@ all =
             , ( backgroundPosition3 right_ (cm 1) center, "right 1cm center" )
             , ( backgroundPosition3 top_ (em 1) center, "top 1em center" )
             , ( backgroundPosition3 bottom_ (ex 1) center, "bottom 1ex center" )
-            , ( backgroundPosition3 left_ (inches 1) center, "left 1in center" )
+            , ( backgroundPosition3 left_ (inch 1) center, "left 1in center" )
             , ( backgroundPosition3 right_ (mm 1) center, "right 1mm center" )
             , ( backgroundPosition3 top_ (pc 1) center, "top 1pc center" )
             , ( backgroundPosition3 bottom_ (pt 1) center, "bottom 1pt center" )
@@ -1094,7 +1095,7 @@ all =
             , ( backgroundPosition4 right_ (cm 1) top_ (cm 2), "right 1cm top 2cm" )
             , ( backgroundPosition4 left_ (em 1) bottom_ (em 2), "left 1em bottom 2em" )
             , ( backgroundPosition4 right_ (ex 1) bottom_ (ex 2), "right 1ex bottom 2ex" )
-            , ( backgroundPosition4 left_ (inches 1) top_ (inches 2), "left 1in top 2in" )
+            , ( backgroundPosition4 left_ (inch 1) top_ (inch 2), "left 1in top 2in" )
             , ( backgroundPosition4 right_ (mm 1) top_ (mm 2), "right 1mm top 2mm" )
             , ( backgroundPosition4 left_ (pc 1) bottom_ (pc 2), "left 1pc bottom 2pc" )
             , ( backgroundPosition4 right_ (pt 1) bottom_ (pt 2), "right 1pt bottom 2pt" )
@@ -1330,7 +1331,7 @@ testLength :
                 , cm : Supported
                 , em : Supported
                 , ex : Supported
-                , inches : Supported
+                , inch : Supported
                 , mm : Supported
                 , pc : Supported
                 , pt : Supported
@@ -1351,7 +1352,7 @@ testLength =
     , ( cm 13.3, "13.3cm" )
     , ( em 0.625, "0.625em" )
     , ( ex 3.14, "3.14ex" )
-    , ( inches 2.54, "2.54in" )
+    , ( inch 2.54, "2.54in" )
     , ( mm 12.345, "12.345mm" )
     , ( pc 7.7, "7.7pc" )
     , ( pt 65.4, "65.4pt" )
@@ -1374,7 +1375,7 @@ testLength2 :
             , cm : Supported
             , em : Supported
             , ex : Supported
-            , inches : Supported
+            , inch : Supported
             , mm : Supported
             , pc : Supported
             , pt : Supported
@@ -1395,7 +1396,7 @@ testLength2 :
                 , cm : Supported
                 , em : Supported
                 , ex : Supported
-                , inches : Supported
+                , inch : Supported
                 , mm : Supported
                 , pc : Supported
                 , pt : Supported
@@ -1417,7 +1418,7 @@ testLength2 propertyUnderTest =
     , ( propertyUnderTest (cm 13.3) (cm 2.8), "13.3cm 2.8cm" )
     , ( propertyUnderTest (em 0.625) (em 1), "0.625em 1em" )
     , ( propertyUnderTest (ex 3.14) (ex 4.3), "3.14ex 4.3ex" )
-    , ( propertyUnderTest (inches 2.54) (inches 0.5), "2.54in 0.5in" )
+    , ( propertyUnderTest (inch 2.54) (inch 0.5), "2.54in 0.5in" )
     , ( propertyUnderTest (mm 12.345) (mm 2.54), "12.345mm 2.54mm" )
     , ( propertyUnderTest (pc 7.7) (pc 3), "7.7pc 3pc" )
     , ( propertyUnderTest (pt 65.4) (pt 12), "65.4pt 12pt" )
@@ -1440,7 +1441,7 @@ testLength3 :
             , cm : Supported
             , em : Supported
             , ex : Supported
-            , inches : Supported
+            , inch : Supported
             , mm : Supported
             , pc : Supported
             , pt : Supported
@@ -1461,7 +1462,7 @@ testLength3 :
                 , cm : Supported
                 , em : Supported
                 , ex : Supported
-                , inches : Supported
+                , inch : Supported
                 , mm : Supported
                 , pc : Supported
                 , pt : Supported
@@ -1482,7 +1483,7 @@ testLength3 :
                 , cm : Supported
                 , em : Supported
                 , ex : Supported
-                , inches : Supported
+                , inch : Supported
                 , mm : Supported
                 , pc : Supported
                 , pt : Supported
@@ -1504,7 +1505,7 @@ testLength3 propertyUnderTest =
     , ( propertyUnderTest (cm 13.3) (cm 2.8) (cm 4.2), "13.3cm 2.8cm 4.2cm" )
     , ( propertyUnderTest (em 0.625) (em 1) (em 3.4), "0.625em 1em 3.4em" )
     , ( propertyUnderTest (ex 3.14) (ex 4.3) (ex 7), "3.14ex 4.3ex 7ex" )
-    , ( propertyUnderTest (inches 2.54) (inches 0.5) (inches 1.3), "2.54in 0.5in 1.3in" )
+    , ( propertyUnderTest (inch 2.54) (inch 0.5) (inch 1.3), "2.54in 0.5in 1.3in" )
     , ( propertyUnderTest (mm 12.345) (mm 2.54) (mm 4), "12.345mm 2.54mm 4mm" )
     , ( propertyUnderTest (pc 7.7) (pc 3) (pc 5), "7.7pc 3pc 5pc" )
     , ( propertyUnderTest (pt 65.4) (pt 12) (pt 5), "65.4pt 12pt 5pt" )
@@ -1532,7 +1533,7 @@ testLength4 :
             , cm : Supported
             , em : Supported
             , ex : Supported
-            , inches : Supported
+            , inch : Supported
             , mm : Supported
             , pc : Supported
             , pt : Supported
@@ -1553,7 +1554,7 @@ testLength4 :
                 , cm : Supported
                 , em : Supported
                 , ex : Supported
-                , inches : Supported
+                , inch : Supported
                 , mm : Supported
                 , pc : Supported
                 , pt : Supported
@@ -1574,7 +1575,7 @@ testLength4 :
                 , cm : Supported
                 , em : Supported
                 , ex : Supported
-                , inches : Supported
+                , inch : Supported
                 , mm : Supported
                 , pc : Supported
                 , pt : Supported
@@ -1595,7 +1596,7 @@ testLength4 :
                 , cm : Supported
                 , em : Supported
                 , ex : Supported
-                , inches : Supported
+                , inch : Supported
                 , mm : Supported
                 , pc : Supported
                 , pt : Supported
@@ -1617,7 +1618,7 @@ testLength4 propertyUnderTest =
     , ( propertyUnderTest (cm 13.3) (cm 2.8) (cm 4.2) (cm 1), "13.3cm 2.8cm 4.2cm 1cm" )
     , ( propertyUnderTest (em 0.625) (em 1) (em 3.4) (em 1), "0.625em 1em 3.4em 1em" )
     , ( propertyUnderTest (ex 3.14) (ex 4.3) (ex 7) (ex 1), "3.14ex 4.3ex 7ex 1ex" )
-    , ( propertyUnderTest (inches 2.54) (inches 0.5) (inches 1.3) (inches 1), "2.54in 0.5in 1.3in 1in" )
+    , ( propertyUnderTest (inch 2.54) (inch 0.5) (inch 1.3) (inch 1), "2.54in 0.5in 1.3in 1in" )
     , ( propertyUnderTest (mm 12.345) (mm 2.54) (mm 4) (mm 1), "12.345mm 2.54mm 4mm 1mm" )
     , ( propertyUnderTest (pc 7.7) (pc 3) (pc 5) (pc 1), "7.7pc 3pc 5pc 1pc" )
     , ( propertyUnderTest (pt 65.4) (pt 12) (pt 5) (pt 1), "65.4pt 12pt 5pt 1pt" )
@@ -1647,7 +1648,7 @@ testLineWidth :
                 , cm : Supported
                 , em : Supported
                 , ex : Supported
-                , inches : Supported
+                , inch : Supported
                 , mm : Supported
                 , pc : Supported
                 , pt : Supported
@@ -1685,7 +1686,7 @@ testLineStyleWithoutHidden :
                 , double : Supported
                 , groove : Supported
                 , ridge : Supported
-                , inset : Supported
+                , inset_ : Supported
                 , outset : Supported
             }
         , String
@@ -1698,7 +1699,7 @@ testLineStyleWithoutHidden =
     , ( double, "double" )
     , ( groove, "groove" )
     , ( ridge, "ridge" )
-    , ( inset, "inset" )
+    , ( inset_, "inset" )
     , ( outset, "outset" )
     ]
 
@@ -1783,7 +1784,7 @@ testListStyleType :
                 , armenian : Supported
                 , bengali : Supported
                 , cambodian : Supported
-                , circle : Supported
+                , circle_ : Supported
                 , cjkDecimal : Supported
                 , cjkEarthlyBranch : Supported
                 , cjkHeavenlyStem : Supported
@@ -1845,7 +1846,7 @@ testListStyleType =
     , ( armenian, "armenian" )
     , ( bengali, "bengali" )
     , ( cambodian, "cambodian" )
-    , ( circle, "circle" )
+    , ( circle_, "circle" )
     , ( cjkDecimal, "cjk-decimal" )
     , ( cjkEarthlyBranch, "cjk-earthly-branch" )
     , ( cjkHeavenlyStem, "cjk-heavenly-stem" )

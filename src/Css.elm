@@ -239,19 +239,28 @@ module Css exposing
     -- Typographic features
     , fontFeatureSettings, fontFeatureSettingsList
     , featureTag, featureTag2
+
+    , AllFontVariants, AllFontVariantsSupported
+    , fontVariant, fontVariant2
+    , FontVariantCapsSupported
     , fontVariantCaps
     , smallCaps, allSmallCaps, petiteCaps, allPetiteCaps, unicase, titlingCaps
+    , FontVariantEastAsianSupported, FontVariantEastAsian
     , fontVariantEastAsian, fontVariantEastAsian2, fontVariantEastAsian3
     , jis78, jis83, jis90, jis04, simplified, traditional, proportionalWidth
+    , FontVariantLigaturesSupported
     , fontVariantLigatures
     , commonLigatures, noCommonLigatures, discretionaryLigatures, noDiscretionaryLigatures, historicalLigatures, noHistoricalLigatures, contextual, noContextual
+    , FontVariantNumericSupported
     , fontVariantNumeric, fontVariantNumeric4
     , ordinal, slashedZero, liningNums, oldstyleNums, proportionalNums, tabularNums, diagonalFractions, stackedFractions
+    , FontVariantEmojiSupported
     , fontVariantEmoji, emoji, unicode
+    , FontVariantPositionSupported
+    , fontVariantPosition
     , fontKerning
     , fontLanguageOverride
     , fontOpticalSizing
-    , fontVariantPosition
     
     -- Typographic metrics
     , lineHeight
@@ -413,7 +422,8 @@ module Css exposing
     , TransformFunction, TransformFunctionSupported
     , transform, transforms
     , transformOrigin, transformOrigin2
-    , transformBox
+    , transformBox, transformStyle
+    , flat, preserve3d
     , matrix, matrix3d
     , scale, scale2, scale3, scale_, scale2_, scaleX, scaleY, scaleZ, scale3d
     , rotate, rotate2, rotate_, rotateX, rotateY, rotateZ, rotate3d, vec3
@@ -1027,46 +1037,58 @@ Other values you can use for flex item alignment:
 @docs fontFeatureSettings, fontFeatureSettingsList
 @docs featureTag, featureTag2
 
-## Alternative capitals
+## Font Variants
 
+@docs AllFontVariantsSupported, AllFontVariants
+@docs fontVariant, fontVariant2
+
+### Alternative capitals
+
+@docs FontVariantCapsSupported
 @docs fontVariantCaps
 @docs smallCaps, allSmallCaps, petiteCaps, allPetiteCaps, unicase, titlingCaps
 
-## East Asian glyph variants
+### East Asian glyph variants
 
+@docs FontVariantEastAsianSupported, FontVariantEastAsian
 @docs fontVariantEastAsian, fontVariantEastAsian2, fontVariantEastAsian3
 @docs jis78, jis83, jis90, jis04, simplified, traditional, proportionalWidth
 
-## Ligatures & contextual forms
+### Ligatures & contextual forms
 
+@docs FontVariantLigaturesSupported
 @docs fontVariantLigatures
 @docs commonLigatures, noCommonLigatures, discretionaryLigatures, noDiscretionaryLigatures, historicalLigatures, noHistoricalLigatures, contextual, noContextual
     
-## Numerical variants
+### Numerical variants
 
+@docs FontVariantNumericSupported
 @docs fontVariantNumeric, fontVariantNumeric4
 @docs ordinal, slashedZero, liningNums, oldstyleNums, proportionalNums, tabularNums, diagonalFractions, stackedFractions
     
-## Emoji variants
+### Emoji variants
 
+@docs FontVariantEmojiSupported
 @docs fontVariantEmoji, emoji, unicode
 
-## Kerning
+### Superscript & subscript
+
+@docs FontVariantPositionSupported
+@docs fontVariantPosition
+
+## Other typographic properties
+
+### Kerning
 
 @docs fontKerning
 
-## Language override
+### Language override
 
 @docs fontLanguageOverride
 
-## Optical sizing
+### Optical sizing
 
 @docs fontOpticalSizing
-
-## Superscript & subscript
-
-@docs fontVariantPosition
-
 
 ------------------------------------------------------
 
@@ -1356,7 +1378,8 @@ Other values you can use for flex item alignment:
 @docs TransformFunction, TransformFunctionSupported
 @docs transform, transforms
 @docs transformOrigin, transformOrigin2
-@docs transformBox
+@docs transformBox, transformStyle
+@docs flat, preserve3d
 
 ## Matrix transformation
 
@@ -13405,6 +13428,106 @@ featureTag2 tag value =
 
 -- FONT VARIANT CAPS --
 
+{-| A type that encapsulates all special font variant keywords plus additional types.
+-}
+type alias AllFontVariantsSupported supported =
+    FontVariantCapsSupported
+        ( FontVariantEastAsianSupported
+            ( FontVariantLigaturesSupported
+                ( FontVariantNumericSupported
+                    ( FontVariantEmojiSupported
+                        ( FontVariantPositionSupported
+                            supported
+                        ) 
+                    )
+                )
+            )
+        )
+
+
+{-| A type that encapsulates all special font variant keywords.
+-}
+type alias AllFontVariants =
+    AllFontVariantsSupported {}
+
+
+{-| The [`font-variant`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant)
+CSS property.
+
+This is a shorthand property, encapsulating the following:
+- [`fontVariantCaps`](#fontVariantCaps)
+- [`fontVariantEastAsian`](#fontVariantEastAsian)
+- [`fontVariantLigatures`](#fontVariantLigatures)
+- [`fontVariantNumeric`](#fontVariantNumeric)
+- [`fontVariantEmoji`](#fontVariantEmoji)
+- [`fontVariantPosition`](#fontVariantPosition)
+
+```
+fontVariant inherit
+
+fontVariant normal
+
+fontVariant jis83
+
+fontVariant2 commonLigatures smallCaps
+
+fontVariant2 noCommonLigatures slashedZero
+```
+-}
+fontVariant :
+    BaseValue
+        ( AllFontVariantsSupported
+            { none : Supported
+            , normal : Supported
+            }
+        )
+    -> Style
+fontVariant (Value val) =
+    AppendProperty <| "font-variant" ++ val
+
+
+{-| The [`font-variant`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant)
+CSS property.
+
+This is a shorthand property, encapsulating the following:
+- [`fontVariantCaps`](#fontVariantCaps)
+- [`fontVariantEastAsian`](#fontVariantEastAsian)
+- [`fontVariantLigatures`](#fontVariantLigatures)
+- [`fontVariantNumeric`](#fontVariantNumeric)
+- [`fontVariantEmoji`](#fontVariantEmoji)
+- [`fontVariantPosition`](#fontVariantPosition)
+
+```
+fontVariant inherit
+
+fontVariant normal
+
+fontVariant jis83
+
+fontVariant2 commonLigatures smallCaps
+
+fontVariant2 noCommonLigatures slashedZero
+```
+-}
+fontVariant2 :
+    Value ( AllFontVariants )
+    -> Value ( AllFontVariants )
+    -> Style
+fontVariant2 (Value val1) (Value val2) =
+    AppendProperty <| "font-variant" ++ val1 ++ " " ++ val2
+
+
+{-| A type that encapsulates all caps font variant keywords plus additional types.
+-}
+type alias FontVariantCapsSupported supported =
+    { supported
+        | smallCaps : Supported
+        , petiteCaps : Supported
+        , allPetiteCaps : Supported
+        , unicase : Supported
+        , titlingCaps : Supported
+    }
+
 
 {-| Sets [`font-variant-caps`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-caps).
 
@@ -13425,13 +13548,10 @@ featureTag2 tag value =
 -}
 fontVariantCaps :
     BaseValue
-        { normal : Supported
-        , smallCaps : Supported
-        , petiteCaps : Supported
-        , allPetiteCaps : Supported
-        , unicase : Supported
-        , titlingCaps : Supported
-        }
+        ( FontVariantCapsSupported
+            { normal : Supported
+            }
+        )
     -> Style
 fontVariantCaps (Value str) =
     AppendProperty ("font-variant-caps:" ++ str)
@@ -13507,6 +13627,31 @@ titlingCaps =
 
 -- FONT VARIANT EAST ASIAN --
 
+{-| A type that encapsulates all east asian font variant keywords plus additional types.
+-}
+type alias FontVariantEastAsianSupported supported =
+    { supported
+        | ruby : Supported
+
+        -- variant values
+        , jis78 : Supported
+        , jis83 : Supported
+        , jis90 : Supported
+        , jis04 : Supported
+        , simplified : Supported
+        , traditional : Supported
+
+        -- width values
+        , fullWidth : Supported
+        , proportionalWidth : Supported
+    }
+
+{-| A type that encapsulates all east asian font variant keywords.
+-}
+
+type alias FontVariantEastAsian =
+    FontVariantEastAsianSupported {}
+
 
 {-| The [`font-variant-east-asian`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-east-asian#syntax) property.
 
@@ -13521,21 +13666,10 @@ This property controls the use of alternative glyphs for East Asian scripts.
 -}
 fontVariantEastAsian :
     BaseValue
-        { normal : Supported
-        , ruby : Supported
-
-        -- variant values
-        , jis78 : Supported
-        , jis83 : Supported
-        , jis90 : Supported
-        , jis04 : Supported
-        , simplified : Supported
-        , traditional : Supported
-
-        -- width values
-        , fullWidth : Supported
-        , proportionalWidth : Supported
-        }
+        ( FontVariantEastAsianSupported
+            { normal : Supported
+            }
+        )
     -> Style
 fontVariantEastAsian (Value val) =
     AppendProperty ("font-variant-east-asian:" ++ val)
@@ -13549,29 +13683,9 @@ This property controls the use of alternative glyphs for East Asian scripts.
 
 -}
 fontVariantEastAsian2 :
-    Value
-        { ruby : Supported
-        , jis78 : Supported
-        , jis83 : Supported
-        , jis90 : Supported
-        , jis04 : Supported
-        , simplified : Supported
-        , traditional : Supported
-        , fullWidth : Supported
-        , proportionalWidth : Supported
-        }
+    Value (FontVariantEastAsian)
     ->
-        Value
-            { ruby : Supported
-            , jis78 : Supported
-            , jis83 : Supported
-            , jis90 : Supported
-            , jis04 : Supported
-            , simplified : Supported
-            , traditional : Supported
-            , fullWidth : Supported
-            , proportionalWidth : Supported
-            }
+        Value (FontVariantEastAsian)
     -> Style
 fontVariantEastAsian2 (Value val1) (Value val2) =
     AppendProperty ("font-variant-east-asian:" ++ val1 ++ " " ++ val2)
@@ -13702,6 +13816,20 @@ proportionalWidth =
 
 -- FONT VARIANT LIGATURES --
 
+{-| A type that encapsulates all ligature font variant keywords plus additional types.
+-}
+type alias FontVariantLigaturesSupported supported =
+    { supported
+        | commonLigatures : Supported
+        , noCommonLigatures : Supported
+        , discretionaryLigatures : Supported
+        , noDiscretionaryLigatures : Supported
+        , historicalLigatures : Supported
+        , noHistoricalLigatures : Supported
+        , contextual : Supported
+        , noContextual : Supported
+    }
+
 
 {-| Sets [`font-variant-ligatures`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-ligatures).
 
@@ -13712,17 +13840,11 @@ proportionalWidth =
 -}
 fontVariantLigatures :
     BaseValue
-        { normal : Supported
-        , none : Supported
-        , commonLigatures : Supported
-        , noCommonLigatures : Supported
-        , discretionaryLigatures : Supported
-        , noDiscretionaryLigatures : Supported
-        , historicalLigatures : Supported
-        , noHistoricalLigatures : Supported
-        , contextual : Supported
-        , noContextual : Supported
-        }
+        ( FontVariantLigaturesSupported
+            { normal : Supported
+            , none : Supported
+            }
+        )
     -> Style
 fontVariantLigatures (Value str) =
     AppendProperty ("font-variant-ligatures:" ++ str)
@@ -13812,6 +13934,20 @@ noContextual =
 -- FONT VARIANT NUMERIC --
 
 
+{-| A type that encapsulates all numeric font variant keywords plus additional types.
+-}
+type alias FontVariantNumericSupported supported =
+    { supported
+        | ordinal : Supported
+        , slashedZero : Supported
+        , liningNums : Supported
+        , oldstyleNums : Supported
+        , proportionalNums : Supported
+        , tabularNums : Supported
+        , diagonalFractions : Supported
+        , stackedFractions : Supported
+    }
+
 {-| Sets [`font-variant-numeric`](https://css-tricks.com/almanac/properties/f/font-variant-numeric/).
 
     fontVariantNumeric ordinal
@@ -13821,16 +13957,10 @@ See [`fontVariantNumeric4`](#fontVariantNumeric4) for a more advanced version.
 -}
 fontVariantNumeric :
     BaseValue
-        { normal : Supported
-        , ordinal : Supported
-        , slashedZero : Supported
-        , liningNums : Supported
-        , oldstyleNums : Supported
-        , proportionalNums : Supported
-        , tabularNums : Supported
-        , diagonalFractions : Supported
-        , stackedFractions : Supported
-        }
+        ( FontVariantNumericSupported
+            { normal : Supported
+            }
+        )
     -> Style
 fontVariantNumeric (Value str) =
     AppendProperty ("font-variant-numeric:" ++ str)
@@ -13967,6 +14097,16 @@ stackedFractions =
     Value "stacked-fractions"
 
 
+{-| A type that encapsulates all emoji font variant keywords plus additional types.
+-}
+type alias FontVariantEmojiSupported supported =
+    { supported
+        | text : Supported
+        , emoji : Supported
+        , unicode : Supported
+    }
+
+
 {-| The [`font-variant-emoji`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-emoji)
 property.
 
@@ -13978,11 +14118,10 @@ property.
 -}
 fontVariantEmoji :
     BaseValue
-        { normal : Supported
-        , text : Supported
-        , emoji : Supported
-        , unicode : Supported
-        }
+        ( FontVariantEmojiSupported
+            { normal : Supported
+            }
+        )
     -> Style
 fontVariantEmoji (Value val) =
     AppendProperty <| "font-variant-emoji:" ++ val
@@ -14004,6 +14143,33 @@ emoji =
 unicode : Value { provides | unicode : Supported }
 unicode =
     Value "unicode"
+
+
+{-| A type that encapsulates all position font variant keywords plus additional types.
+-}
+type alias FontVariantPositionSupported supported =
+    { supported
+        | sub : Supported
+        , super : Supported
+
+    }
+
+{-| The [`font-variant-position`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-position) property.
+
+    fontVariantPosition sub
+
+    fontVariantPosition normal
+
+-}
+fontVariantPosition :
+    BaseValue
+        ( FontVariantPositionSupported
+            { normal : Supported
+            }
+        )
+    -> Style
+fontVariantPosition (Value val) =
+    AppendProperty ("font-variant-position:" ++ val)
 
 
 {-| The [`font-kerning`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-kerning) property.
@@ -14052,24 +14218,6 @@ fontOpticalSizing :
     -> Style
 fontOpticalSizing (Value val) =
     AppendProperty ("font-optical-sizing:" ++ val)
-
-
-{-| The [`font-variant-position`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-position) property.
-
-    fontVariantPosition sub
-
-    fontVariantPosition normal
-
--}
-fontVariantPosition :
-    BaseValue
-        { normal : Supported
-        , sub : Supported
-        , super : Supported
-        }
-    -> Style
-fontVariantPosition (Value val) =
-    AppendProperty ("font-variant-position:" ++ val)
 
 
 ------------------------------------------------------------------------
@@ -19874,6 +20022,42 @@ transformBox :
     -> Style
 transformBox (Value val) =
     AppendProperty ("transform-box:" ++ val)
+
+
+{-| Sets the [`transform-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/transform-style) property.
+
+    transformStyle flat
+
+    transformStyle inherit
+-}
+transformStyle :
+    BaseValue
+        { flat : Supported
+        , preserve3d : Supported
+        }
+    -> Style
+transformStyle (Value val) =
+    AppendProperty <| "transform-style" ++ val
+
+
+{-| The `flat` value used in the [`transformStyle`](#transformStyle) property.
+
+    transformStyle flat
+
+-}
+flat : Value { provides | flat : Supported }
+flat =
+    Value "flat"
+
+
+{-| The `preserve-3d` value used in the [`transformStyle`](#transformStyle) property.
+
+    transformStyle preserve3d
+
+-}
+preserve3d : Value { provides | preserve3d : Supported }
+preserve3d =
+    Value "preserve3d"
 
 
 {-| Sets `matrix` value for usage with [`transform`](#transform).

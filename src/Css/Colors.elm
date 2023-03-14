@@ -15,8 +15,8 @@ module Css.Colors exposing (navy, blue, aqua, teal, olive, green, lime, yellow, 
 
 -}
 
-import Css exposing (Color, Value, hex)
-
+import Css exposing (Color, hex)
+import Css.Value exposing (Value)
 
 {-| <img src="https://dummyimage.com/1x1/001f3f/001f3f.png" width="504px" height="40px">
 -}

@@ -758,7 +758,7 @@ maxResolution (Value val) =
 type alias ScanningProcessSupported supported =
     { supported
         | progressive : Supported
-        , interlaced : Supported
+        , interlace : Supported
     }
 
 
@@ -790,13 +790,13 @@ progressive : Value { provides | progressive : Supported }
 progressive = Value "progressive"
 
 
-{-| CSS Media query value for when a screen has interlaced scan.
+{-| CSS Media query value for when a screen has interlace scan.
 
     withMedia [ only screen [ scan interlace ]]
         [ ... ]
 -}
-interlace : Value { provides | interlaced : Supported }
-interlace = Value "interlaced"
+interlace : Value { provides | interlace : Supported }
+interlace = Value "interlace"
 
 
 ------------------------------------------------------------------------
@@ -1317,7 +1317,7 @@ This is for scripting that is allowed only on initial page load.
         [ ... ]
 -}
 initialOnly : Value { provides | initialOnly : Supported }
-initialOnly = Value "initialOnly"
+initialOnly = Value "initial-only"
 
 
 {-| The `enabled` value for the [`scripting`](#scripting) CSS media feature.

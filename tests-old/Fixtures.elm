@@ -337,7 +337,7 @@ fontStylesheet =
             , fontWeight (int 100)
             , fontVariant smallCaps
             , fontVariant2 commonLigatures slashedZero
-            , fontVariantNumerics
+            , fontVariantNumeric4
                 [ oldstyleNums
                 , tabularNums
                 , stackedFractions
@@ -420,12 +420,12 @@ backgrounds =
             , backgroundRepeat repeatX
             , backgroundRepeat repeatY
             , backgroundRepeat2 repeat noRepeat
-            , backgroundRepeat2 space Css.round
+            , backgroundRepeat2 space Css.round_
             , backgroundAttachment local
             , backgroundAttachment scroll
             , backgroundAttachment fixed
-            , backgroundBlendMode color
-            , backgroundBlendMode screenBlendMode
+            , backgroundBlendMode color_
+            , backgroundBlendMode screen
             , backgroundBlendMode multiply
             , backgroundBlendMode overlay
             , backgroundBlendMode darken
@@ -458,7 +458,7 @@ backgrounds =
             , backgroundOrigin paddingBox
             , backgroundOrigin contentBox
             , backgroundSize cover
-            , backgroundSize contain
+            , backgroundSize contain_
             , backgroundSize (px 50)
             , backgroundSize2 auto (px 20)
             , backgroundPosition center
