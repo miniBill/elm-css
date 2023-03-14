@@ -13995,11 +13995,6 @@ fontVariantNumericList list =
         )
 
 
-maybeValToString : Maybe (Value a) -> Maybe String
-maybeValToString =
-    Maybe.map Value.unpack
-
-
 {-| The `ordinal` [`font-variant-numeric` value](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-numeric).
 
     fontVariantNumeric ordinal
