@@ -194,9 +194,9 @@ module Css exposing
     , gridColumnStart, gridColumnStartLine
     , gridColumnEnd, gridColumnEndLine
     , gridTemplate
-    , gridTemplateAreas, gridTemplateAreasList
-    , gridTemplateRows, gridTemplateRowsList
-    , gridTemplateColumns, gridTemplateColumnsList
+    , gridTemplateAreas, gridTemplateAreasMany
+    , gridTemplateRows, gridTemplateRowsMany
+    , gridTemplateColumns, gridTemplateColumnsMany
     --
     , lineNames, repeatedTracks, autoFill, autoFit
     , dense
@@ -206,11 +206,12 @@ module Css exposing
 
     -- backgrounds
     , backgroundColor
-    , backgroundAttachment, backgroundAttachmentList, local
-    , backgroundBlendMode, backgroundBlendModeList
+    , backgroundAttachment, backgroundAttachmentMany, local
+    , backgroundBlendMode, backgroundBlendModeMany
     , multiply, screen, overlay, darken, lighten, colorDodge, colorBurn, hardLight, softLight, difference, exclusion, hue, saturation, color_, luminosity
-    , backgroundClip, backgroundClipList, backgroundOrigin, backgroundOriginList
-    , backgroundImage, backgroundImageList
+    , backgroundClip, backgroundClipMany
+    , backgroundOrigin, backgroundOriginMany
+    , backgroundImage, backgroundImageMany
     , backgroundPosition, backgroundPosition2, backgroundPosition3, backgroundPosition4
     , backgroundRepeat, backgroundRepeat2
     , backgroundSize, backgroundSize2
@@ -234,10 +235,10 @@ module Css exposing
     , fontStretch, ultraCondensed, extraCondensed, condensed, semiCondensed, semiExpanded, expanded, extraExpanded, ultraExpanded
     , fontSynthesis, fontSynthesis2, fontSynthesis3
     , weight
-    , fontVariationSettings, fontVariationSettingsList
+    , fontVariationSettings, fontVariationSettingsMany
 
     -- Typographic features
-    , fontFeatureSettings, fontFeatureSettingsList
+    , fontFeatureSettings, fontFeatureSettingsMany
     , featureTag, featureTag2
 
     , AllFontVariants, AllFontVariantsSupported
@@ -252,7 +253,7 @@ module Css exposing
     , fontVariantLigatures
     , commonLigatures, noCommonLigatures, discretionaryLigatures, noDiscretionaryLigatures, historicalLigatures, noHistoricalLigatures, contextual, noContextual
     , FontVariantNumericSupported, FontVariantNumeric
-    , fontVariantNumeric, fontVariantNumericList
+    , fontVariantNumeric, fontVariantNumericMany
     , ordinal, slashedZero, liningNums, oldstyleNums, proportionalNums, tabularNums, diagonalFractions, stackedFractions
     , FontVariantEmojiSupported
     , fontVariantEmoji, emoji, unicode
@@ -414,13 +415,13 @@ module Css exposing
 
     -- shadows
     , BoxShadowConfig
-    , boxShadow, boxShadowList, defaultBoxShadow
+    , boxShadow, boxShadowMany, defaultBoxShadow
     , TextShadowConfig
     , textShadow, defaultTextShadow
     
     -- transformations and perspective
     , TransformFunction, TransformFunctionSupported
-    , transform, transformList
+    , transform, transformMany
     , transformOrigin, transformOrigin2
     , transformBox, transformStyle
     , flat, preserve3d
@@ -434,14 +435,14 @@ module Css exposing
     , backfaceVisibility
     
     -- animation
-    , animationName, animationNameList
-    , animationDuration, animationDurationList
-    , animationTimingFunction, animationTimingFunctionList
-    , animationIterationCount, animationIterationCountList
-    , animationDirection, animationDirectionList
-    , animationPlayState, animationPlayStateList
-    , animationDelay, animationDelayList
-    , animationFillMode, animationFillModeList
+    , animationName, animationNameMany
+    , animationDuration, animationDurationMany
+    , animationTimingFunction, animationTimingFunctionMany
+    , animationIterationCount, animationIterationCountMany
+    , animationDirection, animationDirectionMany
+    , animationPlayState, animationPlayStateMany
+    , animationDelay, animationDelayMany
+    , animationFillMode, animationFillModeMany
     , EasingFunction, EasingFunctionSupported
     , linear, ease, easeIn, easeOut, easeInOut, cubicBezier, stepStart, stepEnd, steps, steps2, jumpStart, jumpEnd, jumpNone, jumpBoth, infinite, reverse, alternate, alternateReverse, running, paused, forwards, backwards
 
@@ -459,10 +460,10 @@ module Css exposing
     , maskBorderOutset, maskBorderOutset2, maskBorderOutset3, maskBorderOutset4
     , maskBorderSlice, maskBorderSlice2, maskBorderSlice3, maskBorderSlice4
     , maskBorderWidth, maskBorderWidth2, maskBorderWidth3, maskBorderWidth4
-    , maskClip, maskClipList
+    , maskClip, maskClipMany
     , maskComposite
-    , maskMode, maskModeList
-    , maskOrigin, maskOriginList
+    , maskMode, maskModeMany
+    , maskOrigin, maskOriginMany
     , maskPosition
     , maskRepeat, maskRepeat2
     , maskSize, maskSize2
@@ -955,9 +956,9 @@ Other values you can use for flex item alignment:
 ## Grid templates
 
 @docs gridTemplate
-@docs gridTemplateAreas, gridTemplateAreasList
-@docs gridTemplateRows, gridTemplateRowsList
-@docs gridTemplateColumns, gridTemplateColumnsList
+@docs gridTemplateAreas, gridTemplateAreasMany
+@docs gridTemplateRows, gridTemplateRowsMany
+@docs gridTemplateColumns, gridTemplateColumnsMany
 
 ## Grid value functions
 
@@ -979,12 +980,13 @@ Other values you can use for flex item alignment:
 # Background
 
 @docs backgroundColor
-@docs backgroundAttachment, backgroundAttachmentList
+@docs backgroundAttachment, backgroundAttachmentMany
 @docs local
-@docs backgroundBlendMode, backgroundBlendModeList
+@docs backgroundBlendMode, backgroundBlendModeMany
 @docs multiply, screen, overlay, darken, lighten, colorDodge, colorBurn, hardLight, softLight, difference, exclusion, hue, saturation, color_, luminosity
-@docs backgroundClip, backgroundClipList, backgroundOrigin, backgroundOriginList
-@docs backgroundImage, backgroundImageList
+@docs backgroundClip, backgroundClipMany
+, backgroundOrigin, backgroundOriginMany
+@docs backgroundImage, backgroundImageMany
 @docs backgroundPosition, backgroundPosition2, backgroundPosition3, backgroundPosition4
 @docs backgroundRepeat, backgroundRepeat2
 @docs backgroundSize, backgroundSize2
@@ -1024,7 +1026,7 @@ Other values you can use for flex item alignment:
 
 ## Variable fonts (not to be confused with font variants)
 
-@docs fontVariationSettings, fontVariationSettingsList
+@docs fontVariationSettings, fontVariationSettingsMany
 
 
 ------------------------------------------------------
@@ -1034,7 +1036,7 @@ Other values you can use for flex item alignment:
 
 ## OpenType typographic features
 
-@docs fontFeatureSettings, fontFeatureSettingsList
+@docs fontFeatureSettings, fontFeatureSettingsMany
 @docs featureTag, featureTag2
 
 ## Font Variants
@@ -1063,7 +1065,7 @@ Other values you can use for flex item alignment:
 ### Numerical variants
 
 @docs FontVariantNumericSupported, FontVariantNumeric
-@docs fontVariantNumeric, fontVariantNumericList
+@docs fontVariantNumeric, fontVariantNumericMany
 @docs ordinal, slashedZero, liningNums, oldstyleNums, proportionalNums, tabularNums, diagonalFractions, stackedFractions
     
 ### Emoji variants
@@ -1365,7 +1367,7 @@ Other values you can use for flex item alignment:
 # Shadows
 
 @docs BoxShadowConfig
-@docs boxShadow, boxShadowList, defaultBoxShadow
+@docs boxShadow, boxShadowMany, defaultBoxShadow
 @docs TextShadowConfig
 @docs textShadow, defaultTextShadow
 
@@ -1376,7 +1378,7 @@ Other values you can use for flex item alignment:
 # Transformation
 
 @docs TransformFunction, TransformFunctionSupported
-@docs transform, transformList
+@docs transform, transformMany
 @docs transformOrigin, transformOrigin2
 @docs transformBox, transformStyle
 @docs flat, preserve3d
@@ -1416,14 +1418,14 @@ Other values you can use for flex item alignment:
 
 # Animation
 
-@docs animationName, animationNameList
-@docs animationDuration, animationDurationList
-@docs animationTimingFunction, animationTimingFunctionList
-@docs animationIterationCount, animationIterationCountList
-@docs animationDirection, animationDirectionList
-@docs animationPlayState, animationPlayStateList
-@docs animationDelay, animationDelayList
-@docs animationFillMode, animationFillModeList
+@docs animationName, animationNameMany
+@docs animationDuration, animationDurationMany
+@docs animationTimingFunction, animationTimingFunctionMany
+@docs animationIterationCount, animationIterationCountMany
+@docs animationDirection, animationDirectionMany
+@docs animationPlayState, animationPlayStateMany
+@docs animationDelay, animationDelayMany
+@docs animationFillMode, animationFillModeMany
 @docs EasingFunction, EasingFunctionSupported
 @docs linear, ease, easeIn, easeOut, easeInOut, cubicBezier, stepStart, stepEnd, steps, steps2, jumpStart, jumpEnd, jumpNone, jumpBoth, infinite, reverse, alternate, alternateReverse, running, paused, forwards, backwards
 
@@ -1451,10 +1453,10 @@ Other values you can use for flex item alignment:
 @docs maskBorderOutset, maskBorderOutset2, maskBorderOutset3, maskBorderOutset4
 @docs maskBorderSlice, maskBorderSlice2, maskBorderSlice3, maskBorderSlice4
 @docs maskBorderWidth, maskBorderWidth2, maskBorderWidth3, maskBorderWidth4
-@docs maskClip, maskClipList
+@docs maskClip, maskClipMany
 @docs maskComposite
-@docs maskMode, maskModeList
-@docs maskOrigin, maskOriginList
+@docs maskMode, maskModeMany
+@docs maskOrigin, maskOriginMany
 @docs maskPosition
 @docs maskRepeat, maskRepeat2
 @docs maskSize, maskSize2
@@ -1632,6 +1634,35 @@ valueListToString separator list =
     list
     |> List.map Value.unpack
     |> String.join separator
+
+stringListToStringEnquoted : String -> List String -> String
+stringListToStringEnquoted separator list =
+    list
+    |> List.map enquoteString
+    |> String.join separator
+
+enquoteString : String -> String
+enquoteString str =
+    let
+        escapeChars char rest =
+            rest ++ escapeChar char
+
+        escapeChar char =
+            case char of
+                '\n' ->
+                    "\\A "
+
+                '"' ->
+                    "\\\""
+
+                '\\' ->
+                    "\\\\"
+
+                _ ->
+                    String.fromChar char
+    in
+    "\"" ++ String.foldl escapeChars "" str ++ "\""
+
 
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
@@ -11408,14 +11439,15 @@ gridTemplate (Value value) =
 
 
 {-| The [`grid-template-areas`](https://css-tricks.com/almanac/properties/g/grid-template-areas/)
-property. Use the [`gridTemplateAreasList`](#gridTemplateAreasList) function if you want
-to use a list of strings as a value.
+property. Use the [`gridTemplateAreasMany`](#gridTemplateAreasMany) function if you want
+to use multiple strings as a value.
 
     gridTemplateAreas none
 
     gridTemplateAreas inherit
 
-    gridTemplateAreasList
+    gridTemplateAreasMany
+        "c c b"
         [ "c a b"
         , "c d e"
         ]
@@ -11432,22 +11464,22 @@ gridTemplateAreas (Value val) =
 
 {-| A version of [`gridTemplateAreas`](#gridTemplateAreas) that lets you input a list of strings a value.
 
-    gridTemplateAreasList
-        [ "c a b"
+The first string is the first argument. It's structured in this way to make it impossible for it
+to have no values.
+
+    gridTemplateAreasMany
+        [ "c c b"
+        , "c a b"
         , "c d e"
         ]
 -}
-gridTemplateAreasList :
+gridTemplateAreasMany :
     List String
     -> Style
-gridTemplateAreasList values =
+gridTemplateAreasMany values =
     AppendProperty <|
         "grid-template-areas:"
-        ++
-        ( values
-        |> List.map enquoteString
-        |> String.join " "
-        )
+        ++ stringListToStringEnquoted " " values
 
 
 
@@ -11462,21 +11494,21 @@ gridTemplateAreasList values =
 
     gridTemplateRows none
 
-    gridTemplateRowsList [px 200, fr 1, px 180]
+    gridTemplateRowsMany (px 200) [fr 1, px 180]
 
-    gridTemplateRowsList
-        [ lineNames["line1", "line2"]
-        , px 300
+    gridTemplateRowsMany
+        lineNames["line1", "line2"]
+        [ px 300
         , lineNames["line3"]
         ]
 
-    gridTemplateRowsList
-        [ repeatedTracks (num 4) [px 520]
-        ]
+    gridTemplateRowsMany
+        ( repeatedTracks (num 4) [px 520] )
+        []
 
-    gridTemplateRowsList
-        [ minmax (px 210) maxContent
-        , repeatedTracks autoFill [px 200]
+    gridTemplateRowsMany
+        ( minmax (px 210) maxContent )
+        [ repeatedTracks autoFill [px 200]
         , pct 20
         ]
 
@@ -11502,29 +11534,32 @@ This is an extremely complicated CSS property with a lot of possible variants, a
 much variation to enforce, so while what kinds of types you can put in are enforced,
 the amounts of things you put in and the order in which you do it are not.
 
+The first value in the list is the first argument. It's structured in this way to make it
+impossible for the function to have no values.
+
     gridTemplateRows inherit
 
     gridTemplateRows none
 
-    gridTemplateRowsList [px 200, fr 1, px 180]
+    gridTemplateRowsMany [px 200, fr 1, px 180]
 
-    gridTemplateRowsList
+    gridTemplateRowsMany
         [ lineNames["line1", "line2"]
         , px 300
         , lineNames["line3"]
         ]
 
-    gridTemplateRowsList
-        [ repeatedTracks (num 4) [px 520]
+    gridTemplateRowsMany
+        [ repeatedTracks (num 4) [px 520] 
         ]
 
-    gridTemplateRowsList
-        [ minmax (px 210) maxContent
+    gridTemplateRowsMany
+        [ minmax (px 210) maxContent 
         , repeatedTracks autoFill [px 200]
         , pct 20
         ]
 -}
-gridTemplateRowsList :
+gridTemplateRowsMany :
     List ( Value
         ( LengthSupported
             { pct : Supported
@@ -11537,7 +11572,7 @@ gridTemplateRowsList :
         )
     )
     -> Style
-gridTemplateRowsList values =
+gridTemplateRowsMany values =
     AppendProperty <| "grid-template-rows:" ++ valueListToString " " values
 
 
@@ -11549,21 +11584,21 @@ gridTemplateRowsList values =
 
     gridTemplateColumns none
 
-    gridTemplateColumnsList [px 200, fr 1, px 180]
+    gridTemplateColumnsMany (px 200) [fr 1, px 180]
 
-    gridTemplateColumnsList
-        [ lineNames["line1", "line2"]
-        , px 300
+    gridTemplateColumnsMany
+        lineNames["line1", "line2"]
+        [ px 300
         , lineNames["line3"]
         ]
 
-    gridTemplateColumnsList
-        [ repeatedTracks (num 4) [px 520]
-        ]
+    gridTemplateColumnsMany
+        ( repeatedTracks (num 4) [px 520] )
+        []
 
-    gridTemplateColumnsList
-        [ minmax (px 210) maxContent
-        , repeatedTracks autoFill [px 200]
+    gridTemplateColumnsMany
+        ( minmax (px 210) maxContent )
+        [ repeatedTracks autoFill [px 200]
         , pct 20
         ]
 
@@ -11589,29 +11624,32 @@ This is an extremely complicated CSS property with a lot of possible variants, a
 much variation to enforce, so while what kinds of types you can put in are enforced,
 the amounts of things you put in and the order in which you do it are not.
 
+The first value in the list is the first argument. It's structured in this way to make it
+impossible for the function to have no values.
+
     gridTemplateColumns inherit
 
     gridTemplateColumns none
 
-    gridTemplateColumnsList [px 200, fr 1, px 180]
+    gridTemplateColumnsMany [px 200, fr 1, px 180]
 
-    gridTemplateColumnsList
+    gridTemplateColumnsMany
         [ lineNames["line1", "line2"]
         , px 300
         , lineNames["line3"]
         ]
 
-    gridTemplateColumnsList
+    gridTemplateColumnsMany
         [ repeatedTracks (num 4) [px 520]
         ]
 
-    gridTemplateColumnsList
+    gridTemplateColumnsMany
         [ minmax (px 210) maxContent
         , repeatedTracks autoFill [px 200]
         , pct 20
         ]
 -}
-gridTemplateColumnsList :
+gridTemplateColumnsMany :
     List ( Value
         ( LengthSupported
             { pct : Supported
@@ -11624,7 +11662,7 @@ gridTemplateColumnsList :
         )
     )
     -> Style
-gridTemplateColumnsList values =
+gridTemplateColumnsMany values =
     AppendProperty <| "grid-template-columns:" ++ valueListToString " " values
 
 
@@ -11883,6 +11921,8 @@ backgroundColor (Value val) =
 
     backgroundAttachment local
 
+    backgroundAttachmentMany [ fixed, scroll, fixed ]
+
 See [`backgroundAttachments`](#backgroundAttachments) to set more than one `background-attachment` value.
 
 -}
@@ -11899,12 +11939,12 @@ backgroundAttachment (Value str) =
 
 {-| Sets [`background-attachment`](https://css-tricks.com/almanac/properties/b/background-attachment/).
 
-    backgroundAttachments scroll [ fixed, scroll, fixed ]
+    backgroundAttachmentMany [ fixed, scroll, fixed ]
 
 See [`backgroundAttachment`](#backgroundAttachment) to set a single `background-attachment` value.
 
 -}
-backgroundAttachmentList :
+backgroundAttachmentMany :
     List
         (Value
             { fixed : Supported
@@ -11913,8 +11953,8 @@ backgroundAttachmentList :
             }
         )
     -> Style
-backgroundAttachmentList list =
-    AppendProperty ("background-attachment:" ++ valueListToString "," list)
+backgroundAttachmentMany values =
+    AppendProperty ("background-attachment:" ++ valueListToString "," values)
 
 
 {-| The `local` [`background-attachment` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-attachment#Values)
@@ -11936,7 +11976,9 @@ Note that this takes an argument of [`color_`](#color_), not [`color`](#color)!
 
     backgroundBlendMode colorBurn
 
-See [`backgroundBlendModes`](#backgroundBlendModes) to set more than one `background-blend-mode` value.
+    backgroundBlendModeMany [ darken, color_ ]
+
+See [`backgroundBlendModeMany`](#backgroundBlendModeMany) to set more than one `background-blend-mode` value.
 
 -}
 backgroundBlendMode :
@@ -11967,12 +12009,18 @@ backgroundBlendMode (Value str) =
 
 Note that this takes an argument of [`color_`](#color_), not [`color`](#color)!
 
-    backgroundBlendMode [ darken, color_ ]
+    backgroundBlendMode color_
+
+    backgroundBlendMode darken
+
+    backgroundBlendMode colorBurn
+
+    backgroundBlendModeMany [ darken, color_ ]
 
 See [`backgroundBlendMode`](#backgroundBlendMode) to set a single `background-blend-mode` value.
 
 -}
-backgroundBlendModeList :
+backgroundBlendModeMany :
     List (Value
             { normal : Supported
             , multiply : Supported
@@ -11993,8 +12041,8 @@ backgroundBlendModeList :
             }
         )
     -> Style
-backgroundBlendModeList  values =
-    AppendProperty ("background-blend-mode:" ++ valueListToString "," values)
+backgroundBlendModeMany values =
+    AppendProperty ("background-blend-mode:" ++ valueListToString "," values )
 
 
 {-| The `multiply` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
@@ -12177,12 +12225,12 @@ backgroundClip (Value str) =
 {-| Sets [`background-clip`](https://css-tricks.com/almanac/properties/b/background-clip/).
 Note that this takes an argument of [`text`](#text), not [`color`](#color)!
 
-    backgroundClipList [ text, borderBox, text ]
+    backgroundClipMany text [ borderBox, text ]
 
 See [`backgroundClip`](#backgroundClip) to set a single `background-clip` value.
 
 -}
-backgroundClipList :
+backgroundClipMany :
     List
         (Value
             { borderBox : Supported
@@ -12192,7 +12240,7 @@ backgroundClipList :
             }
         )
     -> Style
-backgroundClipList values =
+backgroundClipMany values =
     AppendProperty ("background-clip:" ++ valueListToString "," values)
 
 
@@ -12222,12 +12270,12 @@ backgroundOrigin (Value str) =
 
 {-| Sets [`background-origin`](https://css-tricks.com/almanac/properties/b/background-origin/).
 
-    backgroundOriginList [ contentBox, borderBox, contentBox ]
+    backgroundOriginMany [ contentBox, borderBox, contentBox ]
 
 See [`backgroundOrigin`](#backgroundOrigin`background-origin` value.
 
 -}
-backgroundOriginList :
+backgroundOriginMany :
     List
         (Value
             { borderBox : Supported
@@ -12236,7 +12284,7 @@ backgroundOriginList :
             }
         )
     -> Style
-backgroundOriginList values =
+backgroundOriginMany values =
     AppendProperty ("background-origin:" ++ valueListToString "," values)
 
 
@@ -12256,17 +12304,17 @@ backgroundImage (Value value) =
 
 {-| Sets [`background-image`](https://css-tricks.com/almanac/properties/b/background-image/) for multiple images.
 
-    backgroundImageList
+    backgroundImageMany
         (linearGradient (stop red) (stop blue))
         [ url "http://www.example.com/chicken.jpg" ]
 
 See also [`backgroundImage`](#backgroundImage) if you need only one.
 
 -}
-backgroundImageList :
+backgroundImageMany :
     List (Value Image)
     -> Style
-backgroundImageList values =
+backgroundImageMany values =
     AppendProperty ("background-image:" ++ valueListToString "," values)
 
 
@@ -12953,30 +13001,6 @@ enquoteIfNotGeneric fontName =
         _ ->
             enquoteString fontName
 
-
-enquoteString : String -> String
-enquoteString str =
-    let
-        escapeChars char rest =
-            rest ++ escapeChar char
-
-        escapeChar char =
-            case char of
-                '\n' ->
-                    "\\A "
-
-                '"' ->
-                    "\\\""
-
-                '\\' ->
-                    "\\\\"
-
-                _ ->
-                    String.fromChar char
-    in
-    "\"" ++ String.foldl escapeChars "" str ++ "\""
-
-
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
@@ -13269,13 +13293,13 @@ weight =
 property.
 
 For controlling aspects of variable fonts.
-Use [`fontVariationSettingsList`](#fontVariationSettingsList) to work with variable font tags.
+Use [`fontVariationSettingsMany`](#fontVariationSettingsMany) to work with variable font tags.
 
     fontVariationSettings normal
 
     fontVariationSettings inherit
 
-    fontVariationSettingsList [ ("XHGT", 0.7) ]
+    fontVariationSettingsMany [ ("XHGT", 0.7) ]
 -}
 fontVariationSettings :
     BaseValue
@@ -13291,15 +13315,15 @@ property.
 
 For using single keywords with this property, use [`fontVariationSettings`](#fontVariationSettings).
 
-    fontVariationSettingsList [ ("XHGT", 0.7) ]
+    fontVariationSettingsMany [ ("XHGT", 0.7) ]
 -}
-fontVariationSettingsList :
+fontVariationSettingsMany :
     List
         ( String
         , Float
         )
     -> Style
-fontVariationSettingsList list =
+fontVariationSettingsMany list =
     AppendProperty <|
         "font-variation-settings:"
         ++
@@ -13348,19 +13372,19 @@ fontFeatureSettings (Value val) =
 {-| Sets [`font-feature-settings`](https://css-tricks.com/almanac/properties/f/font-feature-settings/)
 in a way that lets you add a list of [`featureTag`](#featureTag)s.
 
-    fontFeatureSettingsList featureTag "liga" [ featureTag2 "swsh" 2 ]
+    fontFeatureSettingsMany featureTag "liga" [ featureTag2 "swsh" 2 ]
 
 -}
-fontFeatureSettingsList :
+fontFeatureSettingsMany :
     List (Value { featureTag : Supported })
     -> Style
-fontFeatureSettingsList values =
+fontFeatureSettingsMany values =
     AppendProperty ("font-feature-settings:" ++ valueListToString "," values)
 
 
 {-| Creates a [feature-tag-value](https://developer.mozilla.org/en-US/docs/Web/CSS/font-feature-settings#feature-tag-value)
 for use with [`fontFeatureSettings`](#fontFeatureSettings)
-and [`fontFeatureSettingsList`](#fontFeatureSettingsList)
+and [`fontFeatureSettingsMany`](#fontFeatureSettingsMany)
 
     featureTag "smcp"
 
@@ -13373,7 +13397,7 @@ featureTag =
 {-| Creates a [feature-tag-value](https://developer.mozilla.org/en-US/docs/Web/CSS/font-feature-settings#feature-tag-value)
 with an specific value
 for use with [`fontFeatureSettings`](#fontFeatureSettings)
-and [`fontFeatureSettingsList`](#fontFeatureSettingsList)
+and [`fontFeatureSettingsMany`](#fontFeatureSettingsMany)
 
     featureTag2 "swsh" 2
 
@@ -13916,7 +13940,7 @@ type alias FontVariantNumeric =
 
     fontVariantNumeric ordinal
 
-    fontVariantNumericList [ slashedZero liningNums ]
+    fontVariantNumericMany [ slashedZero liningNums ]
 
 -}
 fontVariantNumeric :
@@ -13937,13 +13961,13 @@ but keep in mind that certain keywords are mutually exclusive with each other.
 
     fontVariantNumeric ordinal
 
-    fontVariantNumericList [ slashedZero liningNums ]
+    fontVariantNumericMany [ slashedZero liningNums ]
 
 -}
-fontVariantNumericList :
+fontVariantNumericMany :
     List (Value (FontVariantNumeric))
     -> Style
-fontVariantNumericList values =
+fontVariantNumericMany values =
     AppendProperty <| "font-variant-numeric:" ++ valueListToString " " values
 
 
@@ -19594,7 +19618,7 @@ boxShadow (Value val) =
     -- "box-shadow: 3px 5px #aabbcc"
     button
         [ css
-            [ boxShadowList
+            [ boxShadowMany
                 [ { defaultBoxShadow
                     | offsetX = px 3
                     , offsetY = px 5
@@ -19606,8 +19630,8 @@ boxShadow (Value val) =
         [ text "Zap!" ]
 
 -}
-boxShadowList : List BoxShadowConfig -> Style
-boxShadowList configs =
+boxShadowMany : List BoxShadowConfig -> Style
+boxShadowMany configs =
     let
         value =
             case configs of
@@ -19858,13 +19882,13 @@ transform (Value val) =
 {-| Sets [`transform`](https://css-tricks.com/almanac/properties/t/transform/)
 with a series of transform-functions.
 
-    transformList [ translate (px 12), scale_ 2, skew (deg 20) ]
+    transformMany [ translate (px 12), scale_ 2, skew (deg 20) ]
 
 -}
-transformList :
+transformMany :
     List (Value TransformFunction)
     -> Style
-transformList values =
+transformMany values =
     AppendProperty ("transform:" ++ valueListToString " " values)
 
 
@@ -20657,10 +20681,10 @@ animationName (Value val) =
 
 {-| The [`animation-name`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-name) property.
 
-    animationNameList [customIdent "pulse"]
+    animationNameMany [customIdent "pulse"]
 
 -}
-animationNameList :
+animationNameMany :
     List
         (Value
             { none : Supported
@@ -20669,7 +20693,7 @@ animationNameList :
             }
         )
     -> Style
-animationNameList values =
+animationNameMany values =
     AppendProperty ("animation-name:" ++ valueListToString "," values)
 
 
@@ -20685,11 +20709,11 @@ animationDuration (Value val) =
 
 {-| The [`animation-duration`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-duration) property.
 
-    animationDurationList [ s 1, ms 300, s 4.5 ]
+    animationDurationMany [ s 1, ms 300, s 4.5 ]
 
 -}
-animationDurationList : List (Value Time) -> Style
-animationDurationList values =
+animationDurationMany : List (Value Time) -> Style
+animationDurationMany values =
     AppendProperty ("animation-duration:" ++ valueListToString "," values)
 
 
@@ -20705,11 +20729,11 @@ animationTimingFunction (Value val) =
 
 {-| The [`animation-timing-function`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-timing-function) property.
 
-    animationTimingFunctionList linear [ cubicBezier 0.42 0 0.38 1, stepEnd ]
+    animationTimingFunctionMany linear [ cubicBezier 0.42 0 0.38 1, stepEnd ]
 
 -}
-animationTimingFunctionList : List (Value EasingFunction) -> Style
-animationTimingFunctionList values =
+animationTimingFunctionMany : List (Value EasingFunction) -> Style
+animationTimingFunctionMany values =
     AppendProperty ("animation-timing-function:" ++ valueListToString "," values)
 
 
@@ -20734,10 +20758,10 @@ animationIterationCount (Value val) =
 
 {-| The [`animation-iteration-count`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-iteration-count) property.
 
-    animationIterationCountList (num 3.5) [ infinte, zero ]
+    animationIterationCountMany (num 3.5) [ infinte, zero ]
 
 -}
-animationIterationCountList :
+animationIterationCountMany :
     List
         (Value
             { infinite : Supported
@@ -20747,7 +20771,7 @@ animationIterationCountList :
             }
         )
     -> Style
-animationIterationCountList values =
+animationIterationCountMany values =
     AppendProperty ("animation-iteration-count:" ++ valueListToString "," values)
 
 
@@ -20770,10 +20794,10 @@ animationDirection (Value val) =
 
 {-| The [`animation-direction`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-direction) property.
 
-    animationDirectionList [ reverse, normal, alternate, alternateReverse ]
+    animationDirectionMany [ reverse, normal, alternate, alternateReverse ]
 
 -}
-animationDirectionList :
+animationDirectionMany :
     List
         (Value
             { normal : Supported
@@ -20783,7 +20807,7 @@ animationDirectionList :
             }
         )
     -> Style
-animationDirectionList values =
+animationDirectionMany values =
     AppendProperty ("animation-direction:" ++ valueListToString "," values)
 
 
@@ -20804,10 +20828,10 @@ animationPlayState (Value val) =
 
 {-| The [`animation-play-state`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-play-state) property.
 
-    animationPlayStateList [ running, paused ]
+    animationPlayStateMany [ running, paused ]
 
 -}
-animationPlayStateList :
+animationPlayStateMany :
     List
         (Value
             { running : Supported
@@ -20815,7 +20839,7 @@ animationPlayStateList :
             }
         )
     -> Style
-animationPlayStateList values =
+animationPlayStateMany values =
     AppendProperty ("animation-play-state:" ++ valueListToString "," values)
 
 
@@ -20831,11 +20855,11 @@ animationDelay (Value val) =
 
 {-| The [`animation-delay`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-delay) property.
 
-    animationDelayList (s 1) [ ms 300, s 4.5 ]
+    animationDelayMany (s 1) [ ms 300, s 4.5 ]
 
 -}
-animationDelayList : List (Value Time) -> Style
-animationDelayList values =
+animationDelayMany : List (Value Time) -> Style
+animationDelayMany values =
     AppendProperty ("animation-delay:" ++ valueListToString "," values)
 
 
@@ -20858,10 +20882,10 @@ animationFillMode (Value val) =
 
 {-| The [`animation-fill-mode`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-fill-mode) property.
 
-    animationFillModeList [ forwards, none, both, backwards ]
+    animationFillModeMany [ forwards, none, both, backwards ]
 
 -}
-animationFillModeList :
+animationFillModeMany :
     List
         (Value
             { none : Supported
@@ -20871,7 +20895,7 @@ animationFillModeList :
             }
         )
     -> Style
-animationFillModeList values =
+animationFillModeMany values =
     AppendProperty ("animation-fill-mode:" ++ valueListToString "," values)
 
 
@@ -21801,7 +21825,7 @@ This does not support non-standard keyword values such as `border`.
 
     maskClip revert
 
-    maskClipList [contentBox, marginBox, noClip]
+    maskClipMany [contentBox, marginBox, noClip]
 
 -}
 maskClip :
@@ -21825,10 +21849,10 @@ property.
 
 This does not support non-standard keyword values such as `border`.
 
-    maskClipList [contentBox, marginBox, noClip]
+    maskClipMany [contentBox, marginBox, noClip]
     
 -}
-maskClipList :
+maskClipMany :
     List
         ( Value
             { contentBox : Supported
@@ -21842,7 +21866,7 @@ maskClipList :
             }
         )
     -> Style
-maskClipList values =
+maskClipMany values =
     AppendProperty <| "mask-clip:" ++ valueListToString "," values
 
 
@@ -21872,7 +21896,7 @@ property.
 
     maskMode alpha
 
-    maskModeList [alpha, luminance, alpha, matchSource]
+    maskModeMany [alpha, luminance, alpha, matchSource]
 -}
 maskMode :
     BaseValue
@@ -21888,9 +21912,9 @@ maskMode (Value val) =
 {-| The multi-argument variant of the [`mask-mode`](https://css-tricks.com/almanac/properties/m/mask-mode/)
 property.
 
-    maskModeList [alpha, luminance, alpha, matchSource]
+    maskModeMany [alpha, luminance, alpha, matchSource]
 -}
-maskModeList :
+maskModeMany :
     List
         ( Value
             { alpha : Supported
@@ -21899,7 +21923,7 @@ maskModeList :
             }
         )
     -> Style
-maskModeList values =
+maskModeMany values =
     AppendProperty <| "mask-mode:" ++ valueListToString "," values
 
 
@@ -21911,7 +21935,7 @@ property.
 
     maskOrigin contentBox
 
-    maskOriginList [paddingBox, borderBox]
+    maskOriginMany [paddingBox, borderBox]
 -}
 maskOrigin :
     BaseValue
@@ -21928,9 +21952,9 @@ maskOrigin (Value val) =
 {-| The multi-argument variant of the [`mask-origin`](https://css-tricks.com/almanac/properties/m/mask-origin/)
 property.
 
-    maskOriginList [paddingBox, borderBox]
+    maskOriginMany [paddingBox, borderBox]
 -}
-maskOriginList :
+maskOriginMany :
     List
         ( Value
             { contentBox : Supported
@@ -21940,7 +21964,7 @@ maskOriginList :
             }
         )
     -> Style
-maskOriginList values =
+maskOriginMany values =
     AppendProperty <| "mask-origin:" ++ valueListToString "," values
 
 
@@ -22014,9 +22038,9 @@ maskRepeat2 (Value valX) (Value valY) =
 -- {-| The multi-argument variant of the [`mask-repeat`](https://developer.mozilla.org/en-US/docs/Web/CSS/mask-repeat)
 -- property.
 
---     maskRepeatList [repeat, Css.round, space]
+--     maskRepeatMany [repeat, Css.round, space]
 -- -}
--- maskRepeatList :
+-- maskRepeatMany :
 --     List
 --         ( Value
 --             { repeat : Supported
@@ -22026,7 +22050,7 @@ maskRepeat2 (Value valX) (Value valY) =
 --             }
 --         )
 --     -> Style
--- maskRepeatList list =
+-- maskRepeatMany list =
 --     AppendProperty <|
 --         "mask-repeat:"
 --         ++
@@ -22094,7 +22118,7 @@ maskSize2 (Value valX) (Value valY) =
 
 -- {-|
 -- -}
--- maskSizeList :
+-- maskSizeMany :
 --     List
 --         ( Value
 --             ( LengthSupported
@@ -22104,7 +22128,7 @@ maskSize2 (Value valX) (Value valY) =
 --             )
 --         )
 --     -> Style
--- maskSizeList list =
+-- maskSizeMany list =
 --     AppendProperty <|
 --         "mask-size:"
 --         ++

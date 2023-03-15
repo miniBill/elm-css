@@ -482,9 +482,9 @@ all =
             , ( featureTag2 "liga" 0, "\"liga\" 0" )
             , ( normal, "normal" )
             ]
-        , testProperty { functionName = "fontFeatureSettingsList", property = "font-feature-settings" }
-            [ ( fontFeatureSettingsList [ featureTag2 "liga" 0, featureTag2 "swsh" 2 ], "\"liga\" 0,\"swsh\" 2" )
-            , ( fontFeatureSettingsList [ featureTag "ss13" ], "\"ss13\"" )
+        , testProperty { functionName = "fontFeatureSettingsMany", property = "font-feature-settings" }
+            [ ( fontFeatureSettingsMany [ featureTag2 "liga" 0, featureTag2 "swsh" 2 ], "\"liga\" 0,\"swsh\" 2" )
+            , ( fontFeatureSettingsMany [ featureTag "ss13" ], "\"ss13\"" )
             ]
         , testProperty1 alignContent
             { functionName = "alignContent", property = "align-content" }
@@ -870,9 +870,9 @@ all =
         , testProperty1 boxShadow
             { functionName = "boxShadow", property = "box-shadow" }
             [ ( none, "none" ) ]
-        , testProperty { functionName = "boxShadowList", property = "box-shadow" }
-            [ ( boxShadowList [], "none" )
-            , ( boxShadowList
+        , testProperty { functionName = "boxShadowMany", property = "box-shadow" }
+            [ ( boxShadowMany [], "none" )
+            , ( boxShadowMany
                     [ { defaultBoxShadow
                         | offsetX = px 1
                         , offsetY = px 2
@@ -880,7 +880,7 @@ all =
                     ]
               , "1px 2px"
               )
-            , ( boxShadowList
+            , ( boxShadowMany
                     [ { defaultBoxShadow
                         | offsetX = px 1
                         , offsetY = px 2
@@ -889,7 +889,7 @@ all =
                     ]
               , "1px 2px #333"
               )
-            , ( boxShadowList
+            , ( boxShadowMany
                     [ { defaultBoxShadow
                         | offsetX = px 1
                         , offsetY = px 2
@@ -898,7 +898,7 @@ all =
                     ]
               , "1px 2px 3px"
               )
-            , ( boxShadowList
+            , ( boxShadowMany
                     [ { defaultBoxShadow
                         | offsetX = px 1
                         , offsetY = px 2
@@ -907,7 +907,7 @@ all =
                     ]
               , "1px 2px 0 3px"
               )
-            , ( boxShadowList
+            , ( boxShadowMany
                     [ { defaultBoxShadow
                         | offsetX = px 2
                         , offsetY = px 3
@@ -916,7 +916,7 @@ all =
                     ]
               , "inset 2px 3px"
               )
-            , ( boxShadowList
+            , ( boxShadowMany
                     [ { defaultBoxShadow
                         | offsetX = px 1
                         , offsetY = px 2
@@ -926,7 +926,7 @@ all =
                     ]
               , "1px 2px 3px #333"
               )
-            , ( boxShadowList
+            , ( boxShadowMany
                     [ { defaultBoxShadow
                         | offsetX = px 2
                         , offsetY = px 3
@@ -936,7 +936,7 @@ all =
                     ]
               , "inset 2px 3px #333"
               )
-            , ( boxShadowList
+            , ( boxShadowMany
                     [ { defaultBoxShadow
                         | offsetX = px 1
                         , offsetY = px 2
@@ -946,7 +946,7 @@ all =
                     ]
               , "1px 2px 3px 4px"
               )
-            , ( boxShadowList
+            , ( boxShadowMany
                     [ { defaultBoxShadow
                         | offsetX = px 2
                         , offsetY = px 3
@@ -956,7 +956,7 @@ all =
                     ]
               , "inset 2px 3px 4px"
               )
-            , ( boxShadowList
+            , ( boxShadowMany
                     [ { defaultBoxShadow
                         | offsetX = px 2
                         , offsetY = px 3
@@ -966,7 +966,7 @@ all =
                     ]
               , "inset 2px 3px 0 4px"
               )
-            , ( boxShadowList
+            , ( boxShadowMany
                     [ { defaultBoxShadow
                         | offsetX = px 1
                         , offsetY = px 2
@@ -977,7 +977,7 @@ all =
                     ]
               , "1px 2px 3px 4px #333"
               )
-            , ( boxShadowList
+            , ( boxShadowMany
                     [ { defaultBoxShadow
                         | offsetX = px 1
                         , offsetY = px 2
@@ -988,7 +988,7 @@ all =
                     ]
               , "inset 1px 2px 3px 4px"
               )
-            , ( boxShadowList
+            , ( boxShadowMany
                     [ { defaultBoxShadow
                         | offsetX = px 2
                         , offsetY = px 3
@@ -999,7 +999,7 @@ all =
                     ]
               , "inset 2px 3px 4px #333"
               )
-            , ( boxShadowList
+            , ( boxShadowMany
                     [ { defaultBoxShadow
                         | offsetX = px 2
                         , offsetY = px 3
@@ -1010,7 +1010,7 @@ all =
                     ]
               , "inset 2px 3px 0 4px #333"
               )
-            , ( boxShadowList
+            , ( boxShadowMany
                     [ { offsetX = px 1
                       , offsetY = px 2
                       , blurRadius = Just <| px 3
@@ -1021,7 +1021,7 @@ all =
                     ]
               , "inset 1px 2px 3px 4px #333"
               )
-            , ( boxShadowList
+            , ( boxShadowMany
                     [ { offsetX = px 1
                       , offsetY = px 2
                       , blurRadius = Just <| px 3
@@ -1148,17 +1148,17 @@ all =
             -- for animationName tests with keyframes, see the Keyframes module
             ]
         , testProperty { functionName = "animationNames", property = "animation-name" }
-            [ ( animationNameList [ customIdent "hello-world", none, string "pulse" ], "hello-world,none,\"pulse\"" )
-            , ( animationNameList [ none , customIdent "pulse" ], "none,pulse" )
-            , ( animationNameList [ string "pulse" ], "\"pulse\"" )
+            [ ( animationNameMany [ customIdent "hello-world", none, string "pulse" ], "hello-world,none,\"pulse\"" )
+            , ( animationNameMany [ none , customIdent "pulse" ], "none,pulse" )
+            , ( animationNameMany [ string "pulse" ], "\"pulse\"" )
             ]
         , testProperty1 animationDuration
             { functionName = "animationDuration", property = "animation-duration" }
             testTime
         , testProperty { functionName = "animationDurations", property = "animation-duration" }
-            [ ( animationDurationList [ (s 1), s 2.5, ms 10.3 ], "1s,2.5s,10.3ms" )
-            , ( animationDurationList [ (ms 310), s 3 ], "310ms,3s" )
-            , ( animationDurationList [ (ms 50) ], "50ms" )
+            [ ( animationDurationMany [ (s 1), s 2.5, ms 10.3 ], "1s,2.5s,10.3ms" )
+            , ( animationDurationMany [ (ms 310), s 3 ], "310ms,3s" )
+            , ( animationDurationMany [ (ms 50) ], "50ms" )
             ]
         , testProperty1 animationTimingFunction
             { functionName = "animationTimingFunction", property = "animation-timing-function" }
@@ -1179,16 +1179,16 @@ all =
             , ( steps2 4 end, "steps(4,end)" )
             ]
         , testProperty { functionName = "animationTimingFunctions", property = "animation-timing-function" }
-            [ ( animationTimingFunctionList [ linear, ease, stepEnd ], "linear,ease,step-end" )
-            , ( animationTimingFunctionList [ ease, steps2 4 end ], "ease,steps(4,end)" )
-            , ( animationTimingFunctionList [ easeIn, cubicBezier 0.3 0 1 1 ], "ease-in,cubic-bezier(0.3,0,1,1)" )
-            , ( animationTimingFunctionList [ easeOut, stepStart, stepEnd, steps 4 ], "ease-out,step-start,step-end,steps(4)" )
-            , ( animationTimingFunctionList [ easeInOut, linear, easeIn, easeOut ], "ease-in-out,linear,ease-in,ease-out" )
-            , ( animationTimingFunctionList [ cubicBezier 0.3 2 0.8 5], "cubic-bezier(0.3,2,0.8,5)" )
-            , ( animationTimingFunctionList [ stepStart, steps2 4 start, steps2 3 jumpBoth ], "step-start,steps(4,start),steps(3,jump-both)" )
-            , ( animationTimingFunctionList [ stepEnd, steps 5 ], "step-end,steps(5)" )
-            , ( animationTimingFunctionList [ steps 4, linear, steps2 5 jumpStart, steps2 2 jumpEnd, steps2 10 jumpNone ], "steps(4),linear,steps(5,jump-start),steps(2,jump-end),steps(10,jump-none)" )
-            , ( animationTimingFunctionList [ steps2 4 jumpStart ], "steps(4,jump-start)" )
+            [ ( animationTimingFunctionMany [ linear, ease, stepEnd ], "linear,ease,step-end" )
+            , ( animationTimingFunctionMany [ ease, steps2 4 end ], "ease,steps(4,end)" )
+            , ( animationTimingFunctionMany [ easeIn, cubicBezier 0.3 0 1 1 ], "ease-in,cubic-bezier(0.3,0,1,1)" )
+            , ( animationTimingFunctionMany [ easeOut, stepStart, stepEnd, steps 4 ], "ease-out,step-start,step-end,steps(4)" )
+            , ( animationTimingFunctionMany [ easeInOut, linear, easeIn, easeOut ], "ease-in-out,linear,ease-in,ease-out" )
+            , ( animationTimingFunctionMany [ cubicBezier 0.3 2 0.8 5], "cubic-bezier(0.3,2,0.8,5)" )
+            , ( animationTimingFunctionMany [ stepStart, steps2 4 start, steps2 3 jumpBoth ], "step-start,steps(4,start),steps(3,jump-both)" )
+            , ( animationTimingFunctionMany [ stepEnd, steps 5 ], "step-end,steps(5)" )
+            , ( animationTimingFunctionMany [ steps 4, linear, steps2 5 jumpStart, steps2 2 jumpEnd, steps2 10 jumpNone ], "steps(4),linear,steps(5,jump-start),steps(2,jump-end),steps(10,jump-none)" )
+            , ( animationTimingFunctionMany [ steps2 4 jumpStart ], "steps(4,jump-start)" )
             ]
         , testProperty1 animationIterationCount
             { functionName = "animationIterationCount", property = "animation-iteration-count" }
@@ -1199,10 +1199,10 @@ all =
             , ( calc (num 1) (dividedBy (num 3)), "calc(1 / 3)" )
             ]
         , testProperty { functionName = "animationIterationCounts", property = "animation-iteration-count" }
-            [ ( animationIterationCountList [ infinite, num 3, zero ], "infinite,3,0" )
-            , ( animationIterationCountList [ zero, infinite ], "0,infinite" )
-            , ( animationIterationCountList [ (num 2), calc (num 4) (times (num 3)) ], "2,calc(4 * 3)" )
-            , ( animationIterationCountList [ calc (num 3) (plus <| num 4) ], "calc(3 + 4)" )
+            [ ( animationIterationCountMany [ infinite, num 3, zero ], "infinite,3,0" )
+            , ( animationIterationCountMany [ zero, infinite ], "0,infinite" )
+            , ( animationIterationCountMany [ (num 2), calc (num 4) (times (num 3)) ], "2,calc(4 * 3)" )
+            , ( animationIterationCountMany [ calc (num 3) (plus <| num 4) ], "calc(3 + 4)" )
             ]
         , testProperty1 animationDirection
             { functionName = "animationDirection", property = "animation-direction" }
@@ -1212,10 +1212,10 @@ all =
             , ( alternateReverse, "alternate-reverse" )
             ]
         , testProperty { functionName = "animationDirections", property = "animation-direction" }
-            [ ( animationDirectionList [ normal, alternate, reverse ], "normal,alternate,reverse" )
-            , ( animationDirectionList [ reverse, normal, normal ], "reverse,normal,normal" )
-            , ( animationDirectionList [ alternate, alternateReverse ], "alternate,alternate-reverse" )
-            , ( animationDirectionList [ alternateReverse ], "alternate-reverse" )
+            [ ( animationDirectionMany [ normal, alternate, reverse ], "normal,alternate,reverse" )
+            , ( animationDirectionMany [ reverse, normal, normal ], "reverse,normal,normal" )
+            , ( animationDirectionMany [ alternate, alternateReverse ], "alternate,alternate-reverse" )
+            , ( animationDirectionMany [ alternateReverse ], "alternate-reverse" )
             ]
         , testProperty1 animationPlayState
             { functionName = "animationPlayState", property = "animation-play-state" }
@@ -1224,17 +1224,17 @@ all =
             ]
         , testProperty
             { functionName = "animationPlayStates", property = "animation-play-state" }
-            [ ( animationPlayStateList [ running, running, running, paused, running ], "running,running,running,paused,running" )
-            , ( animationPlayStateList [ paused, running ], "paused,running" )
-            , ( animationPlayStateList [ paused ], "paused" )
+            [ ( animationPlayStateMany [ running, running, running, paused, running ], "running,running,running,paused,running" )
+            , ( animationPlayStateMany [ paused, running ], "paused,running" )
+            , ( animationPlayStateMany [ paused ], "paused" )
             ]
         , testProperty1 animationDelay
             { functionName = "animationDelay", property = "animation-delay" }
             testTime
         , testProperty { functionName = "animationDelays", property = "animation-delay" }
-            [ ( animationDelayList [ s 1, s 2.5, ms 10.3 ], "1s,2.5s,10.3ms" )
-            , ( animationDelayList [ ms 310, s 3 ], "310ms,3s" )
-            , ( animationDelayList [ ms 50 ], "50ms" )
+            [ ( animationDelayMany [ s 1, s 2.5, ms 10.3 ], "1s,2.5s,10.3ms" )
+            , ( animationDelayMany [ ms 310, s 3 ], "310ms,3s" )
+            , ( animationDelayMany [ ms 50 ], "50ms" )
             ]
         , testProperty1 animationFillMode
             { functionName = "animationFillMode", property = "animation-fill-mode" }
@@ -1244,10 +1244,10 @@ all =
             , ( both, "both" )
             ]
         , testProperty { functionName = "animationFillModes", property = "animation-fill-mode" }
-            [ ( animationFillModeList [ none, forwards ], "none,forwards" )
-            , ( animationFillModeList [ forwards, backwards, both ], "forwards,backwards,both" )
-            , ( animationFillModeList [ backwards, none ], "backwards,none" )
-            , ( animationFillModeList [ both ], "both" )
+            [ ( animationFillModeMany [ none, forwards ], "none,forwards" )
+            , ( animationFillModeMany [ forwards, backwards, both ], "forwards,backwards,both" )
+            , ( animationFillModeMany [ backwards, none ], "backwards,none" )
+            , ( animationFillModeMany [ both ], "both" )
             ]
         ]
 
