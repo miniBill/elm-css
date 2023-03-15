@@ -985,7 +985,7 @@ Other values you can use for flex item alignment:
 @docs backgroundBlendMode, backgroundBlendModeMany
 @docs multiply, screen, overlay, darken, lighten, colorDodge, colorBurn, hardLight, softLight, difference, exclusion, hue, saturation, color_, luminosity
 @docs backgroundClip, backgroundClipMany
-, backgroundOrigin, backgroundOriginMany
+@docs backgroundOrigin, backgroundOriginMany
 @docs backgroundImage, backgroundImageMany
 @docs backgroundPosition, backgroundPosition2, backgroundPosition3, backgroundPosition4
 @docs backgroundRepeat, backgroundRepeat2
