@@ -1631,15 +1631,21 @@ makeImportant str =
 -}
 valueListToString : String -> List (Value a) -> String
 valueListToString separator list =
-    list
-    |> List.map Value.unpack
-    |> String.join separator
+    if List.length list >= 1 then
+        list
+        |> List.map Value.unpack
+        |> String.join separator
+    else
+        Value.unpack unset
 
 stringListToStringEnquoted : String -> List String -> String
 stringListToStringEnquoted separator list =
-    list
-    |> List.map enquoteString
-    |> String.join separator
+    if List.length list >= 1 then
+        list
+        |> List.map enquoteString
+        |> String.join separator
+    else
+        Value.unpack unset
 
 enquoteString : String -> String
 enquoteString str =
@@ -11464,28 +11470,23 @@ gridTemplateAreas (Value val) =
 
 {-| A version of [`gridTemplateAreas`](#gridTemplateAreas) that lets you input a list of strings a value.
 
-The first string is the first argument. It's structured in this way to make it impossible for it
-to have no values.
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
 
     gridTemplateAreasMany
         [ "c c b"
         , "c a b"
         , "c d e"
         ]
+
+    gridTemplateAreasMany [] -- grid-template-areas: unset;
 -}
 gridTemplateAreasMany :
     List String
     -> Style
 gridTemplateAreasMany values =
-    AppendProperty <|
-        "grid-template-areas:"
-        ++ stringListToStringEnquoted " " values
-
-
-
-
-
-
+        AppendProperty <|"grid-template-areas:" ++ stringListToStringEnquoted " " values
+            
 
 {-| A single-argument version of the
 [`grid-template-rows`](https://css-tricks.com/almanac/properties/g/grid-template-rows/) property.
@@ -11534,8 +11535,8 @@ This is an extremely complicated CSS property with a lot of possible variants, a
 much variation to enforce, so while what kinds of types you can put in are enforced,
 the amounts of things you put in and the order in which you do it are not.
 
-The first value in the list is the first argument. It's structured in this way to make it
-impossible for the function to have no values.
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
 
     gridTemplateRows inherit
 
@@ -11558,6 +11559,8 @@ impossible for the function to have no values.
         , repeatedTracks autoFill [px 200]
         , pct 20
         ]
+
+    gridTemplateRowsMany [] -- grid-template-rows: unset;
 -}
 gridTemplateRowsMany :
     List ( Value
@@ -11602,6 +11605,7 @@ gridTemplateRowsMany values =
         , pct 20
         ]
 
+    gridTemplateColumnsMany [] -Supported- grid-template-columns: unset;
 -}
 
 gridTemplateColumns :
@@ -11624,8 +11628,8 @@ This is an extremely complicated CSS property with a lot of possible variants, a
 much variation to enforce, so while what kinds of types you can put in are enforced,
 the amounts of things you put in and the order in which you do it are not.
 
-The first value in the list is the first argument. It's structured in this way to make it
-impossible for the function to have no values.
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
 
     gridTemplateColumns inherit
 
@@ -11648,6 +11652,8 @@ impossible for the function to have no values.
         , repeatedTracks autoFill [px 200]
         , pct 20
         ]
+    
+    gridTemplateColumnsMany [] -- grid-template-columns: unset;
 -}
 gridTemplateColumnsMany :
     List ( Value
@@ -11923,7 +11929,9 @@ backgroundColor (Value val) =
 
     backgroundAttachmentMany [ fixed, scroll, fixed ]
 
-See [`backgroundAttachments`](#backgroundAttachments) to set more than one `background-attachment` value.
+    backgroundAttachmentMany [ fixed, scroll, fixed ]
+
+    backgroundAttachmentMany [] -- background-attachment: unset;
 
 -}
 backgroundAttachment :
@@ -11939,9 +11947,16 @@ backgroundAttachment (Value str) =
 
 {-| Sets [`background-attachment`](https://css-tricks.com/almanac/properties/b/background-attachment/).
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
+    backgroundAttachment local
+
     backgroundAttachmentMany [ fixed, scroll, fixed ]
 
-See [`backgroundAttachment`](#backgroundAttachment) to set a single `background-attachment` value.
+    backgroundAttachmentMany [ fixed, scroll, fixed ]
+
+    backgroundAttachmentMany [] -- background-attachment: unset;
 
 -}
 backgroundAttachmentMany :
@@ -11978,7 +11993,7 @@ Note that this takes an argument of [`color_`](#color_), not [`color`](#color)!
 
     backgroundBlendModeMany [ darken, color_ ]
 
-See [`backgroundBlendModeMany`](#backgroundBlendModeMany) to set more than one `background-blend-mode` value.
+    backgroundBlendModeMany [] -- background-blend-mode: unset;
 
 -}
 backgroundBlendMode :
@@ -12009,6 +12024,9 @@ backgroundBlendMode (Value str) =
 
 Note that this takes an argument of [`color_`](#color_), not [`color`](#color)!
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
     backgroundBlendMode color_
 
     backgroundBlendMode darken
@@ -12017,7 +12035,8 @@ Note that this takes an argument of [`color_`](#color_), not [`color`](#color)!
 
     backgroundBlendModeMany [ darken, color_ ]
 
-See [`backgroundBlendMode`](#backgroundBlendMode) to set a single `background-blend-mode` value.
+    backgroundBlendModeMany [] -- background-blend-mode: unset;
+    
 
 -}
 backgroundBlendModeMany :
@@ -12207,7 +12226,9 @@ Note that this takes an argument of [`text`](#text), not [`color`](#color)!
 
     backgroundClip contentBox
 
-See [`backgroundClips`](#backgroundClips) to set more than one `background-clip` value.
+    backgroundClipMany [ text, borderBox, text ]
+
+    backgroundClipMany [] -- background-clip: unset;
 
 -}
 backgroundClip :
@@ -12225,9 +12246,18 @@ backgroundClip (Value str) =
 {-| Sets [`background-clip`](https://css-tricks.com/almanac/properties/b/background-clip/).
 Note that this takes an argument of [`text`](#text), not [`color`](#color)!
 
-    backgroundClipMany text [ borderBox, text ]
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
 
-See [`backgroundClip`](#backgroundClip) to set a single `background-clip` value.
+    backgroundClip text
+
+    backgroundClip paddingBox
+
+    backgroundClip contentBox
+
+    backgroundClipMany [ text, borderBox, text ]
+
+    backgroundClipMany [] -- background-clip: unset;
 
 -}
 backgroundClipMany :
@@ -12253,8 +12283,10 @@ backgroundClipMany values =
     backgroundOrigin paddingBox
 
     backgroundOrigin contentBox
+    
+    backgroundOriginMany [ contentBox, borderBox, contentBox ]
 
-See [`backgroundOrigins`](#backgroundOrigins) to set more than one `background-origin` value.
+    backgroundOriginMany [] -- background-origin: unset;
 
 -}
 backgroundOrigin :
@@ -12270,9 +12302,16 @@ backgroundOrigin (Value str) =
 
 {-| Sets [`background-origin`](https://css-tricks.com/almanac/properties/b/background-origin/).
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
+    backgroundOrigin paddingBox
+
+    backgroundOrigin contentBox
+
     backgroundOriginMany [ contentBox, borderBox, contentBox ]
 
-See [`backgroundOrigin`](#backgroundOrigin`background-origin` value.
+    backgroundOriginMany [] -- background-origin: unset;
 
 -}
 backgroundOriginMany :
@@ -12304,9 +12343,14 @@ backgroundImage (Value value) =
 
 {-| Sets [`background-image`](https://css-tricks.com/almanac/properties/b/background-image/) for multiple images.
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
     backgroundImageMany
         (linearGradient (stop red) (stop blue))
         [ url "http://www.example.com/chicken.jpg" ]
+
+    backgroundImageMany [] -- background-image: unset;
 
 See also [`backgroundImage`](#backgroundImage) if you need only one.
 
@@ -13313,9 +13357,14 @@ fontVariationSettings (Value val) =
 {-| The multi-argument variant of the [`font-variation-settings`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variation-settings)
 property.
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
 For using single keywords with this property, use [`fontVariationSettings`](#fontVariationSettings).
 
     fontVariationSettingsMany [ ("XHGT", 0.7) ]
+
+    fontVariationSettingsMany [] -- font-variation-settings: unset;
 -}
 fontVariationSettingsMany :
     List
@@ -13372,7 +13421,12 @@ fontFeatureSettings (Value val) =
 {-| Sets [`font-feature-settings`](https://css-tricks.com/almanac/properties/f/font-feature-settings/)
 in a way that lets you add a list of [`featureTag`](#featureTag)s.
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
     fontFeatureSettingsMany featureTag "liga" [ featureTag2 "swsh" 2 ]
+
+    fontFeatureSettingsMany [] -- font-feature-settings: unset;
 
 -}
 fontFeatureSettingsMany :
@@ -13959,9 +14013,14 @@ fontVariantNumeric (Value str) =
 This list-based version lets you add multiple numeric font variant keywords,
 but keep in mind that certain keywords are mutually exclusive with each other.
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
     fontVariantNumeric ordinal
 
     fontVariantNumericMany [ slashedZero liningNums ]
+
+    fontVariantNumericMany [] -- font-variant-numeric: unset;
 
 -}
 fontVariantNumericMany :
@@ -19613,7 +19672,10 @@ boxShadow (Value val) =
 
 {-| Sets [`box-shadow`](https://css-tricks.com/almanac/properties/b/box-shadow/).
 
-    boxShadows [] -- "box-shadow: none"
+If you give an empty list, the value will be `none`. This is to make it impossible for it
+to have no values in the output.
+
+    boxShadowMany [] -- "box-shadow: none"
 
     -- "box-shadow: 3px 5px #aabbcc"
     button
@@ -19882,7 +19944,12 @@ transform (Value val) =
 {-| Sets [`transform`](https://css-tricks.com/almanac/properties/t/transform/)
 with a series of transform-functions.
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
     transformMany [ translate (px 12), scale_ 2, skew (deg 20) ]
+
+    transformMany [] -- transform: unset;
 
 -}
 transformMany :
@@ -20681,8 +20748,12 @@ animationName (Value val) =
 
 {-| The [`animation-name`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-name) property.
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
     animationNameMany [customIdent "pulse"]
 
+    animationNameMany [] -- animation-name: unset;
 -}
 animationNameMany :
     List
@@ -20709,7 +20780,12 @@ animationDuration (Value val) =
 
 {-| The [`animation-duration`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-duration) property.
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
     animationDurationMany [ s 1, ms 300, s 4.5 ]
+
+    animationDurationMany [] -- animation-duration: unset;
 
 -}
 animationDurationMany : List (Value Time) -> Style
@@ -20729,8 +20805,12 @@ animationTimingFunction (Value val) =
 
 {-| The [`animation-timing-function`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-timing-function) property.
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
     animationTimingFunctionMany linear [ cubicBezier 0.42 0 0.38 1, stepEnd ]
 
+    animationTimingFunctionMany [] -- animation-timing-function: unset;
 -}
 animationTimingFunctionMany : List (Value EasingFunction) -> Style
 animationTimingFunctionMany values =
@@ -20758,8 +20838,12 @@ animationIterationCount (Value val) =
 
 {-| The [`animation-iteration-count`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-iteration-count) property.
 
-    animationIterationCountMany (num 3.5) [ infinte, zero ]
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
 
+    animationIterationCountMany [num 3.5, infinte, zero ]
+
+    animationIterationCountMany [] -- animation-iteration-count: unset;
 -}
 animationIterationCountMany :
     List
@@ -20794,8 +20878,12 @@ animationDirection (Value val) =
 
 {-| The [`animation-direction`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-direction) property.
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
     animationDirectionMany [ reverse, normal, alternate, alternateReverse ]
 
+    animationDirectionMany [] -- animation-direction: unset;
 -}
 animationDirectionMany :
     List
@@ -20828,8 +20916,12 @@ animationPlayState (Value val) =
 
 {-| The [`animation-play-state`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-play-state) property.
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
     animationPlayStateMany [ running, paused ]
 
+    animationPlayStateMany [] -- animation-play-state: unset;
 -}
 animationPlayStateMany :
     List
@@ -20855,8 +20947,12 @@ animationDelay (Value val) =
 
 {-| The [`animation-delay`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-delay) property.
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
     animationDelayMany (s 1) [ ms 300, s 4.5 ]
 
+    animationDelayMany [] -- animation-delay: unset;
 -}
 animationDelayMany : List (Value Time) -> Style
 animationDelayMany values =
@@ -20882,8 +20978,12 @@ animationFillMode (Value val) =
 
 {-| The [`animation-fill-mode`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-fill-mode) property.
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
     animationFillModeMany [ forwards, none, both, backwards ]
 
+    animationFillModeMany [] -- animation-fill-mode: unset;
 -}
 animationFillModeMany :
     List
@@ -21849,8 +21949,12 @@ property.
 
 This does not support non-standard keyword values such as `border`.
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
     maskClipMany [contentBox, marginBox, noClip]
     
+    maskClipMany [] -- mask-clip: unset;
 -}
 maskClipMany :
     List
@@ -21912,7 +22016,12 @@ maskMode (Value val) =
 {-| The multi-argument variant of the [`mask-mode`](https://css-tricks.com/almanac/properties/m/mask-mode/)
 property.
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
     maskModeMany [alpha, luminance, alpha, matchSource]
+
+    maskModeMany [] -- mask-mode: unset;
 -}
 maskModeMany :
     List
@@ -21952,7 +22061,12 @@ maskOrigin (Value val) =
 {-| The multi-argument variant of the [`mask-origin`](https://css-tricks.com/almanac/properties/m/mask-origin/)
 property.
 
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
     maskOriginMany [paddingBox, borderBox]
+
+    maskOriginMany [] -- mask-origin: unset;
 -}
 maskOriginMany :
     List
