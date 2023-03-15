@@ -198,7 +198,7 @@ module Css exposing
     , gridTemplateRows, gridTemplateRowsList
     , gridTemplateColumns, gridTemplateColumnsList
     --
-    , lineNames, repeatedTrackList, autoFill, autoFit
+    , lineNames, repeatedTracks, autoFill, autoFit
     , dense
 
     -- gaps
@@ -206,11 +206,11 @@ module Css exposing
 
     -- backgrounds
     , backgroundColor
-    , backgroundAttachment, backgroundAttachments, local
-    , backgroundBlendMode, backgroundBlendModes
+    , backgroundAttachment, backgroundAttachmentList, local
+    , backgroundBlendMode, backgroundBlendModeList
     , multiply, screen, overlay, darken, lighten, colorDodge, colorBurn, hardLight, softLight, difference, exclusion, hue, saturation, color_, luminosity
-    , backgroundClip, backgroundClips, backgroundOrigin, backgroundOrigins
-    , backgroundImage, backgroundImages
+    , backgroundClip, backgroundClipList, backgroundOrigin, backgroundOriginList
+    , backgroundImage, backgroundImageList
     , backgroundPosition, backgroundPosition2, backgroundPosition3, backgroundPosition4
     , backgroundRepeat, backgroundRepeat2
     , backgroundSize, backgroundSize2
@@ -414,13 +414,13 @@ module Css exposing
 
     -- shadows
     , BoxShadowConfig
-    , boxShadow, boxShadows, defaultBoxShadow
+    , boxShadow, boxShadowList, defaultBoxShadow
     , TextShadowConfig
     , textShadow, defaultTextShadow
     
     -- transformations and perspective
     , TransformFunction, TransformFunctionSupported
-    , transform, transforms
+    , transform, transformList
     , transformOrigin, transformOrigin2
     , transformBox, transformStyle
     , flat, preserve3d
@@ -434,14 +434,14 @@ module Css exposing
     , backfaceVisibility
     
     -- animation
-    , animationName, animationNames
-    , animationDuration, animationDurations
-    , animationTimingFunction, animationTimingFunctions
-    , animationIterationCount, animationIterationCounts
-    , animationDirection, animationDirections
-    , animationPlayState, animationPlayStates
-    , animationDelay, animationDelays
-    , animationFillMode, animationFillModes
+    , animationName, animationNameList
+    , animationDuration, animationDurationList
+    , animationTimingFunction, animationTimingFunctionList
+    , animationIterationCount, animationIterationCountList
+    , animationDirection, animationDirectionList
+    , animationPlayState, animationPlayStateList
+    , animationDelay, animationDelayList
+    , animationFillMode, animationFillModeList
     , EasingFunction, EasingFunctionSupported
     , linear, ease, easeIn, easeOut, easeInOut, cubicBezier, stepStart, stepEnd, steps, steps2, jumpStart, jumpEnd, jumpNone, jumpBoth, infinite, reverse, alternate, alternateReverse, running, paused, forwards, backwards
 
@@ -961,7 +961,7 @@ Other values you can use for flex item alignment:
 
 ## Grid value functions
 
-@docs lineNames, repeatedTrackList, autoFill, autoFit
+@docs lineNames, repeatedTracks, autoFill, autoFit
 @docs dense
 
 
@@ -979,12 +979,12 @@ Other values you can use for flex item alignment:
 # Background
 
 @docs backgroundColor
-@docs backgroundAttachment, backgroundAttachments
+@docs backgroundAttachment, backgroundAttachmentList
 @docs local
-@docs backgroundBlendMode, backgroundBlendModes
+@docs backgroundBlendMode, backgroundBlendModeList
 @docs multiply, screen, overlay, darken, lighten, colorDodge, colorBurn, hardLight, softLight, difference, exclusion, hue, saturation, color_, luminosity
-@docs backgroundClip, backgroundClips, backgroundOrigin, backgroundOrigins
-@docs backgroundImage, backgroundImages
+@docs backgroundClip, backgroundClipList, backgroundOrigin, backgroundOriginList
+@docs backgroundImage, backgroundImageList
 @docs backgroundPosition, backgroundPosition2, backgroundPosition3, backgroundPosition4
 @docs backgroundRepeat, backgroundRepeat2
 @docs backgroundSize, backgroundSize2
@@ -1365,7 +1365,7 @@ Other values you can use for flex item alignment:
 # Shadows
 
 @docs BoxShadowConfig
-@docs boxShadow, boxShadows, defaultBoxShadow
+@docs boxShadow, boxShadowList, defaultBoxShadow
 @docs TextShadowConfig
 @docs textShadow, defaultTextShadow
 
@@ -1376,7 +1376,7 @@ Other values you can use for flex item alignment:
 # Transformation
 
 @docs TransformFunction, TransformFunctionSupported
-@docs transform, transforms
+@docs transform, transformList
 @docs transformOrigin, transformOrigin2
 @docs transformBox, transformStyle
 @docs flat, preserve3d
@@ -1416,14 +1416,14 @@ Other values you can use for flex item alignment:
 
 # Animation
 
-@docs animationName, animationNames
-@docs animationDuration, animationDurations
-@docs animationTimingFunction, animationTimingFunctions
-@docs animationIterationCount, animationIterationCounts
-@docs animationDirection, animationDirections
-@docs animationPlayState, animationPlayStates
-@docs animationDelay, animationDelays
-@docs animationFillMode, animationFillModes
+@docs animationName, animationNameList
+@docs animationDuration, animationDurationList
+@docs animationTimingFunction, animationTimingFunctionList
+@docs animationIterationCount, animationIterationCountList
+@docs animationDirection, animationDirectionList
+@docs animationPlayState, animationPlayStateList
+@docs animationDelay, animationDelayList
+@docs animationFillMode, animationFillModeList
 @docs EasingFunction, EasingFunctionSupported
 @docs linear, ease, easeIn, easeOut, easeInOut, cubicBezier, stepStart, stepEnd, steps, steps2, jumpStart, jumpEnd, jumpNone, jumpBoth, infinite, reverse, alternate, alternateReverse, running, paused, forwards, backwards
 
@@ -1625,14 +1625,13 @@ makeImportant str =
         str ++ " !important"
 
 
-{-| Named after the hash mark in the CSS specification [CSS-VALUES-3].
+{-| Helper function to concatenate a list of values together with a single separator.
 -}
-hashListToString : Value a -> List (Value a) -> String
-hashListToString head rest =
-    (head :: rest)
-        |> List.map Value.unpack
-        |> String.join ","
-
+valueListToString : String -> List (Value a) -> String
+valueListToString separator list =
+    list
+    |> List.map Value.unpack
+    |> String.join separator
 
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
@@ -11441,11 +11440,11 @@ gridTemplateAreas (Value val) =
 gridTemplateAreasList :
     List String
     -> Style
-gridTemplateAreasList listStr =
+gridTemplateAreasList values =
     AppendProperty <|
         "grid-template-areas:"
         ++
-        ( listStr
+        ( values
         |> List.map enquoteString
         |> String.join " "
         )
@@ -11472,12 +11471,12 @@ gridTemplateAreasList listStr =
         ]
 
     gridTemplateRowsList
-        [ repeatedTrackList (num 4) [px 520]
+        [ repeatedTracks (num 4) [px 520]
         ]
 
     gridTemplateRowsList
         [ minmax (px 210) maxContent
-        , repeatedTrackList autoFill [px 200]
+        , repeatedTracks autoFill [px 200]
         , pct 20
         ]
 
@@ -11489,7 +11488,7 @@ gridTemplateRows :
         , auto : Supported
         , minmax : Supported
         , fitContentTo : Supported
-        , repeatedTrackList : Supported
+        , repeatedTracks : Supported
         }
     -> Style
 gridTemplateRows (Value val) =
@@ -11516,12 +11515,12 @@ the amounts of things you put in and the order in which you do it are not.
         ]
 
     gridTemplateRowsList
-        [ repeatedTrackList (num 4) [px 520]
+        [ repeatedTracks (num 4) [px 520]
         ]
 
     gridTemplateRowsList
         [ minmax (px 210) maxContent
-        , repeatedTrackList autoFill [px 200]
+        , repeatedTracks autoFill [px 200]
         , pct 20
         ]
 -}
@@ -11533,13 +11532,13 @@ gridTemplateRowsList :
             , minmax : Supported
             , fitContentTo : Supported
             , lineNames : Supported
-            , repeatedTrackList : Supported
+            , repeatedTracks : Supported
             }
         )
     )
     -> Style
-gridTemplateRowsList list =
-    AppendProperty <| "grid-template-rows:" ++ (String.join " " <| List.map Value.unpack list)
+gridTemplateRowsList values =
+    AppendProperty <| "grid-template-rows:" ++ valueListToString " " values
 
 
 
@@ -11559,12 +11558,12 @@ gridTemplateRowsList list =
         ]
 
     gridTemplateColumnsList
-        [ repeatedTrackList (num 4) [px 520]
+        [ repeatedTracks (num 4) [px 520]
         ]
 
     gridTemplateColumnsList
         [ minmax (px 210) maxContent
-        , repeatedTrackList autoFill [px 200]
+        , repeatedTracks autoFill [px 200]
         , pct 20
         ]
 
@@ -11576,7 +11575,7 @@ gridTemplateColumns :
         , auto : Supported
         , minmax : Supported
         , fitContentTo : Supported
-        , repeatedTrackList : Supported
+        , repeatedTracks : Supported
         }
     -> Style
 gridTemplateColumns (Value val) =
@@ -11603,12 +11602,12 @@ the amounts of things you put in and the order in which you do it are not.
         ]
 
     gridTemplateColumnsList
-        [ repeatedTrackList (num 4) [px 520]
+        [ repeatedTracks (num 4) [px 520]
         ]
 
     gridTemplateColumnsList
         [ minmax (px 210) maxContent
-        , repeatedTrackList autoFill [px 200]
+        , repeatedTracks autoFill [px 200]
         , pct 20
         ]
 -}
@@ -11620,13 +11619,13 @@ gridTemplateColumnsList :
             , minmax : Supported
             , fitContentTo : Supported
             , lineNames : Supported
-            , repeatedTrackList : Supported
+            , repeatedTracks : Supported
             }
         )
     )
     -> Style
-gridTemplateColumnsList list =
-    AppendProperty <| "grid-template-columns:" ++ (String.join " " <| List.map Value.unpack list)
+gridTemplateColumnsList values =
+    AppendProperty <| "grid-template-columns:" ++ valueListToString " " values
 
 
 
@@ -11660,7 +11659,7 @@ You must specify a `num`, `autoFit`, or `autoFill` before specifying the track
 list pattern you want to repeat.
 
     gridTemplateRows <|
-        repeatedTrackList (num 4)
+        repeatedTracks (num 4)
             [ px 10
             , lineNames["row-start"]
             , px 250
@@ -11672,7 +11671,7 @@ Note: This had to be named differently from the original function because
 completely different.
 
 -}
-repeatedTrackList : 
+repeatedTracks : 
     Value
         { num : Supported
         , autoFill : Supported
@@ -11687,21 +11686,21 @@ repeatedTrackList :
             }
         )
     )
-    -> Value { provides | repeatedTrackList : Supported }
-repeatedTrackList (Value firstArg) trackList =
-    Value <| "repeat(" ++ firstArg ++ ", " ++ (String.join " " <| List.map Value.unpack trackList) ++ ")"
+    -> Value { provides | repeatedTracks : Supported }
+repeatedTracks (Value firstArg) trackList =
+    Value <| "repeat(" ++ firstArg ++ ", " ++ valueListToString " " trackList ++ ")"
 
 
 {-| The `auto-fill` value [used in the `repeat()` function](https://developer.mozilla.org/en-US/docs/Web/CSS/repeat#values).
 
     gridTemplateColumnsList
         [ minmax (px 210) maxContent
-        , repeatedTrackList autoFill [px 200]
+        , repeatedTracks autoFill [px 200]
         , pct 20
         ]
 
 (Note: due to a naming conflict, the `repeat()` function is
-called [`repeatedTrackList`](#repeatedTrackList) in this package.)
+called [`repeatedTracks`](#repeatedTracks) in this package.)
 -}
 autoFill : Value { provides | autoFill : Supported }
 autoFill =
@@ -11712,12 +11711,12 @@ autoFill =
 
     gridTemplateColumnsList
         [ minmax (px 210) maxContent
-        , repeatedTrackList autoFit [px 200]
+        , repeatedTracks autoFit [px 200]
         , pct 20
         ]
 
 (Note: due to a naming conflict, the `repeat()` function is
-called [`repeatedTrackList`](#repeatedTrackList) in this package.)
+called [`repeatedTracks`](#repeatedTracks) in this package.)
 -}
 autoFit : Value { provides | autoFit : Supported }
 autoFit =
@@ -11905,23 +11904,17 @@ backgroundAttachment (Value str) =
 See [`backgroundAttachment`](#backgroundAttachment) to set a single `background-attachment` value.
 
 -}
-backgroundAttachments :
-    Value
-        { fixed : Supported
-        , scroll : Supported
-        , local : Supported
-        }
-    ->
-        List
-            (Value
-                { fixed : Supported
-                , scroll : Supported
-                , local : Supported
-                }
-            )
+backgroundAttachmentList :
+    List
+        (Value
+            { fixed : Supported
+            , scroll : Supported
+            , local : Supported
+            }
+        )
     -> Style
-backgroundAttachments firstValue values =
-    AppendProperty ("background-attachment:" ++ hashListToString firstValue values)
+backgroundAttachmentList list =
+    AppendProperty ("background-attachment:" ++ valueListToString "," list)
 
 
 {-| The `local` [`background-attachment` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-attachment#Values)
@@ -11974,54 +11967,34 @@ backgroundBlendMode (Value str) =
 
 Note that this takes an argument of [`color_`](#color_), not [`color`](#color)!
 
-    backgroundBlendMode normal [ darken, color_ ]
+    backgroundBlendMode [ darken, color_ ]
 
 See [`backgroundBlendMode`](#backgroundBlendMode) to set a single `background-blend-mode` value.
 
 -}
-backgroundBlendModes :
-    Value
-        { normal : Supported
-        , multiply : Supported
-        , screen : Supported
-        , overlay : Supported
-        , darken : Supported
-        , lighten : Supported
-        , colorDodge : Supported
-        , colorBurn : Supported
-        , hardLight : Supported
-        , softLight : Supported
-        , difference : Supported
-        , exclusion : Supported
-        , hue : Supported
-        , saturation : Supported
-        , color_ : Supported
-        , luminosity : Supported
-        }
-    ->
-        List
-            (Value
-                { normal : Supported
-                , multiply : Supported
-                , screen : Supported
-                , overlay : Supported
-                , darken : Supported
-                , lighten : Supported
-                , colorDodge : Supported
-                , colorBurn : Supported
-                , hardLight : Supported
-                , softLight : Supported
-                , difference : Supported
-                , exclusion : Supported
-                , hue : Supported
-                , saturation : Supported
-                , color_ : Supported
-                , luminosity : Supported
-                }
-            )
+backgroundBlendModeList :
+    List (Value
+            { normal : Supported
+            , multiply : Supported
+            , screen : Supported
+            , overlay : Supported
+            , darken : Supported
+            , lighten : Supported
+            , colorDodge : Supported
+            , colorBurn : Supported
+            , hardLight : Supported
+            , softLight : Supported
+            , difference : Supported
+            , exclusion : Supported
+            , hue : Supported
+            , saturation : Supported
+            , color_ : Supported
+            , luminosity : Supported
+            }
+        )
     -> Style
-backgroundBlendModes firstValue values =
-    AppendProperty ("background-blend-mode:" ++ hashListToString firstValue values)
+backgroundBlendModeList  values =
+    AppendProperty ("background-blend-mode:" ++ valueListToString "," values)
 
 
 {-| The `multiply` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
@@ -12204,30 +12177,23 @@ backgroundClip (Value str) =
 {-| Sets [`background-clip`](https://css-tricks.com/almanac/properties/b/background-clip/).
 Note that this takes an argument of [`text`](#text), not [`color`](#color)!
 
-    backgroundClips text [ borderBox, text ]
+    backgroundClipList [ text, borderBox, text ]
 
 See [`backgroundClip`](#backgroundClip) to set a single `background-clip` value.
 
 -}
-backgroundClips :
-    Value
-        { borderBox : Supported
-        , paddingBox : Supported
-        , contentBox : Supported
-        , text : Supported
-        }
-    ->
-        List
-            (Value
-                { borderBox : Supported
-                , paddingBox : Supported
-                , contentBox : Supported
-                , text : Supported
-                }
-            )
+backgroundClipList :
+    List
+        (Value
+            { borderBox : Supported
+            , paddingBox : Supported
+            , contentBox : Supported
+            , text : Supported
+            }
+        )
     -> Style
-backgroundClips firstValue values =
-    AppendProperty ("background-clip:" ++ hashListToString firstValue values)
+backgroundClipList values =
+    AppendProperty ("background-clip:" ++ valueListToString "," values)
 
 
 
@@ -12256,28 +12222,22 @@ backgroundOrigin (Value str) =
 
 {-| Sets [`background-origin`](https://css-tricks.com/almanac/properties/b/background-origin/).
 
-    backgroundOrigins contentBox [ borderBox, contentBox ]
+    backgroundOriginList [ contentBox, borderBox, contentBox ]
 
 See [`backgroundOrigin`](#backgroundOrigin`background-origin` value.
 
 -}
-backgroundOrigins :
-    Value
-        { borderBox : Supported
-        , paddingBox : Supported
-        , contentBox : Supported
-        }
-    ->
-        List
-            (Value
-                { borderBox : Supported
-                , paddingBox : Supported
-                , contentBox : Supported
-                }
-            )
+backgroundOriginList :
+    List
+        (Value
+            { borderBox : Supported
+            , paddingBox : Supported
+            , contentBox : Supported
+            }
+        )
     -> Style
-backgroundOrigins firstValue values =
-    AppendProperty ("background-origin:" ++ hashListToString firstValue values)
+backgroundOriginList values =
+    AppendProperty ("background-origin:" ++ valueListToString "," values)
 
 
 {-| Sets [`background-image`](https://css-tricks.com/almanac/properties/b/background-image/).
@@ -12296,20 +12256,18 @@ backgroundImage (Value value) =
 
 {-| Sets [`background-image`](https://css-tricks.com/almanac/properties/b/background-image/) for multiple images.
 
-    backgroundImages
+    backgroundImageList
         (linearGradient (stop red) (stop blue))
         [ url "http://www.example.com/chicken.jpg" ]
 
 See also [`backgroundImage`](#backgroundImage) if you need only one.
 
 -}
-backgroundImages :
-    Value Image
-    -> List (Value Image)
+backgroundImageList :
+    List (Value Image)
     -> Style
-backgroundImages head rest =
-    AppendProperty ("background-image:" ++ hashListToString head rest)
-
+backgroundImageList values =
+    AppendProperty ("background-image:" ++ valueListToString "," values)
 
 
 -- BACKGROUND POSITION --
@@ -13394,11 +13352,10 @@ in a way that lets you add a list of [`featureTag`](#featureTag)s.
 
 -}
 fontFeatureSettingsList :
-    Value { featureTag : Supported }
-    -> List (Value { featureTag : Supported })
+    List (Value { featureTag : Supported })
     -> Style
-fontFeatureSettingsList head rest =
-    AppendProperty ("font-feature-settings:" ++ hashListToString head rest)
+fontFeatureSettingsList values =
+    AppendProperty ("font-feature-settings:" ++ valueListToString "," values)
 
 
 {-| Creates a [feature-tag-value](https://developer.mozilla.org/en-US/docs/Web/CSS/font-feature-settings#feature-tag-value)
@@ -13986,13 +13943,8 @@ but keep in mind that certain keywords are mutually exclusive with each other.
 fontVariantNumericList :
     List (Value (FontVariantNumeric))
     -> Style
-fontVariantNumericList list =
-    AppendProperty <| "font-variant-numeric:"
-        ++
-        ( list
-        |> List.map (\(Value val) -> val)
-        |> String.join " "
-        )
+fontVariantNumericList values =
+    AppendProperty <| "font-variant-numeric:" ++ valueListToString " " values
 
 
 {-| The `ordinal` [`font-variant-numeric` value](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-numeric).
@@ -19642,7 +19594,7 @@ boxShadow (Value val) =
     -- "box-shadow: 3px 5px #aabbcc"
     button
         [ css
-            [ boxShadows
+            [ boxShadowList
                 [ { defaultBoxShadow
                     | offsetX = px 3
                     , offsetY = px 5
@@ -19654,8 +19606,8 @@ boxShadow (Value val) =
         [ text "Zap!" ]
 
 -}
-boxShadows : List BoxShadowConfig -> Style
-boxShadows configs =
+boxShadowList : List BoxShadowConfig -> Style
+boxShadowList configs =
     let
         value =
             case configs of
@@ -19906,24 +19858,14 @@ transform (Value val) =
 {-| Sets [`transform`](https://css-tricks.com/almanac/properties/t/transform/)
 with a series of transform-functions.
 
-    transforms [ translate (px 12), scale_ 2, skew (deg 20) ]
+    transformList [ translate (px 12), scale_ 2, skew (deg 20) ]
 
 -}
-transforms :
+transformList :
     List (Value TransformFunction)
     -> Style
-transforms list =
-    AppendProperty ("transform:" ++ plusListToString list)
-
-
-{-| Named after the plus symbol in the CSS specification [CSS-VALUES-3].
--}
-plusListToString : List (Value a) -> String
-plusListToString rest =
-    rest
-        |> List.map Value.unpack
-        |> String.join " "
-
+transformList values =
+    AppendProperty ("transform:" ++ valueListToString " " values)
 
 
 {-| Sets [`transform-origin`](https://css-tricks.com/almanac/properties/t/transform-origin/).
@@ -20715,26 +20657,20 @@ animationName (Value val) =
 
 {-| The [`animation-name`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-name) property.
 
-    animationNames (customIdent "pulse") []
+    animationNameList [customIdent "pulse"]
 
 -}
-animationNames :
-    Value
-        { none : Supported
-        , string : Supported
-        , customIdent : Supported
-        }
-    ->
-        List
-            (Value
-                { none : Supported
-                , string : Supported
-                , customIdent : Supported
-                }
-            )
+animationNameList :
+    List
+        (Value
+            { none : Supported
+            , string : Supported
+            , customIdent : Supported
+            }
+        )
     -> Style
-animationNames head rest =
-    AppendProperty ("animation-name:" ++ hashListToString head rest)
+animationNameList values =
+    AppendProperty ("animation-name:" ++ valueListToString "," values)
 
 
 {-| The [`animation-duration`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-duration) property.
@@ -20749,12 +20685,12 @@ animationDuration (Value val) =
 
 {-| The [`animation-duration`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-duration) property.
 
-    animationDurations (s 1) [ ms 300, s 4.5 ]
+    animationDurationList [ s 1, ms 300, s 4.5 ]
 
 -}
-animationDurations : Value Time -> List (Value Time) -> Style
-animationDurations head rest =
-    AppendProperty ("animation-duration:" ++ hashListToString head rest)
+animationDurationList : List (Value Time) -> Style
+animationDurationList values =
+    AppendProperty ("animation-duration:" ++ valueListToString "," values)
 
 
 {-| The [`animation-timing-function`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-timing-function) property.
@@ -20769,12 +20705,12 @@ animationTimingFunction (Value val) =
 
 {-| The [`animation-timing-function`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-timing-function) property.
 
-    animationTimingFunctions linear [ cubicBezier 0.42 0 0.38 1, stepEnd ]
+    animationTimingFunctionList linear [ cubicBezier 0.42 0 0.38 1, stepEnd ]
 
 -}
-animationTimingFunctions : Value EasingFunction -> List (Value EasingFunction) -> Style
-animationTimingFunctions head rest =
-    AppendProperty ("animation-timing-function:" ++ hashListToString head rest)
+animationTimingFunctionList : List (Value EasingFunction) -> Style
+animationTimingFunctionList values =
+    AppendProperty ("animation-timing-function:" ++ valueListToString "," values)
 
 
 {-| The [`animation-iteration-count`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-iteration-count) property.
@@ -20798,28 +20734,21 @@ animationIterationCount (Value val) =
 
 {-| The [`animation-iteration-count`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-iteration-count) property.
 
-    animationIterationCounts (num 3.5) [ infinte, zero ]
+    animationIterationCountList (num 3.5) [ infinte, zero ]
 
 -}
-animationIterationCounts :
-    Value
-        { infinite : Supported
-        , num : Supported
-        , zero : Supported
-        , calc : Supported
-        }
-    ->
-        List
-            (Value
-                { infinite : Supported
-                , num : Supported
-                , zero : Supported
-                , calc : Supported
-                }
-            )
+animationIterationCountList :
+    List
+        (Value
+            { infinite : Supported
+            , num : Supported
+            , zero : Supported
+            , calc : Supported
+            }
+        )
     -> Style
-animationIterationCounts head rest =
-    AppendProperty ("animation-iteration-count:" ++ hashListToString head rest)
+animationIterationCountList values =
+    AppendProperty ("animation-iteration-count:" ++ valueListToString "," values)
 
 
 {-| The [`animation-direction`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-direction) property.
@@ -20841,28 +20770,21 @@ animationDirection (Value val) =
 
 {-| The [`animation-direction`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-direction) property.
 
-    animationDirection reverse [ normal, alternate, alternateReverse ]
+    animationDirectionList [ reverse, normal, alternate, alternateReverse ]
 
 -}
-animationDirections :
-    Value
-        { normal : Supported
-        , reverse : Supported
-        , alternate : Supported
-        , alternateReverse : Supported
-        }
-    ->
-        List
-            (Value
-                { normal : Supported
-                , reverse : Supported
-                , alternate : Supported
-                , alternateReverse : Supported
-                }
-            )
+animationDirectionList :
+    List
+        (Value
+            { normal : Supported
+            , reverse : Supported
+            , alternate : Supported
+            , alternateReverse : Supported
+            }
+        )
     -> Style
-animationDirections head rest =
-    AppendProperty ("animation-direction:" ++ hashListToString head rest)
+animationDirectionList values =
+    AppendProperty ("animation-direction:" ++ valueListToString "," values)
 
 
 {-| The [`animation-play-state`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-play-state) property.
@@ -20882,24 +20804,19 @@ animationPlayState (Value val) =
 
 {-| The [`animation-play-state`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-play-state) property.
 
-    animationPlayStates running [ paused ]
+    animationPlayStateList [ running, paused ]
 
 -}
-animationPlayStates :
-    Value
-        { running : Supported
-        , paused : Supported
-        }
-    ->
-        List
-            (Value
-                { running : Supported
-                , paused : Supported
-                }
-            )
+animationPlayStateList :
+    List
+        (Value
+            { running : Supported
+            , paused : Supported
+            }
+        )
     -> Style
-animationPlayStates head rest =
-    AppendProperty ("animation-play-state:" ++ hashListToString head rest)
+animationPlayStateList values =
+    AppendProperty ("animation-play-state:" ++ valueListToString "," values)
 
 
 {-| The [`animation-delay`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-delay) property.
@@ -20914,12 +20831,12 @@ animationDelay (Value val) =
 
 {-| The [`animation-delay`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-delay) property.
 
-    animationDelays (s 1) [ ms 300, s 4.5 ]
+    animationDelayList (s 1) [ ms 300, s 4.5 ]
 
 -}
-animationDelays : Value Time -> List (Value Time) -> Style
-animationDelays head rest =
-    AppendProperty ("animation-delay:" ++ hashListToString head rest)
+animationDelayList : List (Value Time) -> Style
+animationDelayList values =
+    AppendProperty ("animation-delay:" ++ valueListToString "," values)
 
 
 {-| The [`animation-fill-mode`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-fill-mode) property.
@@ -20941,28 +20858,21 @@ animationFillMode (Value val) =
 
 {-| The [`animation-fill-mode`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-fill-mode) property.
 
-    animationFillModes forwards [ none, both, backwards ]
+    animationFillModeList [ forwards, none, both, backwards ]
 
 -}
-animationFillModes :
-    Value
-        { none : Supported
-        , forwards : Supported
-        , backwards : Supported
-        , both : Supported
-        }
-    ->
-        List
-            (Value
-                { none : Supported
-                , forwards : Supported
-                , backwards : Supported
-                , both : Supported
-                }
-            )
+animationFillModeList :
+    List
+        (Value
+            { none : Supported
+            , forwards : Supported
+            , backwards : Supported
+            , both : Supported
+            }
+        )
     -> Style
-animationFillModes head rest =
-    AppendProperty ("animation-fill-mode:" ++ hashListToString head rest)
+animationFillModeList values =
+    AppendProperty ("animation-fill-mode:" ++ valueListToString "," values)
 
 
 
@@ -21932,14 +21842,8 @@ maskClipList :
             }
         )
     -> Style
-maskClipList list =
-    AppendProperty <|
-        "mask-clip:"
-        ++
-        ( list
-        |> List.map (\(Value val) -> val)
-        |> String.join ", "
-        )
+maskClipList values =
+    AppendProperty <| "mask-clip:" ++ valueListToString "," values
 
 
 {-| The [`mask-composite`](https://css-tricks.com/almanac/properties/m/mask-composite/)
@@ -21995,14 +21899,9 @@ maskModeList :
             }
         )
     -> Style
-maskModeList list =
-    AppendProperty <|
-        "mask-mode:"
-        ++
-        ( list
-        |> List.map (\(Value val) -> val)
-        |> String.join ", "
-        )
+maskModeList values =
+    AppendProperty <| "mask-mode:" ++ valueListToString "," values
+
 
 
 {-| The 1-argument variant of the [`mask-origin`](https://css-tricks.com/almanac/properties/m/mask-origin/)
@@ -22041,14 +21940,8 @@ maskOriginList :
             }
         )
     -> Style
-maskOriginList list =
-    AppendProperty <|
-        "mask-origin:"
-        ++
-        ( list
-        |> List.map (\(Value val) -> val)
-        |> String.join ", "
-        )
+maskOriginList values =
+    AppendProperty <| "mask-origin:" ++ valueListToString "," values
 
 
 {-| The 1-argument variant of the [`mask-position`](https://css-tricks.com/almanac/properties/m/mask-position/)

@@ -282,32 +282,32 @@ transformsStylesheet =
     stylesheet
         [ body
             [ transform none
-            , transforms
+            , transformList
                 [ matrix 1 2 3 4 5 6
                 , matrix3d 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
                 ]
             , transform (perspective_ (px 100))
-            , transforms
+            , transformList
                 [ rotate_ (deg 90)
                 , rotateX (rad 3.14)
                 , rotateY (grad 3.14)
                 , rotateZ (turn 1)
                 , rotate3d 1 1 1 (deg 90)
                 ]
-            , transforms 
+            , transformList
                 [ scale_ 1
                 , scale2_ 1 1
                 , scaleX 1
                 , scaleY 1
                 , scale3d 1 1 1
                 ]
-            , transforms
+            , transformList
                 [ skew (deg 90)
                 , skew2 (deg 90) (deg 90)
                 , skewX (deg 90)
                 , skewY (deg 90)
                 ]
-            , transforms
+            , transformList
                 [ translate (px 1)
                 , translate2 (px 1) (px 1)
                 , translateX (px 1)
