@@ -184,21 +184,31 @@ module Css exposing
     , wrap, wrapReverse
     
     -- grid
-    , gridAutoRows, gridAutoColumns, gridAutoFlow, gridAutoFlow2
-    , GridLine(..)
-    , gridArea, gridAreaLine, gridArea2Lines, gridArea3Lines, gridArea4Lines
-    , gridRow, gridRowLine, gridRow2Lines
-    , gridRowStart, gridRowStartLine
-    , gridRowEnd, gridRowEndLine
-    , gridColumn, gridColumnLine, gridColumn2Lines
-    , gridColumnStart, gridColumnStartLine
-    , gridColumnEnd, gridColumnEndLine
+    -- types
+    , FixedSizeSupported
+    , TrackBreadthSupported
+    , TrackSizeSupported, TrackSize
+    -- grid auto
+    , gridAutoRows, gridAutoRowsMany
+    , gridAutoColumns, gridAutoColumnsMany
+    , gridAutoFlow, gridAutoFlow2
+    -- grid areas
+    , GridLine, gridLineIdent, span
+    , gridArea, gridArea2, gridArea3, gridArea4
+    , gridRow, gridRow2
+    , gridRowStart, gridRowEnd
+    , gridColumn, gridColumn2
+    , gridColumnStart, gridColumnEnd
+    -- grid templates
     , gridTemplate
     , gridTemplateAreas, gridTemplateAreasMany
-    , gridTemplateRows, gridTemplateRowsMany
-    , gridTemplateColumns, gridTemplateColumnsMany
-    --
-    , lineNames, repeatedTracks, autoFill, autoFit
+    , gridTemplateRows
+    , gridTemplateColumns
+    , templateRowsColumns, templateAreasRowsColumns
+    , templateAreaRow, templateColumns
+    , trackList, autoTrackList
+    , fixedRepeat, autoRepeat
+    , autoFill, autoFit, lineNames
     , dense
 
     -- gaps
@@ -941,28 +951,34 @@ Other values you can use for flex item alignment:
 
 # Grid
 
-## Grid areas
+## Types
+@docs FixedSizeSupported
+@docs TrackBreadthSupported
+@docs TrackSizeSupported, TrackSize
+    
+## Grid auto
+@docs gridAutoRows, gridAutoRowsMany
+@docs gridAutoColumns, gridAutoColumnsMany
+@docs gridAutoFlow, gridAutoFlow2
 
-@docs gridAutoRows, gridAutoColumns, gridAutoFlow, gridAutoFlow2
-@docs GridLine
-@docs gridArea, gridAreaLine, gridArea2Lines, gridArea3Lines, gridArea4Lines
-@docs gridRow, gridRowLine, gridRow2Lines
-@docs gridRowStart, gridRowStartLine
-@docs gridRowEnd, gridRowEndLine
-@docs gridColumn, gridColumnLine, gridColumn2Lines
-@docs gridColumnStart, gridColumnStartLine
-@docs gridColumnEnd, gridColumnEndLine
+## Grid areas
+@docs GridLine, gridLineIdent, span
+@docs gridArea, gridArea2, gridArea3, gridArea4
+@docs gridRow, gridRow2
+@docs gridRowStart, gridRowEnd
+@docs gridColumn, gridColumn2
+@docs gridColumnStart, gridColumnEnd
 
 ## Grid templates
-
 @docs gridTemplate
 @docs gridTemplateAreas, gridTemplateAreasMany
-@docs gridTemplateRows, gridTemplateRowsMany
-@docs gridTemplateColumns, gridTemplateColumnsMany
-
-## Grid value functions
-
-@docs lineNames, repeatedTracks, autoFill, autoFit
+@docs gridTemplateRows
+@docs gridTemplateColumns
+@docs templateRowsColumns, templateAreasRowsColumns
+@docs templateAreaRow, templateColumns
+@docs trackList, autoTrackList
+@docs fixedRepeat, autoRepeat
+@docs autoFill, autoFit, lineNames
 @docs dense
 
 
@@ -1627,7 +1643,11 @@ makeImportant str =
         str ++ " !important"
 
 
-{-| Helper function to concatenate a list of values together with a single separator.
+{-| Helper function to concatenate a list of values together
+with a single separator.
+
+If the list is empty, it will return `unset`. This to ensure
+that no output features an empty property.
 -}
 valueListToString : String -> List (Value a) -> String
 valueListToString separator list =
@@ -1637,6 +1657,35 @@ valueListToString separator list =
         |> String.join separator
     else
         Value.unpack unset
+
+
+{-| Helper function that acts like [`valueListToString`](#valueListToString)
+but with the important distinction of not having an `unset` fallback.
+
+This is for value lists for which returning `unset` would be unacceptable.
+-}
+valueListToStringNoFallback : String -> Value a -> List (Value a) -> String
+valueListToStringNoFallback separator head rest =
+    ( head :: rest )
+    |> List.map Value.unpack
+    |> String.join separator
+
+
+{-| Helper function to concatenate a list of values together
+with a single separator.
+
+It will not return anything if the list is empty. Only use this if you're
+sure it won't mess up the CSS output.
+-}
+valueListToStringUnsafe : String -> List (Value a) -> String
+valueListToStringUnsafe separator list =
+    if List.length list >= 1 then
+        list
+        |> List.map Value.unpack
+        |> String.join separator
+    else
+        ""
+
 
 stringListToStringEnquoted : String -> List String -> String
 stringListToStringEnquoted separator list =
@@ -10730,32 +10779,85 @@ wrapReverse =
 ------------------------------------------------------------------------
 
 
-{-| The 1-argument version of the [`grid-auto-columns`](https://css-tricks.com/almanac/properties/g/grid-auto-columns/)
-property.
-
-    gridAutoColumns (px 100)
-
-    gridAutoColumns (vmax 30)
-
-    gridAutoColumns (fr 1)
-
-    gridAutoColumns (minmax (fr 2) (pct 20))
+{-| Extensible type representing the possibilities of the
+`<fixed-size>` type used in grids.
 -}
-gridAutoColumns :
-    BaseValue (
-        LengthSupported
-            { auto : Supported
+type alias FixedSizeSupported supported =
+    TrackBreadthSupported (
+        { supported
+            | minmax : Supported
+            , fitContent : Supported
+        }
+    )
+
+
+{-| Extensible type representing the possibilities of the 
+`<track-breadth>` type used in grids.
+-}
+type alias TrackBreadthSupported supported =
+    LengthSupported (
+        { supported
+            | pct : Supported
+            , fr : Supported
+            , auto : Supported
             , minContent : Supported
             , maxContent : Supported
-            , pct : Supported
-            , fr : Supported
-            , minmax : Supported
-            , fitContentTo : Supported
-            }
+        }
     )
-    -> Style
-gridAutoColumns (Value val) =
-    AppendProperty ("grid-auto-columns:" ++ val)
+
+
+{-| Extensible type representing the possibilities of the 
+`<track-size>` type used in grids.
+-}
+type alias TrackSizeSupported supported =
+    TrackBreadthSupported (
+        { supported
+            | minmax : Supported
+            , fitContent : Supported
+        }
+    )
+
+
+{-| Type representing the possibilities of the 
+`<track-size>` type used in grids.
+-}
+type alias TrackSize =
+    TrackBreadthSupported (
+        { minmax : Supported
+        , fitContent : Supported
+        }
+    )
+
+
+{-| Custom ident(s) that are only used in grid area definitions,
+for naming lines of a grid layout. A line may have multiple names.
+
+Line names are case sensitive.
+
+    gridTemplateColumnsList
+        [ lineNames["line1", "line2"]
+        , px 300
+        , lineNames["line3"]
+        ]
+
+    --- grid-template-colums: [line1 line2] 300px [line3];
+-}
+lineNames : List String -> Value { provides | lineNames : Supported }
+lineNames list =
+    Value <| "[" ++ String.join " " list ++ "]"
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 {-| The 1-argument version of the [`grid-auto-rows`](https://css-tricks.com/almanac/properties/g/grid-auto-rows/)
@@ -10770,20 +10872,84 @@ gridAutoColumns (Value val) =
     gridAutoRows (minmax (fr 2) (pct 20))
 -}
 gridAutoRows :
-    BaseValue (
-        LengthSupported
-            { auto : Supported
-            , minContent : Supported
-            , maxContent : Supported
-            , pct : Supported
-            , fr : Supported
-            , minmax : Supported
-            , fitContentTo : Supported
-            }
-    )
+    BaseValue ( TrackSize )
     -> Style
 gridAutoRows (Value val) =
     AppendProperty ("grid-auto-rows:" ++ val)
+
+
+{-| The many-argument version of the [`grid-auto-rows`](https://css-tricks.com/almanac/properties/g/grid-auto-rows/)
+property.
+
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
+    gridAutoRows (px 100)
+
+    gridAutoRows (vmax 30)
+
+    gridAutoRows (fr 1)
+
+    gridAutoRows (minmax (fr 2) (pct 20))
+
+    gridAutoRowsMany [ fr 1, px 100, minmax (fr 2) (pct 20) ]
+
+    gridAutoRowsMany [] -- unset
+
+-}
+gridAutoRowsMany :
+    List ( Value TrackSize )
+    -> Style
+gridAutoRowsMany values =
+    AppendProperty <| "grid-auto-rows" ++ valueListToString " " values
+
+
+{-| The 1-argument version of the [`grid-auto-columns`](https://css-tricks.com/almanac/properties/g/grid-auto-columns/)
+property.
+
+    gridAutoColumns (px 100)
+
+    gridAutoColumns (vmax 30)
+
+    gridAutoColumns (fr 1)
+
+    gridAutoColumns (minmax (fr 2) (pct 20))
+
+    gridAutoColumnsMany [ fr 1, px 100, minmax (fr 2) (pct 20) ]
+
+    gridAutoColumnsMany [] -- unset
+-}
+gridAutoColumns :
+    BaseValue ( TrackSize )
+    -> Style
+gridAutoColumns (Value val) =
+    AppendProperty ("grid-auto-columns:" ++ val)
+
+
+{-| The many-argument version of the [`grid-auto-columns`](https://css-tricks.com/almanac/properties/g/grid-auto-columns/)
+property.
+
+If you give an empty list, the value will be `unset`. This is to make it impossible for it
+to have no values in the output.
+
+    gridAutoColumns (px 100)
+
+    gridAutoColumns (vmax 30)
+
+    gridAutoColumns (fr 1)
+
+    gridAutoColumns (minmax (fr 2) (pct 20))
+
+    gridAutoColumnsMany [ fr 1, px 100, minmax (fr 2) (pct 20) ]
+
+    gridAutoColumnsMany [] -- unset
+
+-}
+gridAutoColumnsMany :
+    List ( Value TrackSize )
+    -> Style
+gridAutoColumnsMany values =
+    AppendProperty <| "grid-auto-columns" ++ valueListToString " " values
 
 
 {-| The 1-argument version of the [`grid-auto-flow`](https://css-tricks.com/almanac/properties/g/grid-auto-flow/)
@@ -10831,97 +10997,88 @@ gridAutoFlow2 (Value val1) (Value val2) =
         ++ val2
 
 
-{-| A type wrapping all of the possibilities of a grid line.
 
-A grid line value is one that specifies the properties of
-the border lines that a grid is contructed with, as opposed to
-a grid track, which specifies the space between grid lines.
 
-No `Int` should be zero - if it's zero, it won't work.
+-------------------------------------------------------------------
+------------------------ Grid Lines -------------------------------
+-------------------------------------------------------------------
 
-- `GridLineAuto` - `auto`
-- `GridLineIdent` - `<custom-ident>`
-- `GridLineNum` - `<integer>`
-- `GridLineIdentNum` - `<custom-ident> <integer>`
-- `GridLineSpanIdent` - `span <custom-ident>`
-- `GridLineSpanNum` - `span <integer>`
-- `GridLineSpanIdentNum` - `span <custom-ident> <integer>`
 
-```
-    gridArea2Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
-
-    gridRowStartLine (GridLineSpanIdent "big-grid")
-
-```
+{-| A type encapsulating the possibilities for defining a `<grid-line>`,
+which are the lines around the spaces in a CSS grid.
 -}
-type GridLine
-    = GridLineAuto
-    | GridLineIdent String
-    | GridLineNum Int
-    | GridLineIdentNum String Int
-    | GridLineSpanIdent String
-    | GridLineSpanNum Int
-    | GridLineSpanIdentNum String Int
+type alias GridLine =
+    { auto : Supported
+    , num : Supported
+    , gridLineIdent : Supported
+    , span : Supported
+    }
 
 
-{-| Internal helper function that turns a `GridLine` into a string
-ready to go in a property.
+{-| Creates a grid line value with a <custom-ident> value
+and an optional integer.
+
+    gridLineIdent "footer" Nothing
+
+    gridLineIdent "header" (Just 1)
+
+    span Nothing Nothing
+
+    span (Just "header") Nothing
+
+    span (Just "footer") (Just 1)
+
 -}
-unwrapGridLine : GridLine -> String
-unwrapGridLine gl =
-    case gl of
-        GridLineAuto -> "auto"
-        GridLineIdent str -> str
-        GridLineNum numby -> String.fromInt numby
-        GridLineIdentNum str numby -> str ++ " " ++ String.fromInt numby
-        GridLineSpanIdent str -> "span " ++ str
-        GridLineSpanNum numby -> "span " ++ String.fromInt numby
-        GridLineSpanIdentNum str numby -> "span " ++ str ++ " " ++ String.fromInt numby
+gridLineIdent :
+    String
+    -> Maybe Int
+    -> Value { gridLineIdent : Supported }
+gridLineIdent val1 val2 =
+    let
+        val2Str =
+            case val2 of
+                Just val -> String.fromInt val
+                Nothing -> ""
 
+    in
+    Value <| val1 ++ " " ++ val2Str
+
+
+{-| Creates a grid line value with a 'span' keyword value followed by
+and an optional integer.
+
+    gridLineIdent "footer" Nothing
+
+    gridLineIdent "header" (Just 1)
+
+    span Nothing Nothing
+
+    span (Just "header") Nothing
+
+    span (Just "footer") (Just 1)
+
+-}
+span :
+    Maybe String
+    -> Maybe Int
+    -> Value { gridLine : Supported }
+span val1 val2 =
+    Value <|
+        ( case val1 of
+            Just v -> v
+            Nothing -> ""
+        )
+        ++ " "
+        ++ ( case val2 of
+            Just v -> String.fromInt v
+            Nothing -> ""
+        )
+        
 
 {-| The [`grid-area`](https://css-tricks.com/almanac/properties/g/grid-area/)
 property.
 
-This variant is for single keyword arguments.
-
-    gridArea auto
-
-    gridArea inherit
-      
-    gridAreaLine (GridLineIdentNum "big-grid" 4)
-
-    gridArea2Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
-
-    gridArea3Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
-        (GridLineNum 7)
-
-    gridArea4Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
-        (GridLineNum 7)
-        (GridLineSpanIdentNum "another-grid" 12)
-
--}
-gridArea :
-    BaseValue
-        { auto : Supported
-        , customIdent : Supported
-        }
-    -> Style
-gridArea (Value val) =
-    AppendProperty <| "grid-area:" ++ val
-
-
-{-| The [`grid-area`](https://css-tricks.com/almanac/properties/g/grid-area/)
-property.
-
-This variant specifies 1 `<grid-line>` ([`GridLine`](#GridLine)) that determines
+This variant is for keywords or for 1 `<grid-line>` ([`GridLine`](#GridLine)) that determines
 the start and end positions of this grid item.
 
 Numbers used in this should not be zero, else they won't work.
@@ -10929,30 +11086,32 @@ Numbers used in this should not be zero, else they won't work.
     gridArea auto
 
     gridArea inherit
+
+    gridArea <| span Nothing Nothing
       
-    gridAreaLine (GridLineIdentNum "big-grid" 4)
+    gridArea <| gridLineIdent "big-grid" (Just 4)
 
     gridArea2Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
+        ( gridLineIdent "big-grid" (Just 4) )
+        ( span (Just "other-grid") Nothing )
 
     gridArea3Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
-        (GridLineNum 7)
+        ( gridLineIdent "big-grid" (Just 4))
+        ( span (Just "other-grid") Nothing)
+        ( num 7 )
 
     gridArea4Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
-        (GridLineNum 7)
-        (GridLineSpanIdentNum "another-grid" 12)
+        ( gridLineIdent "big-grid" (Just 4) )
+        ( span (Just "other-grid") Nothing )
+        ( num 7 )
+        ( span (Just "another-grid") (Just 12) )
 
 -}
-gridAreaLine :
-    GridLine
+gridArea :
+    BaseValue ( GridLine )
     -> Style
-gridAreaLine gl =
-    AppendProperty <| "grid-area:" ++ (unwrapGridLine gl)
+gridArea (Value val) =
+    AppendProperty <| "grid-area:" ++ val
 
 
 {-| The [`grid-area`](https://css-tricks.com/almanac/properties/g/grid-area/)
@@ -10966,35 +11125,33 @@ Numbers used in this should not be zero, else they won't work.
     gridArea auto
 
     gridArea inherit
+
+    gridArea <| span Nothing Nothing
       
-    gridAreaLine (GridLineIdentNum "big-grid" 4)
+    gridArea <| gridLineIdent "big-grid" (Just 4)
 
-    gridArea2Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
+    gridArea2
+        ( gridLineIdent "big-grid" (Just 4) )
+        ( span (Just "other-grid") Nothing )
 
-    gridArea3Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
-        (GridLineNum 7)
+    gridArea3
+        ( gridLineIdent "big-grid" (Just 4))
+        ( span (Just "other-grid") Nothing)
+        ( num 7 )
 
-    gridArea4Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
-        (GridLineNum 7)
-        (GridLineSpanIdentNum "another-grid" 12)
+    gridArea4
+        ( gridLineIdent "big-grid" (Just 4) )
+        ( span (Just "other-grid") Nothing )
+        ( num 7 )
+        ( span (Just "another-grid") (Just 12) )
 
 -}
-gridArea2Lines :
-    GridLine
-    -> GridLine
+gridArea2 :
+    Value ( GridLine )
+    -> Value ( GridLine )
     -> Style
-gridArea2Lines gl1 gl2 =
-    AppendProperty <|
-        "grid-area:"
-        ++ (unwrapGridLine gl1)
-        ++ " / "
-        ++ (unwrapGridLine gl2)
+gridArea2 (Value gl1) (Value gl2) =
+    AppendProperty <| "grid-area:" ++ gl1 ++ " / " ++ gl2
 
 
 {-| The [`grid-area`](https://css-tricks.com/almanac/properties/g/grid-area/)
@@ -11008,38 +11165,34 @@ Numbers used in this should not be zero, else they won't work.
     gridArea auto
 
     gridArea inherit
+
+    gridArea <| span Nothing Nothing
       
-    gridAreaLine (GridLineIdentNum "big-grid" 4)
+    gridArea <| gridLineIdent "big-grid" (Just 4)
 
-    gridArea2Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
+    gridArea2
+        ( gridLineIdent "big-grid" (Just 4) )
+        ( span (Just "other-grid") Nothing )
 
-    gridArea3Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
-        (GridLineNum 7)
+    gridArea3
+        ( gridLineIdent "big-grid" (Just 4))
+        ( span (Just "other-grid") Nothing)
+        ( num 7 )
 
-    gridArea4Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
-        (GridLineNum 7)
-        (GridLineSpanIdentNum "another-grid" 12)
+    gridArea4
+        ( gridLineIdent "big-grid" (Just 4) )
+        ( span (Just "other-grid") Nothing )
+        ( num 7 )
+        ( span (Just "another-grid") (Just 12) )
 
 -}
-gridArea3Lines :
-    GridLine
-    -> GridLine
-    -> GridLine
+gridArea3 :
+    Value ( GridLine )
+    -> Value ( GridLine )
+    -> Value ( GridLine )
     -> Style
-gridArea3Lines gl1 gl2 gl3 =
-    AppendProperty <|
-        "grid-area:"
-        ++ (unwrapGridLine gl1)
-        ++ " / "
-        ++ (unwrapGridLine gl2)
-        ++ " / "
-        ++ (unwrapGridLine gl3)
+gridArea3 (Value gl1) (Value gl2) (Value gl3) =
+    AppendProperty <| "grid-area:" ++ gl1 ++ " / " ++ gl2 ++ " / " ++ gl3
 
 
 {-| The [`grid-area`](https://css-tricks.com/almanac/properties/g/grid-area/)
@@ -11053,63 +11206,58 @@ Numbers used in this should not be zero, else they won't work.
     gridArea auto
 
     gridArea inherit
+
+    gridArea <| span Nothing Nothing
       
-    gridAreaLine (GridLineIdentNum "big-grid" 4)
+    gridArea <| gridLineIdent "big-grid" (Just 4)
 
-    gridArea2Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
+    gridArea2
+        ( gridLineIdent "big-grid" (Just 4) )
+        ( span (Just "other-grid") Nothing )
 
-    gridArea3Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
-        (GridLineNum 7)
+    gridArea3
+        ( gridLineIdent "big-grid" (Just 4))
+        ( span (Just "other-grid") Nothing)
+        ( num 7 )
 
-    gridArea4Lines
-        (GridLineIdentNum "big-grid" 4)
-        (GridLineSpanIdent "other-grid")
-        (GridLineNum 7)
-        (GridLineSpanIdentNum "another-grid" 12)
+    gridArea4
+        ( gridLineIdent "big-grid" (Just 4) )
+        ( span (Just "other-grid") Nothing )
+        ( num 7 )
+        ( span (Just "another-grid") (Just 12) )
 
 -}
-gridArea4Lines :
-    GridLine
-    -> GridLine
-    -> GridLine
-    -> GridLine
+gridArea4 :
+    Value ( GridLine )
+    -> Value ( GridLine )
+    -> Value ( GridLine )
+    -> Value ( GridLine )
     -> Style
-gridArea4Lines gl1 gl2 gl3 gl4 =
-    AppendProperty <|
-        "grid-area:"
-        ++ (unwrapGridLine gl1)
-        ++ " / "
-        ++ (unwrapGridLine gl2)
-        ++ " / "
-        ++ (unwrapGridLine gl3)
-        ++ " / "
-        ++ (unwrapGridLine gl4)
+gridArea4 (Value gl1) (Value gl2) (Value gl3) (Value gl4) =
+    AppendProperty <| "grid-area:" ++ gl1 ++ " / " ++ gl2 ++ " / " ++ gl3 ++ " / " ++ gl4
 
 
 {-| The [`grid-row`](https://css-tricks.com/almanac/properties/g/grid-row/)
 property.
 
-This variant is for single keyword arguments.
+This variant is for single keyword arguments and
+specifying 1 `<grid-line>` ([`GridLine`](#GridLine)), which determines
+the start and end position of this grid item.
+
+Numbers used in this should not be zero, else they won't work.
 
     gridRow auto
 
     gridRow inherit
 
-    gridRowLine (GridLineIdentNum "main-grid" 3)
+    gridRow <| gridLineIdent "main-grid" (Just 3)
     -- grid-row: main-grid 3
 
-    gridRow2Lines GridLineAuto (GridLineSpanIdentNum "grid-thing" 5)
+    gridRow2 auto ( span (Just "grid-thing") (Just 5) )
     -- grid-row: auto / span grid-thing 5
 -}
 gridRow :
-    BaseValue
-        { auto : Supported
-        , customIdent : Supported
-        }
+    BaseValue (GridLine)
     -> Style
 gridRow (Value val) =
     AppendProperty <| "grid-row:" ++ val
@@ -11118,31 +11266,6 @@ gridRow (Value val) =
 {-| The [`grid-row`](https://css-tricks.com/almanac/properties/g/grid-row/)
 property.
 
-This variant specifies 1 `<grid-line>` ([`GridLine`](#GridLine)) that determines
-the start and end position of this grid item.
-
-Numbers used in this should not be zero, else they won't work.
-
-    gridRow auto
-
-    gridRow inherit
-
-    gridRowLine (GridLineIdentNum "main-grid" 3)
-    -- grid-row: main-grid 3
-
-    gridRow2Lines GridLineAuto (GridLineSpanIdentNum "grid-thing" 5)
-    -- grid-row: auto / span grid-thing 5
--}
-gridRowLine :
-    GridLine
-    -> Style
-gridRowLine gl1 =
-    AppendProperty <| "grid-row:" ++ (unwrapGridLine gl1)
-
-
-{-| The [`grid-row`](https://css-tricks.com/almanac/properties/g/grid-row/)
-property.
-
 This variant specifies 2 `<grid-line>`s ([`GridLine`](#GridLine)) that determine
 the start and end position of this grid item.
 
@@ -11152,131 +11275,82 @@ Numbers used in this should not be zero, else they won't work.
 
     gridRow inherit
 
-    gridRowLine (GridLineIdentNum "main-grid" 3)
+    gridRow <| gridLineIdent "main-grid" (Just 3)
     -- grid-row: main-grid 3
 
-    gridRow2Lines GridLineAuto (GridLineSpanIdentNum "grid-thing" 5)
+    gridRow2 auto ( span (Just "grid-thing") (Just 5) )
     -- grid-row: auto / span grid-thing 5
 -}
-gridRow2Lines :
-    GridLine
-    -> GridLine
+gridRow2 :
+    Value ( GridLine )
+    -> Value ( GridLine )
     -> Style
-gridRow2Lines gl1 gl2 =
-    AppendProperty <| "grid-row:"
-        ++ (unwrapGridLine gl1)
-        ++ " / "
-        ++ (unwrapGridLine gl2)
+gridRow2 (Value gl1) (Value gl2) =
+    AppendProperty <| "grid-row:" ++ gl1 ++ " / " ++ gl2
 
 
 {-| The 1-argument version of the [`grid-row-start`](https://css-tricks.com/almanac/properties/g/grid-row-start/)
 property.
 
-    gridRowStart (customIdent "big-grid")
+    gridRowStart inherit
 
     gridRowStart auto
 
-    gridRowStartLine <| GridLineSpanIdent "big-grid"
+    gridRowStart <| span (Just "big-grid") Nothing
 
-    gridRowStartLine <| GridLineSpanNum 3
+    gridRowStart <| int 3
 
-    gridRowStartLine <| GridLineIdentNum "big-grid" 2
+    gridRowStart <| gridLineIdent "big-grid" (Just 2)
 -}
 gridRowStart :
-    BaseValue (
-        { auto : Supported
-        , customIdent : Supported
-        , int : Supported
-        }
-    )
+    BaseValue ( GridLine )
     -> Style
 gridRowStart (Value val) =
     AppendProperty ("grid-row-start:" ++ val)
 
 
-{-| The variant of [`gridRowStart`](#gridRowStart) that accepts a `<grid-line>` ([`GridLine`](#GridLine)) type.
-
-    gridRowStart (customIdent "big-grid")
-
-    gridRowStart auto
-
-    gridRowStartLine <| GridLineSpanIdent "big-grid"
-
-    gridRowStartLine <| GridLineSpanNum 3
-
-    gridRowStartLine <| GridLineIdentNum "big-grid" 2
--}
-gridRowStartLine :
-    GridLine
-    -> Style
-gridRowStartLine gl =
-    AppendProperty ("grid-row-start:" ++ unwrapGridLine gl)
-
 
 {-| The 1-argument version of the [`grid-row-end`](https://css-tricks.com/almanac/properties/g/grid-row-end/)
 property.
 
-    gridRowEnd (customIdent "big-grid")
+    gridRowEnd inherit
 
     gridRowEnd auto
 
-    gridRowEnd2 span (int 3)
+    gridRowEnd <| span (Just "big-grid") Nothing
 
-    gridRowEnd2 (customIdent "big-grid") (int 2)
+    gridRowEnd <| int 3
 
-    gridRowEnd3 span (customIdent "big-grid") (int 2)
+    gridRowEnd <| gridLineIdent "big-grid" (Just 2)
 -}
 gridRowEnd :
-    BaseValue (
-        { auto : Supported
-        , customIdent : Supported
-        , int : Supported
-        }
-    )
+    BaseValue ( GridLine )
     -> Style
 gridRowEnd (Value val) =
     AppendProperty ("grid-row-end:" ++ val)
 
 
-{-| The variant of [`gridRowEnd`](#gridRowEnd) that accepts a `<grid-line>` ([`GridLine`](#GridLine)) type.
-
-    gridRowEnd (customIdent "big-grid")
-
-    gridRowEnd auto
-
-    gridRowEndLine <| GridLineSpanIdent "big-grid"
-
-    gridRowEndLine <| GridLineSpanNum 3
-
-    gridRowEndLine <| GridLineIdentNum "big-grid" 2
--}
-gridRowEndLine :
-    GridLine
-    -> Style
-gridRowEndLine gl =
-    AppendProperty ("grid-row-end:" ++ unwrapGridLine gl)
-
-
 {-| The [`grid-column`](https://css-tricks.com/almanac/properties/g/grid-column/)
 property.
 
-This variant is for single keyword arguments.
+This variant is for single keyword arguments and
+specifying 1 `<grid-line>` ([`GridLine`](#GridLine)), which determines
+the start and end position of this grid item.
+
+Numbers used in this should not be zero, else they won't work.
 
     gridColumn auto
 
     gridColumn inherit
 
-    gridColumnLine (GridLineIdentNum "main-grid" 3)
+    gridColumn <| gridLineIdent "main-grid" (Just 3)
     -- grid-column: main-grid 3
 
-    gridColumn2Lines GridLineAuto (GridLineSpanIdentNum "grid-thing" 5)
+    gridColumn2 auto ( span (Just "grid-thing") (Just 5) )
     -- grid-column: auto / span grid-thing 5
 -}
 gridColumn :
-    BaseValue
-        { auto : Supported
-        , customIdent : Supported
-        }
+    BaseValue (GridLine)
     -> Style
 gridColumn (Value val) =
     AppendProperty <| "grid-column:" ++ val
@@ -11285,31 +11359,6 @@ gridColumn (Value val) =
 {-| The [`grid-column`](https://css-tricks.com/almanac/properties/g/grid-column/)
 property.
 
-This variant specifies 1 `<grid-line>` ([`GridLine`](#GridLine)) that determines
-the start and end position of this grid item.
-
-Numbers used in this should not be zero, else they won't work.
-
-    gridColumn auto
-
-    gridColumn inherit
-
-    gridColumnLine (GridLineIdentNum "main-grid" 3)
-    -- grid-column: main-grid 3
-
-    gridColumn2Lines GridLineAuto (GridLineSpanIdentNum "grid-thing" 5)
-    -- grid-column: auto / span grid-thing 5
--}
-gridColumnLine :
-    GridLine
-    -> Style
-gridColumnLine gl1 =
-    AppendProperty <| "grid-column:" ++ (unwrapGridLine gl1)
-
-
-{-| The [`grid-column`](https://css-tricks.com/almanac/properties/g/grid-column/)
-property.
-
 This variant specifies 2 `<grid-line>`s ([`GridLine`](#GridLine)) that determine
 the start and end position of this grid item.
 
@@ -11319,129 +11368,102 @@ Numbers used in this should not be zero, else they won't work.
 
     gridColumn inherit
 
-    gridColumnLine (GridLineIdentNum "main-grid" 3)
+    gridColumn <| gridLineIdent "main-grid" (Just 3)
     -- grid-column: main-grid 3
 
-    gridColumn2Lines GridLineAuto (GridLineSpanIdentNum "grid-thing" 5)
+    gridColumn2 auto ( span (Just "grid-thing") (Just 5) )
     -- grid-column: auto / span grid-thing 5
 -}
-gridColumn2Lines :
-    GridLine
-    -> GridLine
+gridColumn2 :
+    Value ( GridLine )
+    -> Value ( GridLine )
     -> Style
-gridColumn2Lines gl1 gl2 =
-    AppendProperty <| "grid-column:"
-        ++ (unwrapGridLine gl1)
-        ++ " / "
-        ++ (unwrapGridLine gl2)
+gridColumn2 (Value gl1) (Value gl2) =
+    AppendProperty <| "grid-column:" ++ gl1 ++ " / " ++ gl2
 
 
 {-| The 1-argument version of the [`grid-column-start`](https://css-tricks.com/almanac/properties/g/grid-column-start/)
 property.
 
-    gridColumnStart (customIdent "big-grid")
+    gridColumnStart inherit
 
     gridColumnStart auto
 
-    gridColumnStartLine <| GridLineSpanIdent "big-grid"
+    gridColumnStart <| span (Just "big-grid") Nothing
 
-    gridColumnStartLine <| GridLineSpanNum 3
+    gridColumnStart <| int 3
 
-    gridColumnStartLine <| GridLineIdentNum "big-grid" 2
+    gridColumnStart <| gridLineIdent "big-grid" (Just 2)
 -}
 gridColumnStart :
-    BaseValue (
-        { auto : Supported
-        , customIdent : Supported
-        , int : Supported
-        }
-    )
+    BaseValue ( GridLine )
     -> Style
 gridColumnStart (Value val) =
     AppendProperty ("grid-column-start:" ++ val)
 
 
-{-| The variant of [`gridColumnStart`](#gridColumnStart) that accepts a `<grid-line>` ([`GridLine`](#GridLine)) type.
-
-    gridColumnStart (customIdent "big-grid")
-
-    gridColumnStart auto
-
-    gridColumnStartLine <| GridLineSpanIdent "big-grid"
-
-    gridColumnStartLine <| GridLineSpanNum 3
-
-    gridColumnStartLine <| GridLineIdentNum "big-grid" 2
--}
-gridColumnStartLine :
-    GridLine
-    -> Style
-gridColumnStartLine gl =
-    AppendProperty ("grid-column-start:" ++ unwrapGridLine gl)
-
-
 {-| The 1-argument version of the [`grid-column-end`](https://css-tricks.com/almanac/properties/g/grid-column-end/)
 property.
 
-    gridColumnEnd (customIdent "big-grid")
+    gridColumnEnd inherit
 
     gridColumnEnd auto
 
-    gridColumnEnd2 span (int 3)
+    gridColumnEnd <| span (Just "big-grid") Nothing
 
-    gridColumnEnd2 (customIdent "big-grid") (int 2)
+    gridColumnEnd <| int 3
 
-    gridColumnEnd3 span (customIdent "big-grid") (int 2)
+    gridColumnEnd <| gridLineIdent "big-grid" (Just 2)
 -}
 gridColumnEnd :
-    BaseValue (
-        { auto : Supported
-        , customIdent : Supported
-        , int : Supported
-        }
-    )
+    BaseValue ( GridLine )
     -> Style
 gridColumnEnd (Value val) =
     AppendProperty ("grid-column-end:" ++ val)
 
-
-{-| The variant of [`gridColumnEnd`](#gridColumnEnd) that accepts a `<grid-line>` ([`GridLine`](#GridLine)) type.
-
-    gridColumnEnd (customIdent "big-grid")
-
-    gridColumnEnd auto
-
-    gridColumnEndLine <| GridLineSpanIdent "big-grid"
-
-    gridColumnEndLine <| GridLineSpanNum 3
-
-    gridColumnEndLine <| GridLineIdentNum "big-grid" 2
--}
-gridColumnEndLine :
-    GridLine
-    -> Style
-gridColumnEndLine gl =
-    AppendProperty ("grid-column-end:" ++ unwrapGridLine gl)
-
-
-
-
-{-| The single-argument variant of the [`grid-template`](https://css-tricks.com/almanac/properties/g/grid-template/) property.
+    
+{-| The[`grid-template`](https://css-tricks.com/almanac/properties/g/grid-template/)
+property.
 
     gridTemplate initial
 
     gridTemplate none
 
+    gridTemplate <|
+        templateAreasRowsColumns
+            [ templateAreaRow
+                ( Just <| lineNames ["header-left"] )
+                "head head"
+                ( Just <| px 30 )
+                ( Just <| lineNames ["header-right"] )
+            
+            , templateAreaRow
+                ( Just <| lineNames ["main-left"] )
+                "nav main"
+                ( Just <| fr 1 )
+                ( Just <| lineNames ["main-right"])
+
+            , templateAreaRow
+                ( Just <| lineNames ["footer-left"] )
+                "nav foot"
+                ( Just <| px 30 )
+                ( Just <| lineNames ["footer-right"])
+            ]
+            ( Just <| templateColumns
+                ( px 120 )
+                [ fr 120
+                ]
 -}
 
 gridTemplate :
     BaseValue
         { none : Supported
+        , templateRowsColumns : Supported
+        , templateAreasRowsColumns : Supported
         }
     -> Style
 gridTemplate (Value value) =
-    AppendProperty ("grid-template:" ++ value)
-
+    AppendProperty <| "grid-template:" ++ value
 
 
 {-| The [`grid-template-areas`](https://css-tricks.com/almanac/properties/g/grid-template-areas/)
@@ -11453,8 +11475,8 @@ to use multiple strings as a value.
     gridTemplateAreas inherit
 
     gridTemplateAreasMany
-        "c c b"
-        [ "c a b"
+        [ "c c b"
+        , "c a b"
         , "c d e"
         ]
 
@@ -11479,246 +11501,356 @@ to have no values in the output.
         , "c d e"
         ]
 
-    gridTemplateAreasMany [] -- grid-template-areas: unset;
+    gridTemplateAreasMany [] -- unset
 -}
 gridTemplateAreasMany :
     List String
     -> Style
 gridTemplateAreasMany values =
-        AppendProperty <|"grid-template-areas:" ++ stringListToStringEnquoted " " values
+        AppendProperty <| "grid-template-areas:" ++ stringListToStringEnquoted " " values
             
-
-{-| A single-argument version of the
-[`grid-template-rows`](https://css-tricks.com/almanac/properties/g/grid-template-rows/) property.
+{-| The [`grid-template-rows`](https://css-tricks.com/almanac/properties/g/grid-template-rows/)
+property.
 
     gridTemplateRows inherit
 
     gridTemplateRows none
 
-    gridTemplateRowsMany (px 200) [fr 1, px 180]
+    gridTemplateRows <|
+        trackList (px 200) [fr 1, px 180]
 
-    gridTemplateRowsMany
-        lineNames["line1", "line2"]
-        [ px 300
-        , lineNames["line3"]
-        ]
+    gridTemplateRows <|
+        trackList 
+            ( lineNames ["line1", "line2"] )
+            [ px 300
+            , lineNames ["line3"]
+            ]
 
-    gridTemplateRowsMany
-        ( repeatedTracks (num 4) [px 520] )
-        []
+    gridTemplateRows <|
+        trackList [ fixedRepeat (num 4) [px 520] ]
 
-    gridTemplateRowsMany
-        ( minmax (px 210) maxContent )
-        [ repeatedTracks autoFill [px 200]
-        , pct 20
-        ]
-
+    gridTemplateRowsMany <|
+        autoTrackList
+            ( minmax (px 210) maxContent )
+            [ autoRepeat autoFill [px 200]
+            , pct 20
+            ]
 -}
-
 gridTemplateRows :
     BaseValue
         { none : Supported
-        , auto : Supported
-        , minmax : Supported
-        , fitContentTo : Supported
-        , repeatedTracks : Supported
+        , trackList : Supported
+        , autoTrackList : Supported
         }
     -> Style
 gridTemplateRows (Value val) =
     AppendProperty <| "grid-template-rows:" ++ val
 
 
-{-| A multi-argument version of the
-[`grid-template-rows`](https://css-tricks.com/almanac/properties/g/grid-template-rows/) property.
-
-This is an extremely complicated CSS property with a lot of possible variants, and its too
-much variation to enforce, so while what kinds of types you can put in are enforced,
-the amounts of things you put in and the order in which you do it are not.
-
-If you give an empty list, the value will be `unset`. This is to make it impossible for it
-to have no values in the output.
-
-    gridTemplateRows inherit
-
-    gridTemplateRows none
-
-    gridTemplateRowsMany [px 200, fr 1, px 180]
-
-    gridTemplateRowsMany
-        [ lineNames["line1", "line2"]
-        , px 300
-        , lineNames["line3"]
-        ]
-
-    gridTemplateRowsMany
-        [ repeatedTracks (num 4) [px 520] 
-        ]
-
-    gridTemplateRowsMany
-        [ minmax (px 210) maxContent 
-        , repeatedTracks autoFill [px 200]
-        , pct 20
-        ]
-
-    gridTemplateRowsMany [] -- grid-template-rows: unset;
--}
-gridTemplateRowsMany :
-    List ( Value
-        ( LengthSupported
-            { pct : Supported
-            , fr : Supported
-            , minmax : Supported
-            , fitContentTo : Supported
-            , lineNames : Supported
-            , repeatedTracks : Supported
-            }
-        )
-    )
-    -> Style
-gridTemplateRowsMany values =
-    AppendProperty <| "grid-template-rows:" ++ valueListToString " " values
-
-
-
-{-| A single-argument version of the
-[`grid-template-columns`](https://css-tricks.com/almanac/properties/g/grid-template-columns/) property.
+{-| The [`grid-template-columns`](https://css-tricks.com/almanac/properties/g/grid-template-columns/)
+property.
 
     gridTemplateColumns inherit
 
     gridTemplateColumns none
 
-    gridTemplateColumnsMany (px 200) [fr 1, px 180]
+    gridTemplateColumns <|
+        trackList (px 200) [fr 1, px 180]
 
-    gridTemplateColumnsMany
-        lineNames["line1", "line2"]
-        [ px 300
-        , lineNames["line3"]
-        ]
+    gridTemplateColumns <|
+        trackList 
+            ( lineNames ["line1", "line2"] )
+            [ px 300
+            , lineNames ["line3"]
+            ]
 
-    gridTemplateColumnsMany
-        ( repeatedTracks (num 4) [px 520] )
-        []
+    gridTemplateColumns <|
+        trackList [ fixedRepeat (num 4) [px 520] ]
 
-    gridTemplateColumnsMany
-        ( minmax (px 210) maxContent )
-        [ repeatedTracks autoFill [px 200]
-        , pct 20
-        ]
-
-    gridTemplateColumnsMany [] -Supported- grid-template-columns: unset;
+    gridTemplateColumns <|
+        autoTrackList
+            ( minmax (px 210) maxContent )
+            [ autoRepeat autoFill [px 200]
+            , pct 20
+            ]
 -}
-
 gridTemplateColumns :
     BaseValue
         { none : Supported
-        , auto : Supported
-        , minmax : Supported
-        , fitContentTo : Supported
-        , repeatedTracks : Supported
+        , trackList : Supported
+        , autoTrackList : Supported
         }
     -> Style
 gridTemplateColumns (Value val) =
     AppendProperty <| "grid-template-columns:" ++ val
 
 
-{-| A multi-argument version of the
-[`grid-template-columns`](https://css-tricks.com/almanac/properties/g/grid-template-columns/) property.
+{-| Provides structured input for [`gridTemplate`](#gridTemplate) for
+inputting rows and columns, equivalent to inputting [`gridTemplateRows`](#gridTemplateRows)
+and [`gridTemplateColumns`] separately.
 
-This is an extremely complicated CSS property with a lot of possible variants, and its too
-much variation to enforce, so while what kinds of types you can put in are enforced,
-the amounts of things you put in and the order in which you do it are not.
-
-If you give an empty list, the value will be `unset`. This is to make it impossible for it
-to have no values in the output.
-
-    gridTemplateColumns inherit
-
-    gridTemplateColumns none
-
-    gridTemplateColumnsMany [px 200, fr 1, px 180]
-
-    gridTemplateColumnsMany
-        [ lineNames["line1", "line2"]
-        , px 300
-        , lineNames["line3"]
-        ]
-
-    gridTemplateColumnsMany
-        [ repeatedTracks (num 4) [px 520]
-        ]
-
-    gridTemplateColumnsMany
-        [ minmax (px 210) maxContent
-        , repeatedTracks autoFill [px 200]
-        , pct 20
-        ]
-    
-    gridTemplateColumnsMany [] -- grid-template-columns: unset;
+    gridTemplate <|
+        templateRowsColumns
+            trackList
+                ( lineNames ["line1", "line2"] )
+                [ px 300
+                , lineNames ["line3"]
+                ]
+            
+            autoTrackList
+                ( minmax (px 210) maxContent )
+                [ autoRepeat autoFill [px 200]
+                , pct 20
+                ]
 -}
-gridTemplateColumnsMany :
-    List ( Value
-        ( LengthSupported
-            { pct : Supported
-            , fr : Supported
-            , minmax : Supported
-            , fitContentTo : Supported
+templateRowsColumns :
+    Value
+        { trackList : Supported
+        , autoTrackList : Supported
+        }
+    -> Value
+        { trackList : Supported
+        , autoTrackList : Supported
+        }
+    -> Value { templateRowsColumns : Supported }
+templateRowsColumns (Value r) (Value c) =
+    Value <| r ++ " / " ++ c
+
+
+{-| Provides structured input for [`gridTemplate`](#gridTemplate) for
+inputting areas combined with rows, and then columns.
+
+    gridTemplate <|
+        templateAreasRowsColumns
+            [ templateAreaRow
+                ( Just <| lineNames ["left"] )
+                "nav foot"
+                ( Just <| px 30 )
+                ( Just <| lineNames ["right"])
+            ]
+            ( Just <| templateColumns
+                ( px 120 )
+                [ fr 120
+                ]
+            )
+-}
+templateAreasRowsColumns :
+    ( List ( Value { templateAreaRow : Supported }) )
+    -> ( Maybe ( Value { templateColumns : Supported } ) )
+    -> Value { templateAreasRowsColumns : Supported }
+templateAreasRowsColumns areasAndRows maybeColumns  =
+    Value <|
+        ( areasAndRows
+        |> List.map Value.unpack
+        |> String.join " "
+        )
+        ++ ( case maybeColumns of
+            Just c ->  " / " ++ Value.unpack c
+            Nothing -> ""
+        )
+        
+{-| The portion of a possible way of giving a
+[`gridTemplate`](#gridTemplate)`a value that sets rows and areas.
+
+    gridTemplate <|
+        templateAreasRowsColumns
+            [ templateAreaRow
+                ( Just <| lineNames ["header-left"] )
+                "head head"
+                ( Just <| px 30 )
+                ( Just <| lineNames ["header-right"] )
+            
+            , templateAreaRow
+                ( Just <| lineNames ["main-left"] )
+                "nav main"
+                ( Just <| fr 1 )
+                ( Just <| lineNames ["main-right"])
+
+            , templateAreaRow
+                ( Just <| lineNames ["footer-left"] )
+                "nav foot"
+                ( Just <| px 30 )
+                ( Just <| lineNames ["footer-right"])
+            ]
+            ( Just <| templateColumns
+                ( px 120 )
+                [ fr 120
+                ]
+            )
+-}
+templateAreaRow :
+    Maybe ( Value { lineNames : Supported } )
+    -> String
+    -> Maybe ( Value TrackSize )
+    -> Maybe ( Value { lineNames : Supported } )
+    -> Value { templateAreaRow : Supported }
+templateAreaRow startLines templateAreas trackSize endLines =
+    Value (
+        [ Maybe.map (Value.unpack) startLines
+        , Just templateAreas
+        , Maybe.map (Value.unpack) trackSize
+        , Maybe.map (Value.unpack) endLines
+        ]
+        |> List.filterMap (\v -> v)
+        |> String.join " "
+    )
+
+
+{-| The portion of a possible way of giving a
+[`gridTemplate`](#gridTemplate)`a value that sets columns.
+
+The first value is the head of the list. This function is structured in this
+way to prevent giving empty lists.
+
+    gridTemplate <|
+        templateAreasRowsColumns
+            [ templateAreaRow
+                ( Just <| lineNames ["left"] )
+                "nav foot"
+                ( Just <| px 30 )
+                ( Just <| lineNames ["right"])
+            ]
+            ( Just <| templateColumns
+                ( px 120 )
+                [ fr 120
+                ]
+            )
+
+-}
+templateColumns :
+    ( Value
+            ( TrackSizeSupported
+                ( { lineNames : Supported } )
+            )
+    )
+    -> List
+        ( Value
+            ( TrackSizeSupported
+                ( { lineNames : Supported } )
+            )
+        )
+    -> Value { templateColumns : Supported }
+templateColumns head rest =
+    Value <| valueListToStringNoFallback " " head rest
+
+
+{-| Creates a `<track-list>` value for use in creating grid tempolates.
+
+    gridTemplateColumns <|
+        trackList [ fixedRepeat (num 4) [px 520] ]
+-}
+trackList :
+    Value
+        ( TrackSizeSupported
+            { fixedRepeat : Supported
             , lineNames : Supported
-            , repeatedTracks : Supported
             }
         )
-    )
-    -> Style
-gridTemplateColumnsMany values =
-    AppendProperty <| "grid-template-columns:" ++ valueListToString " " values
+    -> List
+        ( Value
+            ( TrackSizeSupported
+                { fixedRepeat : Supported
+                , lineNames : Supported
+                }
+            )
+        )
+    -> Value { trackList : Supported }
+trackList head rest =
+    Value <| valueListToStringNoFallback " " head rest
 
 
+{-| Creates a `<auto-track-list>` value for use in creating grid templates.
 
-
-
-
-
-
-{-| Custom ident(s) that are only used in grid area definitions,
-for naming lines of a grid layout. A line may have multiple names.
-
-Line names are case sensitive.
-
-    gridTemplateColumnsList
-        [ lineNames["line1", "line2"]
-        , px 300
-        , lineNames["line3"]
-        ]
-
-    --- grid-template-colums: [line1 line2] 300px [line3];
+    gridTemplateColumns <|
+        autoTrackList
+            ( minmax (px 210) maxContent )
+            [ autoRepeat autoFill [px 200]
+            , pct 20
+            ]
 -}
-lineNames : List String -> Value { provides | lineNames : Supported }
-lineNames list =
-    Value <| "[" ++ String.join " " list ++ "]"
+autoTrackList :
+    Value
+        ( FixedSizeSupported
+            { fixedRepeat : Supported
+            , autoRepeat : Supported
+            , lineNames : Supported
+            }
+        )
+    -> List
+        ( Value
+            ( FixedSizeSupported
+                { fixedRepeat : Supported
+                , autoRepeat : Supported
+                , lineNames : Supported
+                }
+            )
+        )
+    -> Value { autoTrackList : Supported }
+autoTrackList head rest =
+    Value <| valueListToStringNoFallback " " head rest
 
 
 {-| Performs the `repeat()` function used in CSS Grid track lists. This lets you
 repeat a pattern of grid lines in CSS Grid without duplicating code.
 
-You must specify a `num`, `autoFit`, or `autoFill` before specifying the track
+This is the fixed variant of the repeat() function. In this variant, you must
+specify a `num` before specifying the track list pattern you want to repeat.
+
+    gridTemplateRows <|
+        autoTrackList
+            [ lineNames ["linename1"]
+            , px 100
+            , lineNames ["linename2"]
+            , fixedRepeat (num 10)
+                (px 10)
+                [ lineNames ["row-start"]
+                , px 250
+                , lineNames ["row-end"]
+                ]
+            , px 100
+            ]
+-}
+fixedRepeat : 
+    Value
+        { num : Supported
+        }
+    -> List ( Value
+        ( LengthSupported
+            { pct : Supported
+            , fr : Supported
+            , minmax : Supported
+            , lineNames : Supported
+            }
+        )
+    )
+    -> Value { provides | fixedRepeat : Supported }
+fixedRepeat (Value firstArg) list =
+    Value <| "repeat(" ++ firstArg ++ ", " ++ valueListToStringUnsafe " " list ++ ")"
+
+
+{-| Performs the `repeat()` function used in CSS Grid track lists. This lets you
+repeat a pattern of grid lines in CSS Grid without duplicating code.
+
+You must specify a `autoFit`, or `autoFill` before specifying the track
 list pattern you want to repeat.
 
     gridTemplateRows <|
-        repeatedTracks (num 4)
-            [ px 10
-            , lineNames["row-start"]
-            , px 250
-            , lineNames["row-end"]
+        autoTrackList
+            [ lineNames ["linename1"]
+            , px 100
+            , lineNames ["linename2"]
+            , autoRepeat autoFit
+                (px 10)
+                [ lineNames["row-start"]
+                , px 250
+                , lineNames["row-end"]
+                ]
+            , px 100
             ]
-
-Note: This had to be named differently from the original function because
-[`repeat`](#repeat) is already a value function that does something
-completely different.
-
 -}
-repeatedTracks : 
+autoRepeat : 
     Value
-        { num : Supported
-        , autoFill : Supported
+        { autoFill : Supported
         , autoFit : Supported
         }
     -> List ( Value
@@ -11730,9 +11862,9 @@ repeatedTracks :
             }
         )
     )
-    -> Value { provides | repeatedTracks : Supported }
-repeatedTracks (Value firstArg) trackList =
-    Value <| "repeat(" ++ firstArg ++ ", " ++ valueListToString " " trackList ++ ")"
+    -> Value { provides | autoRepeat : Supported }
+autoRepeat (Value firstArg) list =
+    Value <| "repeat(" ++ firstArg ++ ", " ++ valueListToStringUnsafe " " list ++ ")"
 
 
 {-| The `auto-fill` value [used in the `repeat()` function](https://developer.mozilla.org/en-US/docs/Web/CSS/repeat#values).
