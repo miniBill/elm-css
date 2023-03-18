@@ -272,7 +272,7 @@ all =
             , ( flex_, "flex" )
             , ( flow, "flow" )
             , ( flowRoot, "flow-root" )
-            , ( grid, "grid" )
+            , ( grid_, "grid" )
             , ( table, "table" )
             , ( ruby, "ruby" )
             , ( rubyBase, "ruby-base" )
@@ -294,7 +294,7 @@ all =
             , ( display2 block flowRoot, "block flow-root" )
             , ( display2 block table, "block table" )
             , ( display2 runIn flex_, "run-in flex" )
-            , ( display2 inline grid, "inline grid" )
+            , ( display2 inline grid_, "inline grid" )
             , ( display2 runIn ruby, "run-in ruby" )
             ]
         , testProperty { functionName = "displayListItem2", property = "display" }

@@ -71,7 +71,7 @@ module Css exposing
 
     -- display
     , display, display2, displayListItem2, displayListItem3
-    , flex_, flow, flowRoot, grid, contents, listItem
+    , flex_, flow, flowRoot, grid_, contents, listItem
     , inlineBlock, inlineFlex, inlineTable, inlineGrid
     , rubyBase, rubyBaseContainer, rubyText, rubyTextContainer
     , runIn, table
@@ -193,7 +193,7 @@ module Css exposing
     , gridAutoColumns, gridAutoColumnsMany
     , gridAutoFlow, gridAutoFlow2
     -- grid areas
-    , GridLine, gridLineIdent, span
+    , GridLine, gridLineIdent, gridLineSpan
     , gridArea, gridArea2, gridArea3, gridArea4
     , gridRow, gridRow2
     , gridRowStart, gridRowEnd
@@ -704,7 +704,7 @@ Sometimes these keywords mean other things too.
 # Display
 
 @docs display, display2, displayListItem2, displayListItem3
-@docs flex_, flow, flowRoot, grid, contents, listItem
+@docs flex_, flow, flowRoot, grid_, contents, listItem
 @docs inlineBlock, inlineFlex, inlineTable, inlineGrid
 @docs rubyBase, rubyBaseContainer, rubyText, rubyTextContainer
 @docs runIn, table
@@ -962,7 +962,7 @@ Other values you can use for flex item alignment:
 @docs gridAutoFlow, gridAutoFlow2
 
 ## Grid areas
-@docs GridLine, gridLineIdent, span
+@docs GridLine, gridLineIdent, gridLineSpan
 @docs gridArea, gridArea2, gridArea3, gridArea4
 @docs gridRow, gridRow2
 @docs gridRowStart, gridRowEnd
@@ -2853,7 +2853,7 @@ dividedBy :
     -> CalcOperation
 dividedBy (Value second) =
     -- The calc `/` operator does not need to be surrounded by whitespace.
-    CalcOperation (" / " ++ getCalcExpression second)
+    CalcOperation ("/" ++ getCalcExpression second)
 
 
 ------------------------------------------------------------------------
@@ -3425,12 +3425,10 @@ string =
 
 
 {-| Produces an [`custom-ident`](https://developer.mozilla.org/en-US/docs/Web/CSS/custom-ident)
-value used by properties including (but not limited to) [`listStyle`](#listStyle),
-[`listStyleType`](#listStyleType) and [`gridColumnEnd2`](#gridColumnEnd2).
+value used by properties such as (but not limited to) [`listStyle`](#listStyle) and
+[`listStyleType`](#listStyleType).
 
     listStyleType (customIdent "hello-world")
-
-    gridColumnEnd2 span (customIdent "hello-world")
 
 **Note:** This method does not do any checking if the identifierer supplied is valid.
 
@@ -5026,7 +5024,9 @@ all (Value val) =
 
     display block
 
-**Note:** This function accepts `flex_` rather than `flex` because [`flex` is already a property function](#flex).
+**Note:** This function accepts `flex_` and `grid_` 
+ather than `flex` and `grid` because
+[`flex`](#flex) and [`grid`](#grid) are already property functions.
 
 -}
 display :
@@ -5035,7 +5035,7 @@ display :
         , flex_ : Supported
         , flow : Supported
         , flowRoot : Supported
-        , grid : Supported
+        , grid_ : Supported
         , listItem : Supported
         , inline : Supported
         , inlineBlock : Supported
@@ -5069,7 +5069,10 @@ display (Value val) =
 
     display2 block flex_
 
-**Note:** This function accepts `flex_` rather than `flex` because [`flex` is already a property function](#flex).
+**Note:** This function accepts `flex_` and `grid_` 
+ather than `flex` and `grid` because
+[`flex`](#flex) and [`grid`](#grid) are already property functions.
+
 For `display: inline list-item` and similar property values that include `list-item`
 look at [`displayListItem2`](#displayListItem2) and [`displayListItem3`](#displayListItem3).
 
@@ -5086,7 +5089,7 @@ display2 :
             , flowRoot : Supported
             , table : Supported
             , flex_ : Supported
-            , grid : Supported
+            , grid_ : Supported
             , ruby : Supported
             }
     -> Style
@@ -5171,11 +5174,15 @@ flowRoot =
 
 {-| The `grid` value used by [`display`](#display).
 
-    display grid
+The value is called `grid_` instead of `grid` because
+[`grid` is already a property function](#grid).
+
+
+    display grid_
 
 -}
-grid : Value { provides | grid : Supported }
-grid =
+grid_ : Value { provides | grid_ : Supported }
+grid_ =
     Value "grid"
 
 
@@ -11011,7 +11018,7 @@ type alias GridLine =
     { auto : Supported
     , num : Supported
     , gridLineIdent : Supported
-    , span : Supported
+    , gridLineSpan : Supported
     }
 
 
@@ -11022,26 +11029,26 @@ and an optional integer.
 
     gridLineIdent "header" (Just 1)
 
-    span Nothing Nothing
+    gridLineSpan Nothing Nothing
 
-    span (Just "header") Nothing
+    gridLineSpan (Just "header") Nothing
 
-    span (Just "footer") (Just 1)
+    gridLineSpan (Just "footer") (Just 1)
 
 -}
 gridLineIdent :
     String
     -> Maybe Int
-    -> Value { gridLineIdent : Supported }
+    -> Value { provides | gridLineIdent : Supported }
 gridLineIdent val1 val2 =
     let
         val2Str =
             case val2 of
-                Just val -> String.fromInt val
+                Just val -> " " ++ String.fromInt val
                 Nothing -> ""
 
     in
-    Value <| val1 ++ " " ++ val2Str
+    Value <| val1 ++ val2Str
 
 
 {-| Creates a grid line value with a 'span' keyword value followed by
@@ -11051,26 +11058,25 @@ and an optional integer.
 
     gridLineIdent "header" (Just 1)
 
-    span Nothing Nothing
+    gridLineSpan Nothing Nothing
 
-    span (Just "header") Nothing
+    gridLineSpan (Just "header") Nothing
 
-    span (Just "footer") (Just 1)
+    gridLineSpan (Just "footer") (Just 1)
 
 -}
-span :
+gridLineSpan :
     Maybe String
     -> Maybe Int
-    -> Value { gridLine : Supported }
-span val1 val2 =
-    Value <|
+    -> Value { provides | gridLineSpan : Supported }
+gridLineSpan val1 val2 =
+    Value <| "span" ++
         ( case val1 of
-            Just v -> v
+            Just v -> " " ++ v
             Nothing -> ""
         )
-        ++ " "
         ++ ( case val2 of
-            Just v -> String.fromInt v
+            Just v -> " " ++ String.fromInt v
             Nothing -> ""
         )
         
@@ -11087,24 +11093,24 @@ Numbers used in this should not be zero, else they won't work.
 
     gridArea inherit
 
-    gridArea <| span Nothing Nothing
+    gridArea <| gridLineSpan Nothing Nothing
       
     gridArea <| gridLineIdent "big-grid" (Just 4)
 
     gridArea2Lines
         ( gridLineIdent "big-grid" (Just 4) )
-        ( span (Just "other-grid") Nothing )
+        ( gridLineSpan (Just "other-grid") Nothing )
 
     gridArea3Lines
         ( gridLineIdent "big-grid" (Just 4))
-        ( span (Just "other-grid") Nothing)
+        ( gridLineSpan (Just "other-grid") Nothing)
         ( num 7 )
 
     gridArea4Lines
         ( gridLineIdent "big-grid" (Just 4) )
-        ( span (Just "other-grid") Nothing )
+        ( gridLineSpan (Just "other-grid") Nothing )
         ( num 7 )
-        ( span (Just "another-grid") (Just 12) )
+        ( gridLineSpan (Just "another-grid") (Just 12) )
 
 -}
 gridArea :
@@ -11126,24 +11132,24 @@ Numbers used in this should not be zero, else they won't work.
 
     gridArea inherit
 
-    gridArea <| span Nothing Nothing
+    gridArea <| gridLineSpan Nothing Nothing
       
     gridArea <| gridLineIdent "big-grid" (Just 4)
 
     gridArea2
         ( gridLineIdent "big-grid" (Just 4) )
-        ( span (Just "other-grid") Nothing )
+        ( gridLineSpan (Just "other-grid") Nothing )
 
     gridArea3
         ( gridLineIdent "big-grid" (Just 4))
-        ( span (Just "other-grid") Nothing)
+        ( gridLineSpan (Just "other-grid") Nothing)
         ( num 7 )
 
     gridArea4
         ( gridLineIdent "big-grid" (Just 4) )
-        ( span (Just "other-grid") Nothing )
+        ( gridLineSpan (Just "other-grid") Nothing )
         ( num 7 )
-        ( span (Just "another-grid") (Just 12) )
+        ( gridLineSpan (Just "another-grid") (Just 12) )
 
 -}
 gridArea2 :
@@ -11151,7 +11157,7 @@ gridArea2 :
     -> Value ( GridLine )
     -> Style
 gridArea2 (Value gl1) (Value gl2) =
-    AppendProperty <| "grid-area:" ++ gl1 ++ " / " ++ gl2
+    AppendProperty <| "grid-area:" ++ gl1 ++ "/" ++ gl2
 
 
 {-| The [`grid-area`](https://css-tricks.com/almanac/properties/g/grid-area/)
@@ -11166,24 +11172,24 @@ Numbers used in this should not be zero, else they won't work.
 
     gridArea inherit
 
-    gridArea <| span Nothing Nothing
+    gridArea <| gridLineSpan Nothing Nothing
       
     gridArea <| gridLineIdent "big-grid" (Just 4)
 
     gridArea2
         ( gridLineIdent "big-grid" (Just 4) )
-        ( span (Just "other-grid") Nothing )
+        ( gridLineSpan (Just "other-grid") Nothing )
 
     gridArea3
         ( gridLineIdent "big-grid" (Just 4))
-        ( span (Just "other-grid") Nothing)
+        ( gridLineSpan (Just "other-grid") Nothing)
         ( num 7 )
 
     gridArea4
         ( gridLineIdent "big-grid" (Just 4) )
-        ( span (Just "other-grid") Nothing )
+        ( gridLineSpan (Just "other-grid") Nothing )
         ( num 7 )
-        ( span (Just "another-grid") (Just 12) )
+        ( gridLineSpan (Just "another-grid") (Just 12) )
 
 -}
 gridArea3 :
@@ -11192,7 +11198,7 @@ gridArea3 :
     -> Value ( GridLine )
     -> Style
 gridArea3 (Value gl1) (Value gl2) (Value gl3) =
-    AppendProperty <| "grid-area:" ++ gl1 ++ " / " ++ gl2 ++ " / " ++ gl3
+    AppendProperty <| "grid-area:" ++ gl1 ++ "/" ++ gl2 ++ "/" ++ gl3
 
 
 {-| The [`grid-area`](https://css-tricks.com/almanac/properties/g/grid-area/)
@@ -11207,24 +11213,24 @@ Numbers used in this should not be zero, else they won't work.
 
     gridArea inherit
 
-    gridArea <| span Nothing Nothing
+    gridArea <| gridLineSpan Nothing Nothing
       
     gridArea <| gridLineIdent "big-grid" (Just 4)
 
     gridArea2
         ( gridLineIdent "big-grid" (Just 4) )
-        ( span (Just "other-grid") Nothing )
+        ( gridLineSpan (Just "other-grid") Nothing )
 
     gridArea3
         ( gridLineIdent "big-grid" (Just 4))
-        ( span (Just "other-grid") Nothing)
+        ( gridLineSpan (Just "other-grid") Nothing)
         ( num 7 )
 
     gridArea4
         ( gridLineIdent "big-grid" (Just 4) )
-        ( span (Just "other-grid") Nothing )
+        ( gridLineSpan (Just "other-grid") Nothing )
         ( num 7 )
-        ( span (Just "another-grid") (Just 12) )
+        ( gridLineSpan (Just "another-grid") (Just 12) )
 
 -}
 gridArea4 :
@@ -11234,7 +11240,7 @@ gridArea4 :
     -> Value ( GridLine )
     -> Style
 gridArea4 (Value gl1) (Value gl2) (Value gl3) (Value gl4) =
-    AppendProperty <| "grid-area:" ++ gl1 ++ " / " ++ gl2 ++ " / " ++ gl3 ++ " / " ++ gl4
+    AppendProperty <| "grid-area:" ++ gl1 ++ "/" ++ gl2 ++ "/" ++ gl3 ++ "/" ++ gl4
 
 
 {-| The [`grid-row`](https://css-tricks.com/almanac/properties/g/grid-row/)
@@ -11253,7 +11259,7 @@ Numbers used in this should not be zero, else they won't work.
     gridRow <| gridLineIdent "main-grid" (Just 3)
     -- grid-row: main-grid 3
 
-    gridRow2 auto ( span (Just "grid-thing") (Just 5) )
+    gridRow2 auto ( gridLineSpan (Just "grid-thing") (Just 5) )
     -- grid-row: auto / span grid-thing 5
 -}
 gridRow :
@@ -11278,7 +11284,7 @@ Numbers used in this should not be zero, else they won't work.
     gridRow <| gridLineIdent "main-grid" (Just 3)
     -- grid-row: main-grid 3
 
-    gridRow2 auto ( span (Just "grid-thing") (Just 5) )
+    gridRow2 auto ( gridLineSpan (Just "grid-thing") (Just 5) )
     -- grid-row: auto / span grid-thing 5
 -}
 gridRow2 :
@@ -11286,7 +11292,7 @@ gridRow2 :
     -> Value ( GridLine )
     -> Style
 gridRow2 (Value gl1) (Value gl2) =
-    AppendProperty <| "grid-row:" ++ gl1 ++ " / " ++ gl2
+    AppendProperty <| "grid-row:" ++ gl1 ++ "/" ++ gl2
 
 
 {-| The 1-argument version of the [`grid-row-start`](https://css-tricks.com/almanac/properties/g/grid-row-start/)
@@ -11296,7 +11302,7 @@ property.
 
     gridRowStart auto
 
-    gridRowStart <| span (Just "big-grid") Nothing
+    gridRowStart <| gridLineSpan (Just "big-grid") Nothing
 
     gridRowStart <| int 3
 
@@ -11317,7 +11323,7 @@ property.
 
     gridRowEnd auto
 
-    gridRowEnd <| span (Just "big-grid") Nothing
+    gridRowEnd <| gridLineSpan (Just "big-grid") Nothing
 
     gridRowEnd <| int 3
 
@@ -11346,8 +11352,8 @@ Numbers used in this should not be zero, else they won't work.
     gridColumn <| gridLineIdent "main-grid" (Just 3)
     -- grid-column: main-grid 3
 
-    gridColumn2 auto ( span (Just "grid-thing") (Just 5) )
-    -- grid-column: auto / span grid-thing 5
+    gridColumn2 auto ( gridLineSpan (Just "grid-thing") (Just 5) )
+    -- grid-column: auto / gridLineSpan grid-thing 5
 -}
 gridColumn :
     BaseValue (GridLine)
@@ -11371,15 +11377,15 @@ Numbers used in this should not be zero, else they won't work.
     gridColumn <| gridLineIdent "main-grid" (Just 3)
     -- grid-column: main-grid 3
 
-    gridColumn2 auto ( span (Just "grid-thing") (Just 5) )
-    -- grid-column: auto / span grid-thing 5
+    gridColumn2 auto ( gridLineSpan (Just "grid-thing") (Just 5) )
+    -- grid-column: auto / gridLineSpan grid-thing 5
 -}
 gridColumn2 :
     Value ( GridLine )
     -> Value ( GridLine )
     -> Style
 gridColumn2 (Value gl1) (Value gl2) =
-    AppendProperty <| "grid-column:" ++ gl1 ++ " / " ++ gl2
+    AppendProperty <| "grid-column:" ++ gl1 ++ "/" ++ gl2
 
 
 {-| The 1-argument version of the [`grid-column-start`](https://css-tricks.com/almanac/properties/g/grid-column-start/)
@@ -11389,7 +11395,7 @@ property.
 
     gridColumnStart auto
 
-    gridColumnStart <| span (Just "big-grid") Nothing
+    gridColumnStart <| gridLineSpan (Just "big-grid") Nothing
 
     gridColumnStart <| int 3
 
@@ -11409,7 +11415,7 @@ property.
 
     gridColumnEnd auto
 
-    gridColumnEnd <| span (Just "big-grid") Nothing
+    gridColumnEnd <| gridLineSpan (Just "big-grid") Nothing
 
     gridColumnEnd <| int 3
 
@@ -11614,7 +11620,7 @@ templateRowsColumns :
         }
     -> Value { templateRowsColumns : Supported }
 templateRowsColumns (Value r) (Value c) =
-    Value <| r ++ " / " ++ c
+    Value <| r ++ "/" ++ c
 
 
 {-| Provides structured input for [`gridTemplate`](#gridTemplate) for
@@ -11635,9 +11641,13 @@ inputting areas combined with rows, and then columns.
             )
 -}
 templateAreasRowsColumns :
-    ( List ( Value { templateAreaRow : Supported }) )
-    -> ( Maybe ( Value { templateColumns : Supported } ) )
-    -> Value { templateAreasRowsColumns : Supported }
+    ( List 
+        ( Value { templateAreaRow : Supported })
+    )
+    -> ( Maybe
+        ( Value { templateColumns : Supported } )
+    )
+    -> Value { provides | templateAreasRowsColumns : Supported }
 templateAreasRowsColumns areasAndRows maybeColumns  =
     Value <|
         ( areasAndRows
@@ -11645,7 +11655,7 @@ templateAreasRowsColumns areasAndRows maybeColumns  =
         |> String.join " "
         )
         ++ ( case maybeColumns of
-            Just c ->  " / " ++ Value.unpack c
+            Just c ->  "/" ++ Value.unpack c
             Nothing -> ""
         )
         
@@ -11683,7 +11693,7 @@ templateAreaRow :
     -> String
     -> Maybe ( Value TrackSize )
     -> Maybe ( Value { lineNames : Supported } )
-    -> Value { templateAreaRow : Supported }
+    -> Value { provides | templateAreaRow : Supported }
 templateAreaRow startLines templateAreas trackSize endLines =
     Value (
         [ Maybe.map (Value.unpack) startLines
@@ -11729,7 +11739,7 @@ templateColumns :
                 ( { lineNames : Supported } )
             )
         )
-    -> Value { templateColumns : Supported }
+    -> Value { provides | templateColumns : Supported }
 templateColumns head rest =
     Value <| valueListToStringNoFallback " " head rest
 
@@ -11754,7 +11764,7 @@ trackList :
                 }
             )
         )
-    -> Value { trackList : Supported }
+    -> Value { provides | trackList : Supported }
 trackList head rest =
     Value <| valueListToStringNoFallback " " head rest
 
@@ -11785,7 +11795,7 @@ autoTrackList :
                 }
             )
         )
-    -> Value { autoTrackList : Supported }
+    -> Value { provides | autoTrackList : Supported }
 autoTrackList head rest =
     Value <| valueListToStringNoFallback " " head rest
 
