@@ -3,7 +3,7 @@ module Grid exposing (..)
 import Css exposing (..)
 import Css.Global exposing (..)
 import Css.Preprocess exposing (Stylesheet, stylesheet)
-import Test exposing (Test, describe, test)
+import Test exposing (Test, test)
 import Expect
 import TestUtil exposing (..)
 
@@ -13,6 +13,20 @@ compileTest title stylesheet output =
        ( \_ ->
             outdented (prettyPrint stylesheet)
                 |> Expect.equal (outdented output))
+
+
+
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+                                --Grid Areas
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
 
 gridAreaTest : Test
 gridAreaTest =
@@ -113,7 +127,10 @@ gridRowTest =
     compileTest
         "gridRow/2"
         (stylesheet
-            [ class "auto1"
+            [ class "baseVal"
+                [ gridRow inherit
+                ]
+            , class "auto1"
                 [ gridRow auto
                 ]
             , class "auto2"
@@ -155,54 +172,17 @@ gridRowTest =
                 ]
             ]
         )
-        """
-        .auto1 {
-          grid-row:auto;
-        }
-
-        .auto2 {
-          grid-row:auto/auto;
-        }
-
-        .ident1 {
-          grid-row:big-area;
-        }
-
-        .ident2 {
-          grid-row:big-area/another-area;
-        }
-
-        .multi1 {
-          grid-row:big-area 4;
-        }
-
-        .multi2 {
-          grid-row:big-area 4/6;
-        }
-
-        .multi3 {
-          grid-row:span some-area 5;
-        }
-
-        .multi4 {
-          grid-row:span some-area 3/6;
-        }
-
-        .multi5 {
-          grid-row:span some-area/span another-area;
-        }
-
-        .multi6 {
-          grid-row:span some-area 5/span 2;
-        }
-        """
+        (rowColumnTestString "grid-row")
 
 gridColumnTest : Test
 gridColumnTest =
     compileTest
         "gridColumn/2"
         (stylesheet
-            [ class "auto1"
+            [ class "baseVal"
+                [ gridColumn inherit
+                ]
+            , class "auto1"
                 [ gridColumn auto
                 ]
             , class "auto2"
@@ -244,162 +224,271 @@ gridColumnTest =
                 ]
             ]
         )
-        """
-        .auto1 {
-          grid-column:auto;
-        }
+        (rowColumnTestString "grid-column")
 
-        .auto2 {
-          grid-column:auto/auto;
-        }
+rowColumnTestString : String -> String
+rowColumnTestString actualCSSproperty =
+    """
+    .baseVal {
+      """++actualCSSproperty++""":inherit;
+    }
 
-        .ident1 {
-          grid-column:big-area;
-        }
+    .auto1 {
+      """++actualCSSproperty++""":auto;
+    }
 
-        .ident2 {
-          grid-column:big-area/another-area;
-        }
+    .auto2 {
+      """++actualCSSproperty++""":auto/auto;
+    }
 
-        .multi1 {
-          grid-column:big-area 4;
-        }
+    .ident1 {
+      """++actualCSSproperty++""":big-area;
+    }
 
-        .multi2 {
-          grid-column:big-area 4/6;
-        }
+    .ident2 {
+      """++actualCSSproperty++""":big-area/another-area;
+    }
 
-        .multi3 {
-          grid-column:span some-area 5;
-        }
+    .multi1 {
+      """++actualCSSproperty++""":big-area 4;
+    }
 
-        .multi4 {
-          grid-column:span some-area 3/6;
-        }
+    .multi2 {
+      """++actualCSSproperty++""":big-area 4/6;
+    }
 
-        .multi5 {
-          grid-column:span some-area/span another-area;
-        }
+    .multi3 {
+      """++actualCSSproperty++""":span some-area 5;
+    }
 
-        .multi6 {
-          grid-column:span some-area 5/span 2;
-        }
-        """
+    .multi4 {
+      """++actualCSSproperty++""":span some-area 3/6;
+    }
 
+    .multi5 {
+      """++actualCSSproperty++""":span some-area/span another-area;
+    }
+
+    .multi6 {
+      """++actualCSSproperty++""":span some-area 5/span 2;
+    }
+    """
+
+
+
+columRowStartEndTest : String -> ( BaseValue ( GridLine ) -> Style ) -> String -> Test
+columRowStartEndTest title property actualCSSproperty =
+    compileTest
+            title
+            (stylesheet
+                [ class "baseVal"
+                    [ property initial
+                    ]
+                , class "auto1"
+                    [ property auto
+                    ]
+                , class "ident1"
+                    [ property <| gridLineIdent "some-area" Nothing
+                    ]
+                , class "identAndNum1"
+                    [ property (num 2)
+                    ]
+                , class "identAndNum2"
+                    [ property <| gridLineIdent "big-area" (Just 4)
+                    ]
+                , class "span1"
+                    [ property <| gridLineSpan Nothing (Just 3)
+                    ]
+                , class "span2"
+                    [ property <| gridLineSpan (Just "some-area") Nothing
+                    ]
+                , class "span3"
+                    [ property <| gridLineSpan (Just "some-area") (Just 3)
+                    ]
+                ]
+            )
+            (
+            """
+            .baseVal {
+              """++actualCSSproperty++""":initial;
+            }
+
+            .auto1 {
+              """++actualCSSproperty++""":auto;
+            }
+            
+            .ident1 {
+              """++actualCSSproperty++""":some-area;
+            }
+
+            .identAndNum1 {
+              """++actualCSSproperty++""":2;
+            }
+
+            .identAndNum2 {
+              """++actualCSSproperty++""":big-area 4;
+            }
+
+            .span1 {
+              """++actualCSSproperty++""":span 3;
+            }
+
+            .span2 {
+              """++actualCSSproperty++""":span some-area;
+            }
+
+            .span3 {
+              """++actualCSSproperty++""":span some-area 3;
+            }
+            """
+            )
+
+gridRowStartTest : Test
+gridRowStartTest =
+  columRowStartEndTest "gridRowStart" gridRowStart "grid-row-start"
+
+gridRowEndTest : Test
+gridRowEndTest =
+  columRowStartEndTest "gridRowEnd" gridRowEnd "grid-row-end"
 
 gridColumnStartTest : Test
 gridColumnStartTest =
-    compileTest
-        "gridColumnStart"
-        (stylesheet
-            [ class "auto1"
-                [ gridColumnStart auto
-                ]
-            , class "ident1"
-                [ gridColumnStart <| gridLineIdent "some-area" Nothing
-                ]
-            , class "identAndNum1"
-                [ gridColumnStart (num 2)
-                ]
-            , class "identAndNum2"
-                [ gridColumnStart <| gridLineIdent "big-area" (Just 4)
-                ]
-            , class "span1"
-                [ gridColumnStart <| gridLineSpan Nothing (Just 3)
-                ]
-            , class "span2"
-                [ gridColumnStart <| gridLineSpan (Just "some-area") Nothing
-                ]
-            , class "span3"
-                [ gridColumnStart <| gridLineSpan (Just "some-area") (Just 3)
-                ]
-            ]
-        )
-        """
-        .auto1 {
-          grid-column-start:auto;
-        }
-        
-        .ident1 {
-          grid-column-start:some-area;
-        }
-
-        .identAndNum1 {
-          grid-column-start:2;
-        }
-
-        .identAndNum2 {
-          grid-column-start:big-area 4;
-        }
-
-        .span1 {
-          grid-column-start:span 3;
-        }
-
-        .span2 {
-          grid-column-start:span some-area;
-        }
-
-        .span3 {
-          grid-column-start:span some-area 3;
-        }
-        """
-
+  columRowStartEndTest "gridColumnStart" gridColumnStart "grid-column-start"
 
 gridColumnEndTest : Test
 gridColumnEndTest =
-    compileTest
-        "gridColumnEnd"
-        (stylesheet
-            [ class "auto1"
-                [ gridColumnEnd auto
+  columRowStartEndTest "gridColumnEnd" gridColumnEnd "grid-column-end"
+
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+                            --Grid Templates
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+
+gridTemplateTest : Test
+gridTemplateTest =
+  compileTest "gridTemplate"
+      ( stylesheet
+          [ class "baseVal"
+              [ gridTemplate initial
+              ]
+
+          , class "none"
+              [ gridTemplate none
+              ]
+
+          , class "areas-rows-columns"
+              [ gridTemplate <|
+                  templateAreasRowsColumns
+                      [ templateAreaRow
+                          ( Just <| lineNames ["header-left"] )
+                          "head head"
+                          ( Just <| px 30 )
+                          ( Just <| lineNames ["header-right"] )
+                      
+                      , templateAreaRow
+                          ( Just <| lineNames ["main-left"] )
+                          "nav main"
+                          ( Just <| fr 1 )
+                          ( Just <| lineNames ["main-right"])
+
+                      , templateAreaRow
+                          ( Just <| lineNames ["footer-left"] )
+                          "nav foot"
+                          ( Just <| px 30 )
+                          ( Just <| lineNames ["footer-right"])
+                      ]
+                      ( Just <| templateColumns
+                          ( px 120 )
+                          [ fr 120
+                          ]
+                      )
+              ]
+
+            , class "rows-columns"
+              [ gridTemplate <|
+                  templateRowsColumns
+                      ( trackList
+                          ( lineNames ["line1", "line2"] )
+                          [ px 300
+                          , lineNames ["line3"]
+                          ]
+                      )
+                      
+                      ( autoTrackList
+                          ( minmax (px 210) maxContent )
+                          [ autoRepeat autoFill [px 200]
+                          , pct 20
+                          ]
+                      )
+
+              ]
+          ]
+      )
+      """
+      .baseVal {
+        grid-template:initial;
+      }
+
+      .none {
+        grid-template:none;
+      }
+
+      .areas-rows-columns {
+        grid-template:[header-left] "head head" 30px [header-right] [main-left] "nav main" 1fr [main-right] [footer-left] "nav foot" 30px [footer-right]/120px 120fr;
+      }
+
+      .rows-columns {
+        grid-template:[line1 line2] 300px [line3]/minmax(210px,max-content) repeat(auto-fill,200px) 20%;
+      }
+      """
+
+
+gridTemplateAreasTest : Test
+gridTemplateAreasTest =
+    compileTest "gridTemplateAreas/Cells"
+        ( stylesheet
+            [ class "baseVal"
+                [ gridTemplateAreas initial
                 ]
-            , class "ident1"
-                [ gridColumnEnd <| gridLineIdent "some-area" Nothing
+            , class "none"
+                [ gridTemplateAreas none
                 ]
-            , class "identAndNum1"
-                [ gridColumnEnd (num 2)
+            , class "oneRow"
+                [ gridTemplateAreasCells [ "a b" ]
                 ]
-            , class "identAndNum2"
-                [ gridColumnEnd <| gridLineIdent "big-area" (Just 4)
+            , class "manyRows"
+                [ gridTemplateAreasCells ["a b b", "a c d"]
                 ]
-            , class "span1"
-                [ gridColumnEnd <| gridLineSpan Nothing (Just 3)
-                ]
-            , class "span2"
-                [ gridColumnEnd <| gridLineSpan (Just "some-area") Nothing
-                ]
-            , class "span3"
-                [ gridColumnEnd <| gridLineSpan (Just "some-area") (Just 3)
+            , class "emptyList"
+                [ gridTemplateAreasCells []
                 ]
             ]
         )
         """
-        .auto1 {
-          grid-column-end:auto;
-        }
-        
-        .ident1 {
-          grid-column-end:some-area;
+        .baseVal {
+          grid-template-areas:initial;
         }
 
-        .identAndNum1 {
-          grid-column-end:2;
+        .none {
+          grid-template-areas:none;
         }
 
-        .identAndNum2 {
-          grid-column-end:big-area 4;
+        .oneRow {
+          grid-template-areas:"a b";
         }
 
-        .span1 {
-          grid-column-end:span 3;
+        .manyRows {
+          grid-template-areas:"a b b""a c d";
         }
 
-        .span2 {
-          grid-column-end:span some-area;
-        }
-
-        .span3 {
-          grid-column-end:span some-area 3;
+        .emptyList {
+          grid-template-areas:unset;
         }
         """

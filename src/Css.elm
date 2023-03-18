@@ -201,7 +201,7 @@ module Css exposing
     , gridColumnStart, gridColumnEnd
     -- grid templates
     , gridTemplate
-    , gridTemplateAreas, gridTemplateAreasMany
+    , gridTemplateAreas, gridTemplateAreasCells
     , gridTemplateRows
     , gridTemplateColumns
     , templateRowsColumns, templateAreasRowsColumns
@@ -971,7 +971,7 @@ Other values you can use for flex item alignment:
 
 ## Grid templates
 @docs gridTemplate
-@docs gridTemplateAreas, gridTemplateAreasMany
+@docs gridTemplateAreas, gridTemplateAreasCells
 @docs gridTemplateRows
 @docs gridTemplateColumns
 @docs templateRowsColumns, templateAreasRowsColumns
@@ -3100,7 +3100,7 @@ minmax :
     )
     -> Value { provides | minmax : Supported }
 minmax (Value minBreadth) (Value maxBreadth) =
-    Value <| "minmax(" ++ minBreadth ++ ", " ++ maxBreadth ++ ")"
+    Value <| "minmax(" ++ minBreadth ++ "," ++ maxBreadth ++ ")"
 
 
 {-| The [`fit-content()`](https://developer.mozilla.org/en-US/docs/Web/CSS/fit-content_function)
@@ -11459,6 +11459,23 @@ property.
                 ( px 120 )
                 [ fr 120
                 ]
+            )
+
+    gridTemplate <|
+        templateRowsColumns
+            ( trackList
+                ( lineNames ["line1", "line2"] )
+                [ px 300
+                , lineNames ["line3"]
+                ]
+            )
+            
+            ( autoTrackList
+                ( minmax (px 210) maxContent )
+                [ autoRepeat autoFill [px 200]
+                , pct 20
+                ]
+            )
 -}
 
 gridTemplate :
@@ -11480,7 +11497,7 @@ to use multiple strings as a value.
 
     gridTemplateAreas inherit
 
-    gridTemplateAreasMany
+    gridTemplateAreasCells
         [ "c c b"
         , "c a b"
         , "c d e"
@@ -11496,24 +11513,25 @@ gridTemplateAreas (Value val) =
     AppendProperty ("grid-template-areas:" ++ val)
 
 
-{-| A version of [`gridTemplateAreas`](#gridTemplateAreas) that lets you input a list of strings a value.
+{-| A version of [`gridTemplateAreas`](#gridTemplateAreas) that
+lets you input a list of strings as values, representing grid cells.
 
 If you give an empty list, the value will be `unset`. This is to make it impossible for it
 to have no values in the output.
 
-    gridTemplateAreasMany
+    gridTemplateAreasCells
         [ "c c b"
         , "c a b"
         , "c d e"
         ]
 
-    gridTemplateAreasMany [] -- unset
+    gridTemplateAreasCells [] -- unset
 -}
-gridTemplateAreasMany :
+gridTemplateAreasCells :
     List String
     -> Style
-gridTemplateAreasMany values =
-        AppendProperty <| "grid-template-areas:" ++ stringListToStringEnquoted " " values
+gridTemplateAreasCells values =
+        AppendProperty <| "grid-template-areas:" ++ stringListToStringEnquoted "" values
             
 {-| The [`grid-template-rows`](https://css-tricks.com/almanac/properties/g/grid-template-rows/)
 property.
@@ -11618,7 +11636,7 @@ templateRowsColumns :
         { trackList : Supported
         , autoTrackList : Supported
         }
-    -> Value { templateRowsColumns : Supported }
+    -> Value { provides | templateRowsColumns : Supported }
 templateRowsColumns (Value r) (Value c) =
     Value <| r ++ "/" ++ c
 
@@ -11697,7 +11715,7 @@ templateAreaRow :
 templateAreaRow startLines templateAreas trackSize endLines =
     Value (
         [ Maybe.map (Value.unpack) startLines
-        , Just templateAreas
+        , Just <| enquoteString templateAreas
         , Maybe.map (Value.unpack) trackSize
         , Maybe.map (Value.unpack) endLines
         ]
@@ -11806,19 +11824,21 @@ repeat a pattern of grid lines in CSS Grid without duplicating code.
 This is the fixed variant of the repeat() function. In this variant, you must
 specify a `num` before specifying the track list pattern you want to repeat.
 
-    gridTemplateRows <|
-        autoTrackList
-            [ lineNames ["linename1"]
-            , px 100
-            , lineNames ["linename2"]
-            , fixedRepeat (num 10)
-                (px 10)
-                [ lineNames ["row-start"]
-                , px 250
-                , lineNames ["row-end"]
+    gridTemplate <|
+        templateRowsColumns
+            ( trackList
+                ( lineNames ["line1", "line2"] )
+                [ px 300
+                , lineNames ["line3"]
                 ]
-            , px 100
-            ]
+            )
+            
+            ( autoTrackList
+                ( minmax (px 210) maxContent )
+                [ autoRepeat autoFill [px 200]
+                , pct 20
+                ]
+            )
 -}
 fixedRepeat : 
     Value
@@ -11835,7 +11855,7 @@ fixedRepeat :
     )
     -> Value { provides | fixedRepeat : Supported }
 fixedRepeat (Value firstArg) list =
-    Value <| "repeat(" ++ firstArg ++ ", " ++ valueListToStringUnsafe " " list ++ ")"
+    Value <| "repeat(" ++ firstArg ++ "," ++ valueListToStringUnsafe " " list ++ ")"
 
 
 {-| Performs the `repeat()` function used in CSS Grid track lists. This lets you
@@ -11874,7 +11894,7 @@ autoRepeat :
     )
     -> Value { provides | autoRepeat : Supported }
 autoRepeat (Value firstArg) list =
-    Value <| "repeat(" ++ firstArg ++ ", " ++ valueListToStringUnsafe " " list ++ ")"
+    Value <| "repeat(" ++ firstArg ++ "," ++ valueListToStringUnsafe " " list ++ ")"
 
 
 {-| The `auto-fill` value [used in the `repeat()` function](https://developer.mozilla.org/en-US/docs/Web/CSS/repeat#values).
