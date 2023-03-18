@@ -2853,7 +2853,7 @@ dividedBy :
     -> CalcOperation
 dividedBy (Value second) =
     -- The calc `/` operator does not need to be surrounded by whitespace.
-    CalcOperation ("/" ++ getCalcExpression second)
+    CalcOperation (" / " ++ getCalcExpression second)
 
 
 ------------------------------------------------------------------------

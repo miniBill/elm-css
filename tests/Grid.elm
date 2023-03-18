@@ -285,3 +285,121 @@ gridColumnTest =
           grid-column:span some-area 5/span 2;
         }
         """
+
+
+gridColumnStartTest : Test
+gridColumnStartTest =
+    compileTest
+        "gridColumnStart"
+        (stylesheet
+            [ class "auto1"
+                [ gridColumnStart auto
+                ]
+            , class "ident1"
+                [ gridColumnStart <| gridLineIdent "some-area" Nothing
+                ]
+            , class "identAndNum1"
+                [ gridColumnStart (num 2)
+                ]
+            , class "identAndNum2"
+                [ gridColumnStart <| gridLineIdent "big-area" (Just 4)
+                ]
+            , class "span1"
+                [ gridColumnStart <| gridLineSpan Nothing (Just 3)
+                ]
+            , class "span2"
+                [ gridColumnStart <| gridLineSpan (Just "some-area") Nothing
+                ]
+            , class "span3"
+                [ gridColumnStart <| gridLineSpan (Just "some-area") (Just 3)
+                ]
+            ]
+        )
+        """
+        .auto1 {
+          grid-column-start:auto;
+        }
+        
+        .ident1 {
+          grid-column-start:some-area;
+        }
+
+        .identAndNum1 {
+          grid-column-start:2;
+        }
+
+        .identAndNum2 {
+          grid-column-start:big-area 4;
+        }
+
+        .span1 {
+          grid-column-start:span 3;
+        }
+
+        .span2 {
+          grid-column-start:span some-area;
+        }
+
+        .span3 {
+          grid-column-start:span some-area 3;
+        }
+        """
+
+
+gridColumnEndTest : Test
+gridColumnEndTest =
+    compileTest
+        "gridColumnEnd"
+        (stylesheet
+            [ class "auto1"
+                [ gridColumnEnd auto
+                ]
+            , class "ident1"
+                [ gridColumnEnd <| gridLineIdent "some-area" Nothing
+                ]
+            , class "identAndNum1"
+                [ gridColumnEnd (num 2)
+                ]
+            , class "identAndNum2"
+                [ gridColumnEnd <| gridLineIdent "big-area" (Just 4)
+                ]
+            , class "span1"
+                [ gridColumnEnd <| gridLineSpan Nothing (Just 3)
+                ]
+            , class "span2"
+                [ gridColumnEnd <| gridLineSpan (Just "some-area") Nothing
+                ]
+            , class "span3"
+                [ gridColumnEnd <| gridLineSpan (Just "some-area") (Just 3)
+                ]
+            ]
+        )
+        """
+        .auto1 {
+          grid-column-end:auto;
+        }
+        
+        .ident1 {
+          grid-column-end:some-area;
+        }
+
+        .identAndNum1 {
+          grid-column-end:2;
+        }
+
+        .identAndNum2 {
+          grid-column-end:big-area 4;
+        }
+
+        .span1 {
+          grid-column-end:span 3;
+        }
+
+        .span2 {
+          grid-column-end:span some-area;
+        }
+
+        .span3 {
+          grid-column-end:span some-area 3;
+        }
+        """
