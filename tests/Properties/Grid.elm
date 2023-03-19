@@ -1,20 +1,10 @@
-module Grid exposing (..)
+module Properties.Grid exposing (..)
 
 import Css exposing (..)
 import Css.Global exposing (..)
-import Css.Preprocess exposing (Stylesheet, stylesheet)
-import Test exposing (Test, test)
-import Expect
-import TestUtil exposing (..)
-
-compileTest : String -> Stylesheet -> String -> Test
-compileTest title stylesheet output =
-    test title
-       ( \_ ->
-            outdented (prettyPrint stylesheet)
-                |> Expect.equal (outdented output))
-
-
+import Css.Preprocess exposing (stylesheet)
+import Compile
+import Test exposing (Test)
 
 
 --------------------------------------------------------------------------------
@@ -30,7 +20,7 @@ compileTest title stylesheet output =
 
 gridAreaTest : Test
 gridAreaTest =
-    compileTest
+    Compile.test
         "gridArea/2/3/4"
         (stylesheet
             [ class "auto1"
@@ -124,7 +114,7 @@ gridAreaTest =
 
 gridRowTest : Test
 gridRowTest =
-    compileTest
+    Compile.test
         "gridRow/2"
         (stylesheet
             [ class "baseVal"
@@ -176,7 +166,7 @@ gridRowTest =
 
 gridColumnTest : Test
 gridColumnTest =
-    compileTest
+    Compile.test
         "gridColumn/2"
         (stylesheet
             [ class "baseVal"
@@ -278,7 +268,7 @@ rowColumnTestString actualCSSproperty =
 
 columRowStartEndTest : String -> ( BaseValue ( GridLine ) -> Style ) -> String -> Test
 columRowStartEndTest title property actualCSSproperty =
-    compileTest
+    Compile.test
             title
             (stylesheet
                 [ class "baseVal"
@@ -373,7 +363,7 @@ gridColumnEndTest =
 
 gridTemplateTest : Test
 gridTemplateTest =
-  compileTest "gridTemplate"
+  Compile.test "gridTemplate"
       ( stylesheet
           [ class "baseVal"
               [ gridTemplate initial
@@ -452,7 +442,7 @@ gridTemplateTest =
 
 gridTemplateAreasTest : Test
 gridTemplateAreasTest =
-    compileTest "gridTemplateAreas/Cells"
+    Compile.test "gridTemplateAreas/Cells"
         ( stylesheet
             [ class "baseVal"
                 [ gridTemplateAreas initial

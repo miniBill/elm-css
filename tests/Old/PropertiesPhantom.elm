@@ -1,4 +1,4 @@
-module PropertiesPhantom exposing (all)
+module Old.PropertiesPhantom exposing (all)
 
 import Css exposing (..)
 import Css.Preprocess exposing (toPropertyStrings)
@@ -54,8 +54,7 @@ all =
             )
         , testProperty1 minWidth
             { functionName = "minWidth", property = "min-width" }
-            ([ ( auto, "auto" )
-             , ( maxContent, "max-content" )
+            ([ ( maxContent, "max-content" )
              , ( minContent, "min-content" )
              , ( fitContent, "fit-content" )
              , ( pct 90, "90%" )
@@ -84,8 +83,7 @@ all =
             )
         , testProperty1 minHeight
             { functionName = "minHeight", property = "min-height" }
-            ([ ( auto, "auto" )
-             , ( maxContent, "max-content" )
+            ([ ( maxContent, "max-content" )
              , ( minContent, "min-content" )
              , ( fitContent, "fit-content" )
              , ( pct 90, "90%" )

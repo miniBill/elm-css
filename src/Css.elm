@@ -6101,6 +6101,7 @@ width :
             , maxContent : Supported
             , minContent : Supported
             , fitContent : Supported
+            , fitContentTo : Supported
             }
         )
     -> Style
@@ -6120,11 +6121,11 @@ width (Value sizeVal) =
 minWidth :
     BaseValue
         (LengthSupported
-            { auto : Supported
+            { pct : Supported
             , maxContent : Supported
             , minContent : Supported
             , fitContent : Supported
-            , pct : Supported
+            , fitContentTo : Supported
             }
         )
     -> Style
@@ -6144,11 +6145,12 @@ minWidth (Value sizeVal) =
 maxWidth :
     BaseValue
         (LengthSupported
-            { maxContent : Supported
+            { pct : Supported
+            , none : Supported
+            , maxContent : Supported
             , minContent : Supported
             , fitContent : Supported
-            , none : Supported
-            , pct : Supported
+            , fitContentTo : Supported
             }
         )
     -> Style
@@ -6169,6 +6171,7 @@ height :
             , maxContent : Supported
             , minContent : Supported
             , fitContent : Supported
+            , fitContentTo : Supported
             }
         )
     -> Style
@@ -6185,10 +6188,10 @@ minHeight :
     BaseValue
         (LengthSupported
             { pct : Supported
-            , auto : Supported
             , maxContent : Supported
             , minContent : Supported
             , fitContent : Supported
+            , fitContentTo : Supported
             }
         )
     -> Style
@@ -6209,6 +6212,7 @@ maxHeight :
             , maxContent : Supported
             , minContent : Supported
             , fitContent : Supported
+            , fitContentTo : Supported
             }
         )
     -> Style
@@ -6225,10 +6229,11 @@ blockSize :
     BaseValue
         (LengthSupported
             { pct : Supported
-            , none : Supported
+            , auto : Supported
             , maxContent : Supported
             , minContent : Supported
             , fitContent : Supported
+            , fitContentTo : Supported
             }
         )
     -> Style
@@ -6245,10 +6250,10 @@ minBlockSize :
     BaseValue
         (LengthSupported
             { pct : Supported
-            , none : Supported
             , maxContent : Supported
             , minContent : Supported
             , fitContent : Supported
+            , fitContentTo : Supported
             }
         )
     -> Style
@@ -6269,6 +6274,7 @@ maxBlockSize :
             , maxContent : Supported
             , minContent : Supported
             , fitContent : Supported
+            , fitContentTo : Supported
             }
         )
     -> Style
@@ -6285,10 +6291,11 @@ inlineSize :
     BaseValue
         (LengthSupported
             { pct : Supported
-            , none : Supported
+            , auto : Supported
             , maxContent : Supported
             , minContent : Supported
             , fitContent : Supported
+            , fitContentTo : Supported
             }
         )
     -> Style
@@ -6305,10 +6312,10 @@ minInlineSize :
     BaseValue
         (LengthSupported
             { pct : Supported
-            , none : Supported
             , maxContent : Supported
             , minContent : Supported
             , fitContent : Supported
+            , fitContentTo : Supported
             }
         )
     -> Style
@@ -6329,6 +6336,7 @@ maxInlineSize :
             , maxContent : Supported
             , minContent : Supported
             , fitContent : Supported
+            , fitContentTo : Supported
             }
         )
     -> Style
