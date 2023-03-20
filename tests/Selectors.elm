@@ -56,7 +56,7 @@ elements =
         , testSelector "strong" strong
         , testSelector "i" i
         , testSelector "em" Css.Global.em
-        , testSelector "q" q
+        , testSelector "q" Css.Global.q
         , testSelector "img" img
         , testSelector "audio" audio
         , testSelector "video" video

@@ -1,16 +1,16 @@
-module CompileFixtures exposing (basicStyle1, basicStyle2, dreamwriter, pageBackground, pageDefaultText, unstyledDiv)
+module Old.CompileFixtures exposing (basicStyle1, basicStyle2, dreamwriter, pageBackground, pageDefaultText, unstyledDiv)
 
 import Css exposing (..)
 import Css.Global exposing (..)
 import Css.Preprocess exposing (Stylesheet, stylesheet)
+import Css.Value exposing (Value(..))
 
-
-pageBackground : Color
+pageBackground : BaseValue Color
 pageBackground =
     rgb 100 90 128
 
 
-pageDefaultText : Color
+pageDefaultText : BaseValue Color
 pageDefaultText =
     rgb 40 35 76
 

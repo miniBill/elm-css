@@ -1,4 +1,11 @@
-module Css.Preprocess exposing (Snippet(..), SnippetDeclaration(..), Style(..), StyleBlock(..), Stylesheet, mapAllLastProperty, mapLastProperty, mapProperties, stylesheet, toMediaRule, toPropertyStrings, unwrapSnippet)
+module Css.Preprocess exposing
+    ( Snippet(..), SnippetDeclaration(..)
+    , Style(..), StyleBlock(..), Stylesheet
+    , mapAllLastProperty, mapLastProperty, mapProperties
+    , stylesheet
+    , toMediaRule, toPropertyStrings
+    , unwrapSnippet
+    )
 
 {-| A representation of the preprocessing to be done. The elm-css DSL generates
 the data structures found in this module.
@@ -66,9 +73,8 @@ toMediaRule mediaQueries declaration =
         Structure.SupportsRule str declarations ->
             Structure.SupportsRule str (List.map (toMediaRule mediaQueries) declarations)
 
-        -- TODO give these more descriptive names
-        Structure.DocumentRule str1 str2 str3 str4 structureStyleBlock ->
-            Structure.DocumentRule str1 str2 str3 str4 structureStyleBlock
+        Structure.DocumentRule _ _ _ _ _ ->
+            declaration
 
         Structure.PageRule _ ->
             declaration

@@ -1,87 +1,183 @@
 module Css.Media exposing
     ( MediaQuery, MediaType, Expression
+
+    -- rule constructors
     , withMedia, withMediaQuery
+
+    -- query constructors
     , all, only, not
+
+    -- media type
     , screen, print, speech
-    , minWidth, width, maxWidth, minHeight, height, maxHeight, Ratio, ratio
-    , minAspectRatio, aspectRatio, maxAspectRatio, Landscape, Portrait
+
+    -- size
+    , width, minWidth, maxWidth
+    , height, minHeight, maxHeight
+
+    -- aspect ratio
+    , aspectRatio, minAspectRatio, maxAspectRatio
+
+    -- orientation
+    , OrientationSupported, Orientation
     , landscape, portrait, orientation
-    , Resolution, dpi, dpcm, dppx, minResolution, resolution, maxResolution
-    , Progressive, Interlace, progressive, interlace, scan, grid, Slow
-    , Fast, slow, fast, update, Paged, OptionalPaged, paged, optionalPaged
+
+    -- resolution
+    , ResolutionSupported, Resolution
+    , dpi, dpcm, dppx, x
+    , resolution, minResolution, maxResolution
+
+    -- scanning
+    , ScanningProcessSupported, ScanningProcess
+    , scan
+    , progressive, interlace
+    
+    -- grid or bitmap-based screen
+    , grid
+
+    -- overflow-block
     , overflowBlock, overflowInline
-    , Bits, bits, minColor, color, maxColor, minMonochrome, monochrome
-    , maxMonochrome, minColorIndex, colorIndex, maxColorIndex, SRGB, P3
-    , Rec2020, srgb, p3, rec2020, colorGamut
-    , Fine, Coarse, fine, coarse, pointer, anyPointer, CanHover, canHover
+    , paged, optionalPaged
+    
+    -- color depth
+    , color, minColor, maxColor
+    , monochrome, minMonochrome, maxMonochrome
+    , colorIndex, minColorIndex, maxColorIndex
+    
+    -- color gamut
+    , colorGamut, srgb, p3, rec2020
+
+    -- interaction features
+    , PointingAccuracySupported, PointingAccuracy
+    , pointer, anyPointer
     , hover, anyHover
-    , InitialOnly, Enabled, initialOnly, enabled, scripting
+    , fine, coarse, hover_
+
+    -- scripting
+    , scripting, initialOnly, enabled
     )
 
 {-| Functions for building [`@media` queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries).
-
 
 # Data Structures
 
 @docs MediaQuery, MediaType, Expression
 
+-------------------------------
 
-# `@media` rule constructors
+# Constructors
+
+## `@media` rule constructors
 
 @docs withMedia, withMediaQuery
 
-
-# Query constructors
+## Query constructors
 
 @docs all, only, not
 
+-------------------------------
 
-# Media Types
+# Media types
 
 @docs screen, print, speech
 
+-------------------------------
 
-# Viewport, Page Dimensions Media Features
+# Size media features
 
-@docs minWidth, width, maxWidth, minHeight, height, maxHeight, Ratio, ratio
-@docs minAspectRatio, aspectRatio, maxAspectRatio, Landscape, Portrait
-@docs landscape, portrait, orientation
+For querying either the size of the viewport
+or the size of a printed page.
 
+@docs width, minWidth, maxWidth
+@docs height, minHeight, maxHeight
+
+## Ratio
+
+@docs aspectRatio, minAspectRatio, maxAspectRatio
+
+## Orientation
+
+@docs OrientationSupported, Orientation
+@docs orientation
+@docs landscape, portrait
+
+-------------------------------
 
 # Display Quality Media Features
 
-@docs Resolution, dpi, dpcm, dppx, minResolution, resolution, maxResolution
-@docs Progressive, Interlace, progressive, interlace, scan, grid, Slow
-@docs Fast, slow, fast, update, Paged, OptionalPaged, paged, optionalPaged
-@docs overflowBlock, overflowInline
+## Resolution
 
+@docs ResolutionSupported, Resolution
+@docs dpi, dpcm, dppx, x
+@docs resolution, minResolution, maxResolution
+
+## Display scanning
+
+@docs ScanningProcessSupported, ScanningProcess
+@docs scan, progressive, interlace
+
+## Bitmap or grid-based display
+
+@docs grid
+
+## Overflow
+
+@docs overflowBlock, overflowInline
+@docs paged, optionalPaged
+
+-------------------------------
 
 # Color Media Features
 
-@docs Bits, bits, minColor, color, maxColor, minMonochrome, monochrome
-@docs maxMonochrome, minColorIndex, colorIndex, maxColorIndex, SRGB, P3
-@docs Rec2020, srgb, p3, rec2020, colorGamut
+## Bit depth
 
+@docs color, minColor, maxColor
+@docs monochrome, minMonochrome, maxMonochrome
+@docs colorIndex, minColorIndex, maxColorIndex
+
+## Color gamut
+
+@docs colorGamut
+@docs srgb, p3, rec2020
+
+-------------------------------
 
 # Interaction Media Features
 
-@docs Fine, Coarse, fine, coarse, pointer, anyPointer, CanHover, canHover
+@docs PointingAccuracySupported, PointingAccuracy
+@docs pointer, anyPointer
 @docs hover, anyHover
+@docs coarse, fine, hover_
 
+-------------------------------
 
 # Scripting Media Features
 
-@docs InitialOnly, Enabled, initialOnly, enabled, scripting
-
+@docs scripting
+@docs enabled, initialOnly
 -}
 
 import Css exposing (Style)
 import Css.Preprocess as Preprocess
 import Css.Structure as Structure exposing (..)
+import Css.Value exposing (Value(..), Supported)
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+-------------------------- DATA STRUCTURES -----------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 
 {-| One query of a media rule. A media rule can have multiple queries.
-The CSS below contains 1 rule, with 2 queries.
+For example, the Elm and corresponding CSS below contains 1 rule, with 2 queries.
 
 ```css
 @media print, screen and (monochrome) {
@@ -90,13 +186,10 @@ The CSS below contains 1 rule, with 2 queries.
     }
 }
 ```
-
 The above rule roughly translates as:
 _If the device is a printer or is a monochrome screen, the body color is black._
-
 In elm-css, queries are joined into rules using a special `MediaQuery`
 returned by the `or` function.
-
 -}
 type alias MediaQuery =
     Structure.MediaQuery
@@ -109,27 +202,55 @@ type alias MediaType =
 
 
 {-| A media expression.
-
 An expression is a [media feature](https://developer.mozilla.org/en-US/docs/Web/CSS/@media#Media_features) with an optional value, which resolves to
 either true or false.
-
 In the media query `screen and (min-width: 768px)`,
-
   - `screen` is a media type,
   - `min-width` is a media feature, and
   - `(min-width: 768px)` is an expression.
-
 -}
 type alias Expression =
     Structure.MediaExpression
 
 
-type alias Value compatible =
-    { compatible | value : String }
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+-------------------------- PRIVATE HELPERS -----------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 
+feature : String -> String -> Expression
+feature key val =
+    { feature = key, value = Just val }
 
-{--Rule constructors--}
+
+unparameterizedFeature : String -> Expression
+unparameterizedFeature key =
+    { feature = key, value = Nothing }
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------ RULE CONSTRUCTORS ----------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 
 {-| Combines media queries that are nested under selectors into a `@media` rule.
@@ -138,7 +259,7 @@ type alias Value compatible =
         [ withMedia [ only screen [ Media.minWidth (px 300), Media.maxWidth (px 800) ] ]
             [ Css.maxWidth (px 300) ]
 
-The above code translates into the following CSS.
+The above code translates into the following CSS:
 
 ```css
 @media only screen and (min-width: 300px) and (max-width: 800px) {
@@ -147,7 +268,6 @@ The above code translates into the following CSS.
     }
 }
 ```
-
 -}
 withMedia : List MediaQuery -> List Style -> Style
 withMedia =
@@ -162,7 +282,7 @@ using a List of strings.
             [ fontSize (px 14 px) ]
         ]
 
-The above code translates into the following CSS.
+The above code translates into the following CSS:
 
 ```css
 @media screen and (min-width: 320px), screen and (max-height: 400px) {
@@ -171,7 +291,6 @@ The above code translates into the following CSS.
     }
 }
 ```
-
 -}
 withMediaQuery : List String -> List Style -> Style
 withMediaQuery queries =
@@ -181,26 +300,39 @@ withMediaQuery queries =
 
 
 
-{--Query Constructors--}
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------ QUERY CONSTRUCTORS ----------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 
 {-| Build a media query that will match all media types.
-
 The supplied `expressions` are combined with `and`.
 
-    media [ all [ color, landscape ] ]
-        [ body [ Css.color (hex "ff0000") ] ]
+If you want to build a media query that doesn't specify a media
+type, use this function.
 
-The above code translates into the following CSS.
+    withMedia [ all [ color, orientation landscape ] ]
+        [ Css.color (hex "ff0000")
+        ]
+
+The above code translates into the following CSS:
 
 ```css
-@media (color) and (landscape) {
-    body {
-        color: #ff0000;
-    }
+@media (color) and (orientation: landscape) {
+    color: #ff0000;
 }
 ```
-
 -}
 all : List Expression -> MediaQuery
 all =
@@ -209,19 +341,17 @@ all =
 
 {-| Build a media query matching a single media type.
 
-    media [ only screen [ minWidth (px 320), portrait ] ]
-        [ body [ Css.color (hex "ff0000") ] ]
+    withMedia [ only screen [ minWidth (px 320), orientation portrait ] ]
+        [ Css.color (hex "ff0000") ]
 
-The above code translates into the following CSS.
+
+The above code translates into the following CSS:
 
 ```css
-@media only screen and (min-width: 320px) and (portrait) {
-    body {
-        color: #ff0000;
-    }
+@media only screen and (min-width: 320px) and (orientation: portrait) {
+    color: #ff0000;
 }
 ```
-
 -}
 only : MediaType -> List Expression -> MediaQuery
 only =
@@ -230,727 +360,973 @@ only =
 
 {-| Build a negated media query.
 
-    media [ not screen [] ]
-        [ body [ Css.color (hex "ff0000") ] ]
+    withMedia [ Media.not screen [] ]
+        [ Css.color (hex "ff0000")
+        ]
 
-The above code translates into the following CSS.
+The above code translates into the following CSS:
 
 ```css
 @media not screen {
-    body {
-        color: #ff0000;
-    }
+    color: #ff0000;
 }
 ```
-
 -}
 not : MediaType -> List Expression -> MediaQuery
 not =
     NotQuery
 
 
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------ MEDIA TYPE ------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 
-{--Media Types --}
 
+{-| CSS [media type](https://developer.mozilla.org/en-US/docs/Web/CSS/@media#media_types)
+for any device not matched by print or speech.
 
-{-| Media type for printers
-
-    media print [ a [ color (hex 0), textDecoration none ] ]
-
--}
-print : MediaType
-print =
-    Structure.Print
-
-
-{-| Media type for any device not matched by print or speech.
-
-    media (and screen (maxWidth (px 600)) [ Css.class mobileNav display none ]
-
+    withMedia [ screen [ maxWidth (px 600) ]]
+        [ display none ]
 -}
 screen : MediaType
 screen =
     Structure.Screen
 
 
-{-| Media type for screenreaders and similar devices that read out a page
+{-| Css [media type](https://developer.mozilla.org/en-US/docs/Web/CSS/@media#media_types)
+for printers.
 
-    media (not speech) [ Css.class screenReaderOnly [ display none ] ]
+    withMedia [ print ]
+        [ color (hex 0), textDecoration none ]
+-}
+print : MediaType
+print =
+    Structure.Print
 
+
+{-| CSS [media type](https://developer.mozilla.org/en-US/docs/Web/CSS/@media#media_types)
+for screenreaders and similar devices that read out a page.
+
+    withMedia [ not speech ]
+        [ display none ]
 -}
 speech : MediaType
 speech =
     Structure.Speech
 
 
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+--------------------------------- SIZE ---------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 
-{--Viewport/Page Dimensions Media Features--}
 
+{-| The [`width`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/width)
+media feature.
 
-{-| A length that is not in any way relative to the window size
-(percent, vh, vw, and so on), such as px, pt, cm, em, rem, and so on.
+    withMedia [ all [ Media.width (px 200) ]]
+        [ ... ]
 -}
-type alias AbsoluteLength compatible =
-    { compatible | value : String, absoluteLength : Compatible }
+width :
+    Value
+        ( Css.Length
+        )
+    -> Expression
+width (Value val) =
+    feature "width" val
 
 
-{-| Media feature [`min-width`](https://drafts.csswg.org/mediaqueries/#width)
-Queries the width of the output device.
+{-| The [`min-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/width)
+CSS media feature.
 
-    media (Media.minWidth (px 600)) [ Css.class Container [ Css.maxWidth (px 500) ] ]
-
+    withMedia [ all [ Media.minWidth (px 600) ]]
+        [ Css.maxWidth (px 500) ]
 -}
-minWidth : AbsoluteLength compatible -> Expression
-minWidth value =
-    feature "min-width" value
+minWidth :
+    Value
+        ( Css.Length
+        )
+    -> Expression
+minWidth (Value val) =
+    feature "min-width" val
 
 
-{-| Media feature [`width`](https://drafts.csswg.org/mediaqueries/#width)
+{-| The [`max-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/width)
+CSS media feature.
 
-    media (Media.width (px 200)) [ ... ]
-
+    withMedia [ all [ Media.maxWidth (px 800) ]]
+        [ display none ]
 -}
-width : AbsoluteLength compatible -> Expression
-width value =
-    feature "width" value
+maxWidth :
+    Value
+        ( Css.Length
+        )
+    -> Expression
+maxWidth (Value val) =
+    feature "max-width" val
 
 
-{-| Media feature [`max-width`](https://drafts.csswg.org/mediaqueries/#width)
+{-| The [`height`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/height)
+CSS media feature.
 
-    media (Media.maxWidth (px 800)) [ Css.class MobileNav [ display none ] ]
-
+    withMedia [ all [ Media.height (px 200) ]]
+        [ ... ]
 -}
-maxWidth : AbsoluteLength compatible -> Expression
-maxWidth value =
-    feature "max-width" value
+height :
+    Value
+        ( Css.Length
+        )
+    -> Expression
+height (Value val) =
+    feature "height" val
 
 
-{-| Media feature [`min-height`](https://drafts.csswg.org/mediaqueries/#height)
+{-| The [`min-height`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/height)
+CSS media feature.
 
-    media (Media.minHeight (px 400)) [ Css.class TopBanner [ display block ] ]
-
+    withMedia [ all [ Media.minHeight (px 400) ]]
+        [ display block ]
 -}
-minHeight : AbsoluteLength compatible -> Expression
-minHeight value =
-    feature "min-height" value
+minHeight :
+    Value
+        ( Css.Length
+        )
+    -> Expression
+minHeight (Value val) =
+    feature "min-height" val
 
 
-{-| Media feature [`height`](https://drafts.csswg.org/mediaqueries/#height)
--}
-height : AbsoluteLength compatible -> Expression
-height value =
-    feature "height" value
+{-| The [`max-height`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/height)
+CSS media feature.
 
-
-{-| Media feature [`max-height`](https://drafts.csswg.org/mediaqueries/#height)
-
-    media (Media.maxHeight (px 399)) [ Css.class TopBanner [ display none ] ]
-
--}
-maxHeight : AbsoluteLength compatible -> Expression
-maxHeight value =
-    feature "max-height" value
-
-
-{-| -}
-type alias Ratio =
-    { value : String, ratio : Compatible }
-
-
-{-| Create a ratio.
-
-    --a ratio of 4/3
-    ratio 4 3
-
--}
-ratio : Int -> Int -> Ratio
-ratio numerator denominator =
-    { value = String.fromInt numerator ++ "/" ++ String.fromInt denominator, ratio = Compatible }
-
-
-{-| Media feature [`min-aspect-ratio`](https://drafts.csswg.org/mediaqueries/#aspect-ratio)
-
-    media (minAspectRatio (ratio 1 1)) [ ... ]
-
--}
-minAspectRatio : Ratio -> Expression
-minAspectRatio value =
-    feature "min-aspect-ratio" value
-
-
-{-| Media feature [`aspect-ratio`](https://drafts.csswg.org/mediaqueries/#aspect-ratio)
-
-    media (aspectRatio (ratio 16 10)) [ ... ]
+    withMedia [ all [ Media.maxHeight (px 399) ]
+        [ display none ]
 
 -}
-aspectRatio : Ratio -> Expression
-aspectRatio value =
-    feature "aspect-ratio" value
+maxHeight :
+    Value
+        ( Css.Length
+        )
+    -> Expression
+maxHeight (Value val) =
+    feature "max-height" val
 
 
-{-| Media feature [`max-aspect-ratio`](https://drafts.csswg.org/mediaqueries/#aspect-ratio)
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+--------------------------------- RATIO --------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 
-    media (maxAspectRatio (ratio 16 9)) [ ... ]
 
+{-| Internal helper function that constructs the ratio Ints into a
+ratio string that's formatted correctly for CSS.
 -}
-maxAspectRatio : Ratio -> Expression
-maxAspectRatio value =
-    feature "max-aspect-ratio" value
+packRatio : Int -> Int -> String
+packRatio numerator denominator =
+    String.fromInt numerator ++ "/" ++ String.fromInt denominator 
 
 
-type alias Orientation a =
-    { a | value : String, orientation : Compatible }
+{-| The [`aspect-ratio`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/aspect-ratio)
+CSS media feature.
 
-
-{-| -}
-type alias Landscape =
-    { value : String, orientation : Compatible }
-
-
-{-| -}
-type alias Portrait =
-    { value : String, orientation : Compatible }
-
-
-{-| CSS value [`landscape`](https://drafts.csswg.org/mediaqueries/#valdef-media-orientation-portrait)
+    withMedia [ all [ aspectRatio 16 10 ]]
+        [ ... ]
 -}
-landscape : Landscape
-landscape =
-    { value = "landscape", orientation = Compatible }
+aspectRatio : Int -> Int -> Expression
+aspectRatio numerator denominator =
+    feature "aspect-ratio" <| packRatio numerator denominator
 
 
-{-| CSS value [`portrait`](https://drafts.csswg.org/mediaqueries/#valdef-media-orientation-portrait)
+{-| The [`min-aspect-ratio`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/aspect-ratio)
+CSS media feature.
+
+    withMedia [ all [ minAspectRatio 1 1 ]]
+        [ ... ]
 -}
-portrait : Portrait
-portrait =
-    { value = "portrait", orientation = Compatible }
+minAspectRatio : Int -> Int -> Expression
+minAspectRatio numerator denominator =
+    feature "min-aspect-ratio" <| packRatio numerator denominator
 
 
-{-| Media feature [`orientation`](https://drafts.csswg.org/mediaqueries/#orientation).
-Accepts `portrait` or `landscape`.
+{-| The [`max-aspect-ratio`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/aspect-ratio)
+CSS media feature.
+
+    withMedia [ all [ maxAspectRatio 16 9 ]]
+        [ ... ]
 -}
-orientation : Orientation a -> Expression
-orientation value =
-    feature "orientation" value
+maxAspectRatio : Int -> Int -> Expression
+maxAspectRatio numerator denominator =
+    feature "max-aspect-ratio" <| packRatio numerator denominator
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+----------------------------- ORIENTATION ------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+{-| A type alias used to accept an orientation value, among others.
+-}
+type alias OrientationSupported supported =
+    { supported
+        | landscape : Supported
+        , portrait : Supported
+    }
+
+{-| A type alias used to accept an orientation value.
+-}
+type alias Orientation =
+    OrientationSupported {}
+
+
+{-| The [`orientation`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/orientation).
+CSS media feature.
+
+    withMedia [ all [ orientation portrait ]]
+        [ ... ]
+-}
+orientation : Value Orientation -> Expression
+orientation (Value val) =
+    feature "orientation" val
+
+
+{-| The `landscape` value for the [`orientation`](#orientation) CSS media feature.
+-}
+landscape : Value { provides | landscape : Supported }
+landscape = Value "landscape"
+
+{-| The `portrait` value for the [`orientation`](#orientation) CSS media feature.
+-}
+portrait : Value { provides | portrait : Supported }
+portrait = Value "portrait"
 
 
 
-{--Display Quality Media Features --}
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+----------------------------- RESOLUTION -------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 
-{-| Display Resolution. <https://www.w3.org/TR/css3-values/#resolution-value>
+{-| A type alias used to accept a [resolution](https://developer.mozilla.org/en-US/docs/Web/CSS/resolution)
+among other values.
+-}
+type alias ResolutionSupported supported =
+    { supported
+        | dpi : Supported
+        , dpcm : Supported
+        , dppx : Supported
+        , x : Supported
+    }
+
+
+{-| A type alias used to accept a [resolution](https://developer.mozilla.org/en-US/docs/Web/CSS/resolution).
 -}
 type alias Resolution =
-    { value : String, resolution : Compatible }
+    ResolutionSupported {}
 
 
-{-| `dpi`: Dots per inch. <https://www.w3.org/TR/css3-values/#resolution-value>
-
-    dpi 166
-
+{-| [`dpi`](https://developer.mozilla.org/en-US/docs/Web/CSS/resolution) resolution units.
 -}
-dpi : Float -> Resolution
-dpi value =
-    { value = String.fromFloat value ++ "dpi", resolution = Compatible }
+dpi : Float -> Value { provides | dpi : Supported }
+dpi val =
+    Value <| String.fromFloat val ++ "dpi"
 
 
-{-| `dpcm`: Dots per centimeter. <https://www.w3.org/TR/css3-values/#resolution-value>
-
-    dpcm 65
-
+{-| [`dpcm`](https://developer.mozilla.org/en-US/docs/Web/CSS/resolution) resolution units.
 -}
-dpcm : Float -> Resolution
-dpcm value =
-    { value = String.fromFloat value ++ "dpcm", resolution = Compatible }
+dpcm : Float -> Value { provides | dpcm : Supported }
+dpcm val =
+    Value <| String.fromFloat val ++ "dpcm"
 
 
-{-| `dppx`: Dots per pixel. <https://www.w3.org/TR/css3-values/#resolution-value>
-
-    dppx 1.5
-
+{-| [`dppx`](https://developer.mozilla.org/en-US/docs/Web/CSS/resolution) resolution units.
 -}
-dppx : Float -> Resolution
-dppx value =
-    { value = String.fromFloat value ++ "dppx", resolution = Compatible }
+dppx : Float -> Value { provides | dppx : Supported }
+dppx val =
+    Value <| String.fromFloat val ++ "dppx"
 
 
-{-| Media feature [`min-resolution`](https://drafts.csswg.org/mediaqueries/#resolution).
-Describes the resolution of the output device.
-
-    media (minResolution (dpi 600)) [ Css.class HiResImg [ display block ] ]
-
+{-| An alias for [`dppx`](https://developer.mozilla.org/en-US/docs/Web/CSS/resolution) resolution units.
 -}
-minResolution : Resolution -> Expression
-minResolution value =
-    feature "min-resolution" value
+x : Float -> Value { provides | x : Supported }
+x val =
+    Value <| String.fromFloat val ++ "x"
 
 
-{-| Media feature [`resolution`](https://drafts.csswg.org/mediaqueries/#resolution)
-Describes the resolution of the output device.
+{-| The [`resolution`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/resolution)
+CSS media feature.
 
-    media (resolution (dppx 2)) [ img [ width (pct 50) ] ]
+It describes the resolution of the output device.
 
+    withMedia [ only screen [ resolution (dppx 2) ]]
+        [ img [ width (pct 50) ] ]
 -}
-resolution : Resolution -> Expression
-resolution value =
-    feature "resolution" value
+resolution : Value Resolution -> Expression
+resolution (Value val) =
+    feature "resolution" val
 
 
-{-| Media feature [`max-resolution`](https://drafts.csswg.org/mediaqueries/#resolution)
-Describes the resolution of the output device.
+{-| The [`min-resolution`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/resolution)
+CSS media feature.
 
-    media (maxResolution (dpcm 65)) [ Css.class HiResImg [ display none ] ]
+It describes the minimum resolution of the output device.
 
+    withMedia [ only screen [ minResolution (dpi 600) ]]
+        [ Css.class HiResImg [ display block ] ]
 -}
-maxResolution : Resolution -> Expression
-maxResolution value =
-    feature "max-resolution" value
+minResolution : Value Resolution -> Expression
+minResolution (Value val) =
+    feature "min-resolution" val
 
 
-type alias ScanningProcess a =
-    { a | value : String, scanningProcess : Compatible }
+{-| The [`max-resolution`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/resolution)
+CSS media feature.
 
+It describes the maximum resolution of the output device.
 
-{-| -}
-type alias Progressive =
-    { value : String, scanningProcess : Compatible }
-
-
-{-| -}
-type alias Interlace =
-    { value : String, scanningProcess : Compatible }
-
-
-{-| CSS value [`progressive`](https://drafts.csswg.org/mediaqueries/#valdef-media-scan-progressive)
+    withMedia [ only screen [ maxResolution (dpcm 65) ]]
+        [ Css.class HiResImg [ display none ] ]
 -}
-progressive : Progressive
-progressive =
-    { value = "progressive", scanningProcess = Compatible }
+maxResolution : Value Resolution -> Expression
+maxResolution (Value val) =
+    feature "max-resolution" val
 
 
-{-| CSS value [`interlace`](https://drafts.csswg.org/mediaqueries/#valdef-media-scan-interlace)
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+--------------------------- SCANNING PROCESS ---------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+
+{-| A type alias used to accept an scanning process value, among others.
 -}
-interlace : Interlace
-interlace =
-    { value = "interlace", scanningProcess = Compatible }
+type alias ScanningProcessSupported supported =
+    { supported
+        | progressive : Supported
+        , interlace : Supported
+    }
 
 
-{-| Media feature [`scan`](https://drafts.csswg.org/mediaqueries/#scan).
-Queries scanning process of the device. Accepts `innterlace` (some TVs) or `progressive` (most things).
+{-| A type alias used to accept an scanning process value.
 -}
-scan : ScanningProcess a -> Expression
-scan value =
-    feature "scan" value
+type alias ScanningProcess =
+    ScanningProcessSupported {}
+    
+
+{-| The [`scan`](https://drafts.csswg.org/mediaqueries/#scan)
+CSS media feature.
+
+Queries the scanning (or refresh) process of the device's display.
+
+    withMedia [ only screen [ scan progressive ]]
+        [ ... ]
+-}
+scan : Value ScanningProcess -> Expression
+scan (Value val) =
+    feature "scan" val
 
 
-{-| Media feature [`grid`](https://drafts.csswg.org/mediaqueries/#grid).
-Queries whether the output device is a grid or bitmap.
+{-| CSS Media query value for when a screen has progressive scan.
+
+    withMedia [ only screen [ scan progressive ]]
+        [ ... ]
+-}
+progressive : Value { provides | progressive : Supported }
+progressive = Value "progressive"
+
+
+{-| CSS Media query value for when a screen has interlace scan.
+
+    withMedia [ only screen [ scan interlace ]]
+        [ ... ]
+-}
+interlace : Value { provides | interlace : Supported }
+interlace = Value "interlace"
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+-------------------- GRID OR BITMAP-BASED SCREEN -----------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+
+{-| The [`grid`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/grid)
+CSS media feature.
+
+Queries whether the output device's screen works on bitmaps or a character-based grids.
+
+    withMedia [ only screen [ Media.grid ]]
+        [ ... ]
 -}
 grid : Expression
 grid =
     unparameterizedFeature "grid"
 
 
-type alias UpdateFrequency a =
-    { a | value : String, updateFrequency : Compatible }
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------- OVERFLOW -------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 
-{-| -}
-type alias Slow =
-    { value : String, updateFrequency : Compatible }
+{-| The [`overflow-block`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/overflow-block)
+CSS media feature.
 
+It describes the behavior of the device when content overflows the
+initial containing block in the block axis.
 
-{-| -}
-type alias Fast =
-    { value : String, updateFrequency : Compatible }
-
-
-{-| CSS value [`slow`](https://drafts.csswg.org/mediaqueries/#valdef-media-update-slow)
+    withMedia [ all [ Media.overflowBlock optionalPaged ]]
+        [ ... ]
 -}
-slow : Slow
-slow =
-    { value = "slow", updateFrequency = Compatible }
+overflowBlock :
+    Value 
+        { none : Supported
+        , scroll : Supported
+        , optionalPaged : Supported
+        , paged : Supported
+        }
+    -> Expression
+overflowBlock (Value val) =
+    feature "overflow-block" val
 
 
-{-| CSS value [`fast`](https://drafts.csswg.org/mediaqueries/#valdef-media-update-fast)
+{-| The [`overflow-inline`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/overflow-inline)
+CSS media feature.
+
+It describes the behavior of the device when content overflows
+the initial containing block in the block axis.
+
+    withMedia [ all [ Media.overflowInline optionalPaged ]]
+        [ ... ]
 -}
-fast : Fast
-fast =
-    { value = "fast", updateFrequency = Compatible }
+overflowInline : 
+    Value 
+        { none : Supported
+        , scroll : Supported
+        }
+    -> Expression
+overflowInline (Value val) =
+    feature "overflow-inline" val
 
 
-{-| Media feature [`update`](https://drafts.csswg.org/mediaqueries/#update)
-The update frequency of the device. Accepts `none`, `slow`, or `fast`
+{-| CSS Media query value for the block-overflow media feature.
+
+    withMedia [ all [ Media.overflowBlock optionalPaged ]]
+        [ ... ]
 -}
-update : UpdateFrequency a -> Expression
-update value =
-    feature "update" value
+optionalPaged : Value { provides | optionalPaged : Supported }
+optionalPaged = Value "optional-paged"
 
 
-type alias BlockAxisOverflow a =
-    { a | value : String, blockAxisOverflow : Compatible }
+{-| CSS Media query value for the block-overflow media feature.
 
-
-{-| -}
-type alias Paged =
-    { value : String, blockAxisOverflow : Compatible }
-
-
-{-| -}
-type alias OptionalPaged =
-    { value : String, blockAxisOverflow : Compatible }
-
-
-{-| CSS value [`paged`](https://drafts.csswg.org/mediaqueries/#valdef-media-overflow-block-paged)
+    withMedia [ all [ Media.overflowBlock paged ]]
+        [ ... ]
 -}
-paged : Paged
-paged =
-    { value = "paged", blockAxisOverflow = Compatible }
+paged : Value { provides | paged : Supported }
+paged = Value "paged"
 
 
-{-| CSS value [`optional-paged`](https://drafts.csswg.org/mediaqueries/#valdef-media-overflow-block-optional-paged)
--}
-optionalPaged : OptionalPaged
-optionalPaged =
-    { value = "optional-paged", blockAxisOverflow = Compatible }
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+----------------------------- COLOR DEPTH ------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 
-{-| Media feature [`overflow-block`](https://drafts.csswg.org/mediaqueries/#overflow-block)
-Describes the behavior of the device when content overflows the initial containing block in the block axis.
--}
-overflowBlock : BlockAxisOverflow a -> Expression
-overflowBlock value =
-    feature "overflow-block" value
+{-| The [`color`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/color)
+CSS media feature.
 
-
-type alias InlineAxisOverflow a =
-    { a | value : String, inlineAxisOverflow : Compatible }
-
-
-{-| Media feature [`overflow-inline`](https://drafts.csswg.org/mediaqueries/#overflow-inline).
-Describes the behavior of the device when content overflows the initial containing block in the inline axis.
--}
-overflowInline : InlineAxisOverflow a -> Expression
-overflowInline value =
-    feature "overflow-inline" value
-
-
-
-{--Color Media Features--}
-
-
-{-| -}
-type alias Bits =
-    { value : String, bits : Compatible }
-
-
-{-| Get a bumber of bits
-
-    bits 8
-
--}
-bits : Int -> Bits
-bits value =
-    { value = String.fromInt value, bits = Compatible }
-
-
-{-| Media Feature [`min-nncolor`](https://drafts.csswg.org/mediaqueries/#color)
-Queries the user agent's bits per color channel
-
-    media (screen (minColor (bits 256))) [ a [ Css.color (hex "D9534F") ] ]
-
--}
-minColor : Bits -> Expression
-minColor value =
-    feature "min-color" value
-
-
-{-| Media feature [`color`](https://drafts.csswg.org/mediaqueries/#color)
-
-    media (not color) [ body [ Css.color (hex "000000") ] ]
-
+    withMedia [ all [ color ]]
+        [ Css.color (hex "000000")
+        ]
 -}
 color : Expression
 color =
     unparameterizedFeature "color"
 
 
-{-| Media feature [`max-color`](https://drafts.csswg.org/mediaqueries/#color)
-Queries the user agent's bits per color channel
+{-| The [`min-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/color)
+CSS media feature.
 
-    media (and screen (maxColor (bits 8))) [ a [ Css.color (hex "FF0000") ] ]
-
+    withMedia [ only screen [ minColor 256 ]]
+        [ Css.color (hex "D9534F")
+        ]
 -}
-maxColor : Bits -> Expression
-maxColor value =
-    feature "max-color" value
+minColor : Int -> Expression
+minColor val =
+    feature "min-color" (String.fromInt val)
 
 
-{-| Media feature [`monochrome`](https://drafts.csswg.org/mediaqueries/#monochrome)
+{-| The [`max-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/color)
+CSS media feature.
 
-    media [ monochrome ] [ body [ Css.color (hex "000000") ] ]
-
+    withMedia [ only screen [ maxColor 8 ]]
+        [ Css.color (hex "FF0000")
+        ]
 -}
-monochrome : Expression
-monochrome =
-    unparameterizedFeature "monochrome"
+maxColor : Int -> Expression
+maxColor val =
+    feature "max-color" (String.fromInt val)
 
 
-{-| Media Feature [`min-monochrome`](https://drafts.csswg.org/mediaqueries/#monochrome)
+{-| The [`monochrome`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/monochrome)
+CSS media feature.
+
+This works a little bit differently to the original feature for the sake of streamlining in elm:
+
+Use `True` to query monochrome displays. This is the equivalent of `@media (monochrome)` in CSS.
+
+Use `False` to query non-monochrome displays. This is the equivalent of `@media (monochrome: 0)` in CSS.
+
+    -- monochrome device
+    withMedia [ only screen [ monochrome True ]]
+        [ Css.color (hex "000000")
+        ]
+
+    -- non-monochrome device
+    withMedia [ only screen [ monochrome False ]]
+        [ Css.color (hex "333333")
+        ]
 -}
-minMonochrome : Bits -> Expression
-minMonochrome value =
-    feature "min-monochrome" value
+monochrome : Bool -> Expression
+monochrome bool =
+    if bool then
+        unparameterizedFeature "monochrome"
+    else
+        feature "monochrome" "0"
 
+{-| The [`min-monochrome`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/monochrome)
+CSS media feature.
 
-{-| Media feature [`max-monochrome`](https://drafts.csswg.org/mediaqueries/#monochrome)
+    withMedia [ only screen [ minMonochrome 2 ]]
+        [ ... ]
 -}
-maxMonochrome : Bits -> Expression
-maxMonochrome value =
-    feature "max-monochrome" value
+minMonochrome : Int -> Expression
+minMonochrome val =
+    feature "min-monochrome" (String.fromInt val)
 
 
-{-| Media feature [`color-index`](https://drafts.csswg.org/mediaqueries/#color-index)
-Queries the number of colors in the user agent's color lookup table.
+{-| The [`max-monochrome`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/monochrome)
+CSS media feature.
 
-    media (and screen (colorIndex (int 16777216))) [ a [ Css.color (hex "D9534F") ] ]
-
+    withMedia [ only screen [ maxMonochrome 5 ]]
+        [ ... ]
 -}
-colorIndex : Number a -> Expression
-colorIndex value =
-    feature "color-index" value
+maxMonochrome : Int -> Expression
+maxMonochrome val =
+    feature "max-monochrome" (String.fromInt val)
 
 
-{-| Media Feature [`min-color-index`](https://drafts.csswg.org/mediaqueries/nn#color-index)
-Queries the number of colors in the user agent's color lookup table.
+{-| The [`color-index`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/color-index)
+CSS media feature.
 
-    media (and screen (minColorIndex (int 16777216))) [ a [ Css.color (hex "D9534F") ] ]
+It queries the number of colors in the user agent's color lookup table.
 
+    withMedia [ only screen [ colorIndex 16777216 ]]
+        [ a [ Css.color (hex "D9534F") ]
+        ]
 -}
-minColorIndex : Number a -> Expression
-minColorIndex value =
-    feature "min-color-index" value
+colorIndex : Int -> Expression
+colorIndex val =
+    feature "color-index" (String.fromInt val)
 
 
-{-| Media feature [`max-color-index`](https://drafts.csswg.org/mediaqueries/#color-index).
-Queries the number of colors in the user agent's color lookup table.
+{-| The [`min-color-index`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/color-index)
+CSS media feature.
 
-    media (and screen (maxColorIndex (int 256))) [ a [ Css.color (hex "FF0000") ] ]
+It queries the number of colors in the user agent's color lookup table.
 
+    withMedia [ only screen [ minColorIndex 16777216 ]]
+        [ a [ Css.color (hex "D9534F") ]
+        ]
 -}
-maxColorIndex : Number a -> Expression
-maxColorIndex value =
-    feature "max-color-index" value
+minColorIndex : Int -> Expression
+minColorIndex val =
+    feature "min-color-index" (String.fromInt val)
 
 
-type alias ColorGamut a =
-    { a | value : String, colorGamut : Compatible }
+{-| The [`max-color-index`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/color-index)
+CSS media feature.
 
+It queries the number of colors in the user agent's color lookup table.
 
-{-| -}
-type alias SRGB =
-    { value : String, colorGamut : Compatible }
-
-
-{-| -}
-type alias P3 =
-    { value : String, colorGamut : Compatible }
-
-
-{-| -}
-type alias Rec2020 =
-    { value : String, colorGamut : Compatible }
-
-
-{-| CSS value [`srgb`](https://drafts.csswg.org/mediaqueries/#valdef-media-color-gamut-srgb)
+    withMedia [ only screen [ maxColorIndex 256 ]]
+        [ a [ Css.color (hex "FF0000") ] ]
 -}
-srgb : SRGB
-srgb =
-    { value = "srgb", colorGamut = Compatible }
+maxColorIndex : Int -> Expression
+maxColorIndex val =
+    feature "max-color-index" (String.fromInt val)
 
 
-{-| CSS value [`p3`](https://drafts.csswg.org/mediaqueries/#valdef-media-color-gamut-p3)
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+----------------------------- COLOR GAMUT ------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+
+{-| The [`color-gamut`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/color-gamut)
+CSS media feature.
+
+The keyword values this supports in order of how wide each color gamut is:
+
+- `srgb` (narrowest, most common)
+- `p3`
+- `rec2020` (widest)
+
+```
+withMedia [only screen [colorGamut srgb]] [ ... ]
+
+withMedia [only screen [colorGamut rec2020]] [ ... ]
+```
 -}
-p3 : P3
-p3 =
-    { value = "p3", colorGamut = Compatible }
+colorGamut :
+    Value
+        { srgb : Supported
+        , p3 : Supported
+        , rec2020 : Supported
+        }
+    -> Expression
+colorGamut (Value val) =
+    feature "color-gamut" val
 
 
-{-| CSS value [`rec2020`](https://drafts.csswg.org/mediaqueries/#valdef-media-color-gamut-rec2020)
+{-| The SRGB value for the [`colorGamut`](#colorGamut) CSS media feature.
+
+This will enable specific CSS for when a device is using the
+[SRGB](https://en.wikipedia.org/wiki/SRGB) colour space.
+
+SRGB is the lowest gamut keyword that `colorGamut` accepts.
+In modern computing standards, this is the lowest common denominator
+colour space, it's rare (but not impossible) when a display doesn't support SRGB.
+
+    withMedia [only screen [colorGamut srgb]] [ ... ]
 -}
-rec2020 : Rec2020
-rec2020 =
-    { value = "rec2020", colorGamut = Compatible }
+srgb : Value { provides | srgb : Supported }
+srgb = Value "srgb"
 
 
-{-| Media feature [`color-gamut`](https://drafts.csswg.org/mediaqueries/#color-gamut).
-Describes the approximate range of colors supported by the user agent and device.
+{-| The P3 value for the [`colorGamut`](#colorGamut) CSS media feature.
 
-    media (and screen (colorGamut rec2020)) [ Css.class HiColorImg [ display block ] ]
+This will enable specific CSS for when a device is using the
+[Apple DCI-P3](https://en.wikipedia.org/wiki/DCI-P3) (P3 for short) colour space.
 
+This color gamut is wider than [`srgb`](#srgb) but narrower than [`rec2020`](#rec2020).
+
+    withMedia [only screen [colorGamut p3]] [ ... ]
 -}
-colorGamut : ColorGamut a -> Expression
-colorGamut value =
-    feature "color-gamut" value
+p3 : Value { provides | p3 : Supported }
+p3 = Value "p3"
 
 
+{-| The SRGB value for the [`colorGamut`](#colorGamut) CSS media feature.
 
-{--Interaction Media Features--}
+This will enable specific CSS for when a device is using the
+[ITU Recommendation BT.2020](https://en.wikipedia.org/wiki/Rec._2020)
+(Rec. 2020 for short) colour space. This is often what is commonly
+referred to as High Dynamic Range (HDR).
 
+This is the widest gamut that `colorGamut` accepts.
 
-{-| Describes the presence and accuracy of a pointing device such as a mouse
-<https://drafts.csswg.org/mediaqueries/#pointer>
+    withMedia [only screen [colorGamut rec2020]] [ ... ]
 -}
-type alias PointerDevice a =
-    { a | value : String, pointerDevice : Compatible }
+rec2020 : Value { provides | rec2020 : Supported }
+rec2020 = Value "rec2020"
 
 
-{-| -}
-type alias Fine =
-    { value : String, pointerDevice : Compatible }
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------ INTERACTION DEVICES ---------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 
-{-| -}
-type alias Coarse =
-    { value : String, pointerDevice : Compatible }
-
-
-{-| CSS Value [`fine`](https://drafts.csswg.org/mediaqueries/#valdef-media-pointer-fine)
+{-| A type alias used to accept an pointer device accuracy value, among others.
 -}
-fine : Fine
-fine =
-    { value = "fine", pointerDevice = Compatible }
+type alias PointingAccuracySupported supported =
+    { supported
+        | coarse : Supported
+        , fine : Supported
+    }
 
 
-{-| CSS Value [`coarse`](https://drafts.csswg.org/mediaqueries/#valdef-media-pointer-coarse)
+{-| A type alias used to accept an pointer device accuracy value.
 -}
-coarse : Coarse
-coarse =
-    { value = "coarse", pointerDevice = Compatible }
+type alias PointingAccuracy =
+    PointingAccuracySupported {}
 
 
-{-| Media feature [`pointer`](https://drafts.csswg.org/mediaqueries/#pointer)
-Queries the presence and accuracy of a pointing device, such as a mouse, touchscreen, or Wii remote.
-Reflects the capabilities of the primary input mechanism.
-Accepts `none`, `fine`, and `coarse`.
+{-| The [`pointer`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/pointer)
+CSS media feature.
 
-    media (Media.pointer coarse) [ a [ display block, Css.height (px 24) ] ]
+This queries whether the user has a pointing device, and if so, how accurate the **primary**
+pointing device is.
 
+*If you want to query the accuracy of **any** pointing device, use [`anyPointer`](#anyPointer)
+instead.*
+
+    withMedia [all [Media.pointer coarse]] [ a [ display block, Css.height (px 24) ] ]
 -}
-pointer : PointerDevice a -> Expression
-pointer value =
-    feature "pointer" value
+pointer :
+    Value
+        ( PointingAccuracySupported
+            { none : Supported
+            }
+        )
+    -> Expression
+pointer (Value val) =
+    feature "pointer" val
 
 
-{-| Media feature [`any-pointer`](https://drafts.csswg.org/mediaqueries/#any-input)
-Queries the presence and accuracy of a pointing device, such as a mouse, touchscreen, or Wii remote.
-Reflects the capabilities of the most capable input mechanism.
-Accepts `none`, `fine`, and `coarse`.
+{-| The [`any-pointer`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/any-pointer)
+CSS media feature.
 
-    media (anyPointer coarse) [ a [ display block, Css.height (px 24) ] ]
+This queries whether the user has **any** pointing device, and if so, how accurate it is.
 
+*If you want to query the accuracy of the **primary** pointing device, use [`pointer`](#anyPointer)
+instead.*
+
+    withMedia [all [Media.pointer coarse]] [ a [ display block, Css.height (px 24) ] ]
 -}
-anyPointer : PointerDevice a -> Expression
-anyPointer value =
-    feature "any-pointer" value
+anyPointer :
+    Value
+        ( PointingAccuracySupported
+            { none : Supported
+            }
+        )
+    -> Expression
+anyPointer (Value val) =
+    feature "any-pointer" val
 
 
-{-| -}
-type alias HoverCapability a =
-    { a | value : String, hoverCapability : Compatible }
+{-| The [`hover`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/hover)
+CSS media feature.
 
-
-{-| -}
-type alias CanHover =
-    { value : String, hoverCapability : Compatible }
-
-
-{-| The value [`hover`](https://drafts.csswg.org/mediaqueries/#valdef-media-hover-hover).
-Named `canHover` to avoid conflict with the media feature of the same name
--}
-canHover : CanHover
-canHover =
-    { value = "hover", hoverCapability = Compatible }
-
-
-{-| Media feature [`hover`](https://drafts.csswg.org/mediaqueries/#hover).
 Queries the if the user agent's primary input mechanism has the ability to hover over elements.
-Accepts `none` or `canHover`.
 
-    media (Media.hover canHover) [ a [ Css.hover [ textDecoration underline ] ] ]
+*If you want to query the hover capabilities of **any** pointing device, use [`anyHover`](#anyHover)
+instead.*
 
+    withMedia [all [Media.hover canHover]] [ a [ Css.hover [ textDecoration underline ] ] ]
 -}
-hover : HoverCapability a -> Expression
-hover value =
-    feature "hover" value
+hover :
+    Value
+        { none : Supported
+        , hover_ : Supported
+        }
+    -> Expression
+hover (Value val) =
+    feature "hover" val
 
 
-{-| Media feature [`any-hover`](https://drafts.csswg.org/mediaqueries/#any-input)
-Queries the if any of user agent's input mechanisms have the ability to hover over elements
-Accepts `none` or `canHover`.
+{-| The [`any-hover`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/any-hover)
+CSS media feature.
 
-    media (anyHover canHover) [ a [ Css.hover [ textDecoration underline ] ] ]
+Queries the if any of user agent's input mechanisms have the ability to hover over elements.
 
+*If you want to query the hover capabilities of the **primary** pointing device, use [`hover`](#hover)
+instead.*
+
+    withMedia [all [anyHover hover_]]
+        [ a
+            [ Css.hover [ textDecoration underline ] ]
+        ]
 -}
-anyHover : HoverCapability a -> Expression
-anyHover value =
-    feature "any-hover" value
+anyHover :
+    Value
+        { none : Supported
+        , hover_ : Supported
+        }
+    -> Expression
+anyHover (Value val) =
+    feature "any-hover" val
 
 
+{-| The `coarse` value for the [`pointer`](#pointer) and [`anyPointer`](#anyPointer) CSS Media Features.
 
-{--Scripting Media Features--}
+This is for input mechanism(s) that have limited accuracy.
 
-
-{-| -}
-type alias ScriptingSupport a =
-    { a | value : String, scriptingSupport : Compatible }
-
-
-{-| -}
-type alias InitialOnly =
-    { value : String, scriptingSupport : Compatible }
-
-
-{-| -}
-type alias Enabled =
-    { value : String, scriptingSupport : Compatible }
-
-
-{-| CSS value [`initial-only`](https://drafts.csswg.org/mediaqueries/#valdef-media-scripting-initial-only).
+    withMedia [ only screen [ Media.pointer coarse ]]
+        [ ... ]
 -}
-initialOnly : InitialOnly
-initialOnly =
-    { value = "initial-only", scriptingSupport = Compatible }
+coarse : Value { provides | coarse : Supported }
+coarse = Value "coarse"
 
 
-{-| CSS value [`enabled`](https://drafts.csswg.org/mediaqueries/#valdef-media-scripting-enabled).
+{-| The `fine` value for the [`pointer`](#pointer) and [`anyPointer`](#anyPointer) CSS Media Features.
+
+This is for input mechanism(s) that are somewhat accurate.
+
+    withMedia [ only screen [ Media.pointer fine ]]
+        [ ... ]
 -}
-enabled : Enabled
-enabled =
-    { value = "enabled", scriptingSupport = Compatible }
+fine : Value { provides | fine : Supported }
+fine = Value "fine"
 
 
-{-| The [`scripting`](https://drafts.csswg.org/mediaqueries/#scripting) media feature
-for querying the user agents support for scripting languages like JavaScript.
-Accepts `none`, `initialOnly`, and `enabled`.
+{-| The `hover` value for the [`hover`](#hover) and [`anyHover`](#anyHover) CSS Media Features.
 
-    media (scripting none) [ Css.class NoScript [ display block ] ]
+This is for input mechanism(s) that are capable of hovering over interactable objects.
 
+    withMedia [ only screen [ Media.hover hover_ ]]
+        [ ... ]
+
+Note: This is called `hover_` so it doesn't conflict with the `hover` media feature this is used for.
 -}
-scripting : ScriptingSupport a -> Expression
-scripting value =
-    feature "scripting" value
+hover_ : Value { provides | hover_ : Supported }
+hover_ = Value "hover"
 
 
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------ INTERACTION DEVICES ---------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 
--- PRIVATE HELPERS --
+
+{-| The [`scripting`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/scripting)
+CSS media feature.
+
+This tests whether scripting like JS is available, and if so, in what contexts.
+
+    withMedia [ all [ scripting none ]]
+        [ Css.class NoScript [ display block ] ]
+-}
+scripting :
+    Value
+        { none : Supported
+        , initialOnly : Supported
+        , enabled : Supported
+        }
+    -> Expression
+scripting (Value val) =
+    feature "scripting" val
 
 
-feature : String -> Value a -> Expression
-feature key { value } =
-    { feature = key, value = Just value }
+{-| The `initialOnly` value for the [`scripting`](#scripting) CSS media feature.
+
+This is for scripting that is allowed only on initial page load.
+
+    withMedia [ all [ scripting initialOnly ]]
+        [ ... ]
+-}
+initialOnly : Value { provides | initialOnly : Supported }
+initialOnly = Value "initial-only"
 
 
-unparameterizedFeature : String -> Expression
-unparameterizedFeature key =
-    { feature = key, value = Nothing }
+{-| The `enabled` value for the [`scripting`](#scripting) CSS media feature.
+
+This is for scripting that is allowed and active on the current document.
+
+    withMedia [ all [ scripting enabled ]]
+        [ ... ]
+-}
+enabled : Value { provides | enabled : Supported }
+enabled = Value "enabled"
+

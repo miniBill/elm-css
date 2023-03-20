@@ -204,15 +204,15 @@ leftRightTopBottom =
             [ position absolute
             , top (Css.em 2)
             , left (px 5)
-            , textAlign left
-            , verticalAlign bottom
+            , textAlign left_
+            , verticalAlign bottom_
             ]
         , a
             [ position relative
             , right zero
-            , textAlign right
+            , textAlign Css.right_
             , bottom (Css.em 2)
-            , verticalAlign top
+            , verticalAlign top_
             ]
         ]
 
@@ -223,7 +223,7 @@ borders =
         [ button
             [ borderLeft3 (px 5) dashed (rgb 11 14 17)
             , borderRight (px 7)
-            , borderImageOutset2 (int 3) (Css.em 4)
+            , borderImageOutset2 (num 3) (Css.em 4)
             ]
         , a [ border2 (px 10) solid ]
         , Css.Global.table [ borderSpacing (px 10) ]
@@ -281,33 +281,33 @@ transformsStylesheet : Stylesheet
 transformsStylesheet =
     stylesheet
         [ body
-            [ transforms []
-            , transforms
+            [ transform none
+            , transformMany
                 [ matrix 1 2 3 4 5 6
                 , matrix3d 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
                 ]
-            , transform (perspective 1)
-            , transforms
-                [ rotate (deg 90)
+            , transform (perspective_ (px 100))
+            , transformMany
+                [ rotate_ (deg 90)
                 , rotateX (rad 3.14)
                 , rotateY (grad 3.14)
                 , rotateZ (turn 1)
                 , rotate3d 1 1 1 (deg 90)
                 ]
-            , transforms
-                [ scale 1
-                , scale2 1 1
+            , transformMany
+                [ scale_ 1
+                , scale2_ 1 1
                 , scaleX 1
                 , scaleY 1
                 , scale3d 1 1 1
                 ]
-            , transforms
+            , transformMany
                 [ skew (deg 90)
                 , skew2 (deg 90) (deg 90)
                 , skewX (deg 90)
                 , skewY (deg 90)
                 ]
-            , transforms
+            , transformMany
                 [ translate (px 1)
                 , translate2 (px 1) (px 1)
                 , translateX (px 1)
@@ -327,17 +327,16 @@ fontStylesheet =
             [ lineHeight (px 14)
             , fontFamily serif
             , fontFamilies
-                [ qt "Gill Sans Extrabold"
+                [ "Gill Sans Extrabold"
                 , "Helvetica"
-                , .value sansSerif
-                ]
+                ] sansSerif
             , fontSize xSmall
             , fontStyle italic
             , fontWeight bold
             , fontWeight (int 100)
             , fontVariant smallCaps
             , fontVariant2 commonLigatures slashedZero
-            , fontVariantNumerics
+            , fontVariantNumericMany
                 [ oldstyleNums
                 , tabularNums
                 , stackedFractions
@@ -420,12 +419,12 @@ backgrounds =
             , backgroundRepeat repeatX
             , backgroundRepeat repeatY
             , backgroundRepeat2 repeat noRepeat
-            , backgroundRepeat2 space Css.round
+            , backgroundRepeat2 space Css.round_
             , backgroundAttachment local
             , backgroundAttachment scroll
             , backgroundAttachment fixed
-            , backgroundBlendMode color
-            , backgroundBlendMode screenBlendMode
+            , backgroundBlendMode color_
+            , backgroundBlendMode screen
             , backgroundBlendMode multiply
             , backgroundBlendMode overlay
             , backgroundBlendMode darken
@@ -458,7 +457,7 @@ backgrounds =
             , backgroundOrigin paddingBox
             , backgroundOrigin contentBox
             , backgroundSize cover
-            , backgroundSize contain
+            , backgroundSize contain_
             , backgroundSize (px 50)
             , backgroundSize2 auto (px 20)
             , backgroundPosition center

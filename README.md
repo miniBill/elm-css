@@ -1,7 +1,18 @@
 # elm-css
 
+## Quick note
+
+This is a fork of rtfeldman's elm-css module. The differences between this one and the original is:
+
+- This uses the `phantom-types` branch. In short, it means you get much better compiler errors.
+- This has been updated with much newer properties. *However, no experimental properties and values have been included.*
+
+
+---
+
+
 `elm-css` lets you define CSS in Elm. (For an Elm styling system that is a
-complete departure from CSS, check out [Elm-UI](https://github.com/mdgriffith/elm-ui).)
+complete departure from CSS, check out [style-elements](http://package.elm-lang.org/packages/mdgriffith/style-elements/latest).)
 
 Here's an example of how to define some `elm-css` styles:
 
