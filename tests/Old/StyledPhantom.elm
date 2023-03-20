@@ -1,4 +1,4 @@
-module StyledPhantom exposing (all)
+module Old.StyledPhantom exposing (all)
 
 -- import ReadmeExample
 

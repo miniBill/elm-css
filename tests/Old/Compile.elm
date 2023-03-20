@@ -1,6 +1,6 @@
 module Old.Compile exposing (compileTest, dreamwriter, unstyledDiv)
 
-import CompileFixtures
+import Old.CompileFixtures
 import Css.Preprocess.Resolve exposing (compile)
 import Expect
 import Test exposing (..)
@@ -11,7 +11,7 @@ unstyledDiv : Test
 unstyledDiv =
     let
         input =
-            CompileFixtures.unstyledDiv
+            Old.CompileFixtures.unstyledDiv
 
         output =
             ""
@@ -28,7 +28,7 @@ dreamwriter : Test
 dreamwriter =
     let
         input =
-            CompileFixtures.dreamwriter
+            Old.CompileFixtures.dreamwriter
 
         output =
             """
@@ -78,8 +78,8 @@ compileTest =
     let
         input =
             compile
-                [ CompileFixtures.basicStyle1
-                , CompileFixtures.basicStyle2
+                [ Old.CompileFixtures.basicStyle1
+                , Old.CompileFixtures.basicStyle2
                 ]
 
         output =
