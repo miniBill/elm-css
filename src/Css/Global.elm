@@ -99,14 +99,16 @@ global : List Snippet -> Html.Styled.Html msg
 global snippets =
     snippets
         |> Preprocess.stylesheet
-        |> List.singleton
         |> Resolve.compile
         |> VirtualDom.text
         |> List.singleton
         |> VirtualDom.node "style" []
         -- wrap the style node in a div to prevent `Dark Reader` from blowin up the dom.
         |> List.singleton
-        |> VirtualDom.node "span" []
+        |> VirtualDom.node "span"
+            [ VirtualDom.attribute "style" "display: none;"
+            , VirtualDom.attribute "class" "elm-css-style-wrapper"
+            ]
         |> VirtualDom.Styled.unstyledNode
 
 

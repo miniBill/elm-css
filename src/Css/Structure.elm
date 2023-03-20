@@ -1,4 +1,4 @@
-module Css.Structure exposing (Compatible(..), Declaration(..), KeyframeProperty, MediaExpression, MediaQuery(..), MediaType(..), Number, Property, PseudoElement(..), RepeatableSimpleSelector(..), Selector(..), SelectorCombinator(..), SimpleSelectorSequence(..), StyleBlock(..), Stylesheet, TypeSelector(..), appendProperty, appendPseudoElementToLastSelector, appendRepeatable, appendRepeatableSelector, appendRepeatableToLastSelector, appendRepeatableWithCombinator, appendToLastSelector, applyPseudoElement, compactDeclarations, compactHelp, compactStylesheet, concatMapLast, concatMapLastStyleBlock, extendLastSelector, mapLast, styleBlockToMediaRule, withKeyframeDeclarations, withPropertyAppended)
+module Css.Structure exposing (Compatible(..), Declaration(..), KeyframeProperty, MediaExpression, MediaQuery(..), MediaType(..), Number, Property(..), PseudoElement(..), RepeatableSimpleSelector(..), Selector(..), SelectorCombinator(..), SimpleSelectorSequence(..), StyleBlock(..), Stylesheet, TypeSelector(..), appendProperty, appendPseudoElementToLastSelector, appendRepeatable, appendRepeatableSelector, appendRepeatableToLastSelector, appendRepeatableWithCombinator, appendToLastSelector, applyPseudoElement, compactDeclarations, compactHelp, compactStylesheet, concatMapLast, concatMapLastStyleBlock, extendLastSelector, mapLast, styleBlockToMediaRule, withKeyframeDeclarations, withPropertyAppended)
 
 {-| A representation of the structure of a stylesheet. This module is concerned
 solely with representing valid stylesheets; it is not concerned with the
@@ -19,14 +19,9 @@ type alias Number compatible =
 
 
 {-| A property consisting of a key:value string.
-
-Ideally, this would be `type Property = Property String` - but in order to
-reduce allocations, we're doing it as a `type alias` until union types with
-one constructor get unboxed automatically.
-
 -}
-type alias Property =
-    String
+type Property
+    = Property String
 
 
 {-| A stylesheet. Since they follow such specific rules, the following at-rules
@@ -66,7 +61,7 @@ type Declaration
     | MediaRule (List MediaQuery) (List StyleBlock)
     | SupportsRule String (List Declaration)
     | DocumentRule String String String String StyleBlock
-    | PageRule String (List Property)
+    | PageRule (List Property)
     | FontFace (List Property)
     | Keyframes { name : String, declaration : String }
     | Viewport (List Property)
@@ -254,7 +249,7 @@ extendLastSelector selector declarations =
             in
             [ DocumentRule str1 str2 str3 str4 newStyleBlock ]
 
-        (PageRule _ _) :: [] ->
+        (PageRule _) :: [] ->
             declarations
 
         (FontFace _) :: [] ->
@@ -341,7 +336,7 @@ concatMapLastStyleBlock update declarations =
             update styleBlock
                 |> List.map (DocumentRule str1 str2 str3 str4)
 
-        (PageRule _ _) :: [] ->
+        (PageRule _) :: [] ->
             declarations
 
         (FontFace _) :: [] ->
@@ -480,7 +475,7 @@ compactHelp declaration ( keyframesByName, declarations ) =
         DocumentRule _ _ _ _ _ ->
             ( keyframesByName, declaration :: declarations )
 
-        PageRule _ properties ->
+        PageRule properties ->
             if List.isEmpty properties then
                 ( keyframesByName, declarations )
 

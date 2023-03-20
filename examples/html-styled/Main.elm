@@ -4,8 +4,10 @@ import Browser
 import Css exposing (..)
 import Html
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (css, href, src)
+import Html.Styled.Attributes exposing (class, css, href, src)
 import Html.Styled.Events exposing (onClick)
+import Svg.Styled as StyledSvg
+import Svg.Styled.Attributes as SvgAttribs
 
 
 {-| A logo image, with inline styles that change on hover.
@@ -80,8 +82,15 @@ legacyBorderRadius amount =
 view : Model -> Html Msg
 view model =
     nav []
-        [ img [ src "assets/backdrop.jpg", css [ width (pct 100) ] ] []
+        [ img [ src "assets/backdrop.jpg", css [ width (pct 100) ], class "some-whatever-class" ] []
         , btn [ onClick DoSomething ] [ text "Click me!" ]
+        , StyledSvg.svg
+            [ SvgAttribs.class "some-whatever-NS-class"
+            , SvgAttribs.css [ color (rgb 256 0 0)
+            , SvgAttribs.width "100"
+            , SvgAttribs.height "100"
+            ]
+            [ StyledSvg.circle [ SvgAttribs.cx "50", SvgAttribs.cy "50", SvgAttribs.r "40" ] [] ]
         ]
 
 

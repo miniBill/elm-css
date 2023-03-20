@@ -2,7 +2,7 @@ module Css.Internal exposing (AnimationProperty(..), ColorValue, ExplicitLength,
 
 import Css.Preprocess as Preprocess exposing (Style)
 import Css.String
-import Css.Structure exposing (Compatible(..))
+import Css.Structure as Structure exposing (Compatible(..))
 
 
 type IncompatibleUnits
@@ -38,6 +38,7 @@ type alias ExplicitLength units =
     , lengthOrNone : Compatible
     , lengthOrMinMaxDimension : Compatible
     , lengthOrNoneOrMinMaxDimension : Compatible
+    , lineHeight : Compatible
     , textIndent : Compatible
     , flexBasis : Compatible
     , absoluteLength : Compatible
@@ -66,7 +67,7 @@ in keyframe declarations.
 -}
 compileKeyframes : List ( Int, List AnimationProperty ) -> String
 compileKeyframes tuples =
-    Css.String.mapJoin printKeyframeSelector "\n\n" tuples
+    Css.String.mapJoin printKeyframeSelector "" tuples
 
 
 printKeyframeSelector : ( Int, List AnimationProperty ) -> String
@@ -78,7 +79,7 @@ printKeyframeSelector ( percentage, properties ) =
         propertiesStr =
             Css.String.mapJoin (\(Property prop) -> prop ++ ";") "" properties
     in
-    percentageStr ++ " {" ++ propertiesStr ++ "}"
+    percentageStr ++ "{" ++ propertiesStr ++ "}"
 
 
 {-| Caution: trickery ahead!
@@ -106,7 +107,7 @@ Other notes:
 getOverloadedProperty : String -> String -> Style -> Style
 getOverloadedProperty functionName desiredKey style =
     case style of
-        Preprocess.AppendProperty str ->
+        Preprocess.AppendProperty (Structure.Property str) ->
             let
                 key =
                     String.split ":" str
@@ -153,6 +154,7 @@ getOverloadedProperty functionName desiredKey style =
 property : String -> String -> Style
 property key value =
     (key ++ ":" ++ value)
+        |> Structure.Property
         |> Preprocess.AppendProperty
 
 
@@ -179,5 +181,6 @@ lengthConverter units unitLabel numericValue =
     , fontSize = Compatible
     , absoluteLength = Compatible
     , lengthOrAutoOrCoverOrContain = Compatible
+    , lineHeight = Compatible
     , calc = Compatible
     }

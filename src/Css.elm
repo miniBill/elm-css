@@ -501,7 +501,7 @@ cssFunction : String -> List String -> String
 cssFunction funcName args =
     funcName
         ++ "("
-        ++ String.join ", " args
+        ++ String.join "," args
         ++ ")"
 
 
@@ -622,6 +622,11 @@ type alias FontVariantNumeric compatible =
         , fontVariant : Compatible
         , fontVariantNumeric : Compatible
     }
+
+
+{-| -}
+type alias LineHeight compatible =
+    { compatible | value : String, lineHeight : Compatible }
 
 
 {-| <https://developer.mozilla.org/en-US/docs/Web/CSS/visibility#Values>
@@ -848,6 +853,7 @@ type alias CalculatedLength =
     , lengthOrNone : Compatible
     , lengthOrMinMaxDimension : Compatible
     , lengthOrNoneOrMinMaxDimension : Compatible
+    , lineHeight : Compatible
     , textIndent : Compatible
     , flexBasis : Compatible
     , lengthOrNumberOrAutoOrNoneOrContent : Compatible
@@ -914,11 +920,11 @@ calc firstExpr expression secondExpr =
                 l.value
 
         calcs =
-            String.join " "
-                [ withoutCalcStr firstExpr
-                , calcExpressionToString expression
-                , withoutCalcStr secondExpr
-                ]
+            withoutCalcStr firstExpr
+                ++ " "
+                ++ calcExpressionToString expression
+                ++ " "
+                ++ withoutCalcStr secondExpr
 
         value =
             cssFunction "calc" [ calcs ]
@@ -935,6 +941,7 @@ calc firstExpr expression secondExpr =
     , lengthOrNumberOrAutoOrNoneOrContent = Compatible
     , fontSize = Compatible
     , lengthOrAutoOrCoverOrContain = Compatible
+    , lineHeight = Compatible
     , calc = Compatible
     }
 
@@ -1162,12 +1169,12 @@ important =
 
 
 makeImportant : Property -> Property
-makeImportant str =
+makeImportant (Property str) =
     if String.endsWith " !important" (String.toLower str) then
-        str
+        Property str
 
     else
-        str ++ " !important"
+        Property (str ++ " !important")
 
 
 {-| A [`ColorValue`](#ColorValue) that does not have `red`, `green`, or `blue`
@@ -1462,6 +1469,7 @@ type alias BasicProperty =
     , lengthOrMinMaxDimension : Compatible
     , lengthOrNoneOrMinMaxDimension : Compatible
     , lengthOrNumberOrAutoOrNoneOrContent : Compatible
+    , lineHeight : Compatible
     , listStyleType : Compatible
     , listStylePosition : Compatible
     , listStyleTypeOrPositionOrImage : Compatible
@@ -1534,6 +1542,7 @@ initial =
     , lengthOrMinMaxDimension = Compatible
     , lengthOrNoneOrMinMaxDimension = Compatible
     , listStyleType = Compatible
+    , lineHeight = Compatible
     , listStylePosition = Compatible
     , listStyleTypeOrPositionOrImage = Compatible
     , flexBasis = Compatible
@@ -1565,7 +1574,7 @@ initial =
     }
 
 
-{-| [RGB color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#rgb())
+{-| [RGB color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#rgb)
 in functional notation.
 -}
 rgb : Int -> Int -> Int -> Color
@@ -1579,7 +1588,7 @@ rgb r g b =
     }
 
 
-{-| [RGBA color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#rgba()).
+{-| [RGBA color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#rgba).
 -}
 rgba : Int -> Int -> Int -> Float -> Color
 rgba r g b alpha =
@@ -1592,7 +1601,7 @@ rgba r g b alpha =
     }
 
 
-{-| [HSL color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#hsl())
+{-| [HSL color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#hsl)
 `s` and `l` values are expressed as a number between 0 and 1 and are converted
 to the appropriate percentage at compile-time
 -}
@@ -1611,7 +1620,7 @@ hsl hueVal saturationVal lightnessVal =
     hslaToRgba value hueVal saturationVal lightnessVal 1
 
 
-{-| [HSLA color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#hsla())
+{-| [HSLA color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#hsla)
 `s` and `l` values are expressed as a number between 0 and 1 and are converted
 to the appropriate percentage at compile-time
 -}
@@ -1631,7 +1640,7 @@ hsla hueVal saturationVal lightnessVal alpha =
     hslaToRgba value hueVal saturationVal lightnessVal alpha
 
 
-{-| [RGB color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#rgb())
+{-| [RGB color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#rgb)
 in hexadecimal notation. You can optionally include `#` as the first character,
 for benefits like syntax highlighting in editors, ease of copy/pasting from
 tools which express these as e.g. `#abcdef0`, etc.
@@ -2467,13 +2476,14 @@ infinite =
 {-| A unitless number. Useful with properties like [`flexGrow`](#flexGrow)
 which accept unitless numbers.
 -}
-num : Float -> LengthOrNumberOrAutoOrNoneOrContent (Number (LengthOrNumber (NumberOrInfinite { numericValue : Float, unitLabel : String, units : UnitlessFloat })))
+num : Float -> LengthOrNumberOrAutoOrNoneOrContent (Number (LengthOrNumber (NumberOrInfinite (LineHeight { numericValue : Float, unitLabel : String, units : UnitlessFloat }))))
 num val =
     { value = String.fromFloat val
     , lengthOrNumber = Compatible
     , number = Compatible
     , numberOrInfinite = Compatible
     , lengthOrNumberOrAutoOrNoneOrContent = Compatible
+    , lineHeight = Compatible
     , numericValue = val
     , unitLabel = ""
     , units = UnitlessFloat
@@ -4155,27 +4165,27 @@ prop1 key arg =
 
 prop2 : String -> Value a -> Value b -> Style
 prop2 key argA argB =
-    property key (String.join " " [ argA.value, argB.value ])
+    property key (argA.value ++ " " ++ argB.value)
 
 
 prop3 : String -> Value a -> Value b -> Value c -> Style
 prop3 key argA argB argC =
-    property key (String.join " " [ argA.value, argB.value, argC.value ])
+    property key (argA.value ++ " " ++ argB.value ++ " " ++ argC.value)
 
 
 prop4 : String -> Value a -> Value b -> Value c -> Value d -> Style
 prop4 key argA argB argC argD =
-    property key (String.join " " [ argA.value, argB.value, argC.value, argD.value ])
+    property key (argA.value ++ " " ++ argB.value ++ " " ++ argC.value ++ " " ++ argD.value)
 
 
 prop5 : String -> Value a -> Value b -> Value c -> Value d -> Value e -> Style
 prop5 key argA argB argC argD argE =
-    property key (String.join " " [ argA.value, argB.value, argC.value, argD.value, argE.value ])
+    property key (argA.value ++ " " ++ argB.value ++ " " ++ argC.value ++ " " ++ argD.value ++ " " ++ argE.value)
 
 
 prop6 : String -> Value a -> Value b -> Value c -> Value d -> Value e -> Value f -> Style
 prop6 key argA argB argC argD argE argF =
-    property key (String.join " " [ argA.value, argB.value, argC.value, argD.value, argE.value, argF.value ])
+    property key (argA.value ++ " " ++ argB.value ++ " " ++ argC.value ++ " " ++ argD.value ++ " " ++ argE.value ++ " " ++ argF.value)
 
 
 {-| Sets ['float'](https://developer.mozilla.org/en-US/docs/Web/CSS/float)
@@ -5221,23 +5231,26 @@ larger =
 -- Styles --
 
 
-type alias Normal =
-    { value : String
-    , fontStyle : Compatible
-    , fontWeight : Compatible
-    , featureTagValue : Compatible
-    , overflowWrap : Compatible
-    , whiteSpace : Compatible
+type alias Normal compatible =
+    { compatible
+        | value : String
+        , fontStyle : Compatible
+        , fontWeight : Compatible
+        , featureTagValue : Compatible
+        , lineHeight : Compatible
+        , overflowWrap : Compatible
+        , whiteSpace : Compatible
     }
 
 
 {-| -}
-normal : Normal
+normal : Normal {}
 normal =
     { value = "normal"
     , fontStyle = Compatible
     , fontWeight = Compatible
     , featureTagValue = Compatible
+    , lineHeight = Compatible
     , overflowWrap = Compatible
     , whiteSpace = Compatible
     }
@@ -6335,7 +6348,7 @@ borderColor3 : ColorValue compatibleA -> ColorValue compatibleB -> ColorValue co
 borderColor3 c1 c2 c3 =
     let
         value =
-            String.join " " [ c1.value, c2.value, c3.value ]
+            c1.value ++ " " ++ c2.value ++ " " ++ c3.value
     in
     property "border-color" value
 
@@ -6355,7 +6368,7 @@ borderColor4 : ColorValue compatibleA -> ColorValue compatibleB -> ColorValue co
 borderColor4 c1 c2 c3 c4 =
     let
         value =
-            String.join " " [ c1.value, c2.value, c3.value, c4.value ]
+            c1.value ++ " " ++ c2.value ++ " " ++ c3.value ++ " " ++ c4.value
     in
     property "border-color" value
 
@@ -6627,7 +6640,7 @@ color c =
     lineHeight (px 10)
 
 -}
-lineHeight : LengthOrNumber compatible -> Style
+lineHeight : LineHeight compatible -> Style
 lineHeight =
     prop1 "line-height"
 
@@ -7258,6 +7271,7 @@ batch =
 property : String -> String -> Style
 property key value =
     (key ++ ":" ++ value)
+        |> Property
         |> Preprocess.AppendProperty
 
 
