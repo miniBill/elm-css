@@ -69,7 +69,7 @@ A bunch of new properties have been added. Including:
 
 #### Somewhat experimental
 
-This is still in it's experimental stages and is only partly tested.
+This is still in it's experimental stages and is only partly tested. It seems to be fine but I can't say for sure yet!
 
 #### Some different naming schemes.
 
