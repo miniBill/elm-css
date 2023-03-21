@@ -91,7 +91,7 @@ I will try to respond to things when I can, but there may be situations where I 
 
 ### Acknowledgements
 
-I did a lot of repetitive work to try to bring the original phantom-types branch to a certain standard, but the original work was not mine. There are a lot of contributors who were responsible for this fork!
+I did a lot of repetitive work to try to bring the original phantom-types branch to a certain standard, but the original work was not mine. There are a lot of contributors who made this fork possible!
 
 ---
 
