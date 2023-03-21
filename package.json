@@ -10,8 +10,7 @@
     "test": "tests"
   },
   "scripts": {
-    "___comment": "Disabled all tests that rely on modules that where not phantomized",
-    "test": "elm-test tests/*Phantom.elm",
+    "test": "elm-test tests/*",
     "format": "elm-format src tests examples readme-example"
   },
   "repository": {
@@ -25,12 +24,12 @@
     "less",
     "preprocessor"
   ],
-  "author": "Richard Feldman <richard.t.feldman@gmail.com>",
+  "author": "Dzuk",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/rtfeldman/elm-css/issues"
+    "url": "https://github.com/dzuk-mutant/elm-css/issues"
   },
-  "homepage": "https://github.com/rtfeldman/elm-css#readme",
+  "homepage": "https://github.com/dzuk-mutant/elm-css#readme",
   "dependencies": {
     "binstall": "1.2.0",
     "chalk": "2.1.0",

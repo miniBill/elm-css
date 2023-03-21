@@ -1,6 +1,7 @@
-    "name": "rtfeldman/elm-css",
+{
+    "type": "package",
+    "name": "dzuk-mutant/elm-css",
     "summary": "Typed CSS in Elm.",
-    "exposed-modules": {
     "license": "BSD-3-Clause",
     "version": "18.0.0",
     "exposed-modules": {
