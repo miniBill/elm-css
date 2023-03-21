@@ -1,10 +1,10 @@
-module Styled exposing (all)
+module Old.Styled exposing (all)
 
 -- import ReadmeExample
 
 import Css exposing (..)
 import Css.Media as Media
-import Html.Styled exposing (Html, a, button, div, header, img, li, nav, text, toUnstyled)
+import Html.Styled as Html exposing (Html, a, button, div, header, img, li, nav, toUnstyled)
 import Html.Styled.Attributes exposing (class, css, src)
 import Html.Styled.Keyed exposing (lazyNode)
 import Test exposing (Test, describe)
@@ -67,7 +67,7 @@ buyTickets =
 
 viewBuyTickets : String -> Html msg
 viewBuyTickets caption =
-    buyTickets [ text caption ]
+    buyTickets [ Html.text caption ]
 
 
 view : String -> Html msg
@@ -86,7 +86,7 @@ view ticketsCaption =
 navElems : List (Html msg)
 navElems =
     [ "SPEAKERS", "SCHEDULE", "WORKSHOPS", "VENUE", "BLOG", "CONTACT" ]
-        |> List.map (\name -> navLink [ text name ])
+        |> List.map (\name -> navLink [ Html.text name ])
 
 
 

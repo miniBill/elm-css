@@ -1589,7 +1589,7 @@ type alias Style =
 -}
 property : String -> String -> Style
 property key value =
-    Preprocess.AppendProperty (key ++ ":" ++ value)
+    appendProperty (key ++ ":" ++ value)
 
 
 
@@ -1635,12 +1635,19 @@ important =
 
 
 makeImportant : Structure.Property -> Structure.Property
-makeImportant str =
+makeImportant (Structure.Property str) =
     if String.endsWith " !important" (String.toLower str) then
-        str
+        Structure.Property <| str
 
     else
-        str ++ " !important"
+        Structure.Property <| str ++ " !important"
+
+
+
+
+appendProperty : String -> Style
+appendProperty str =
+    Preprocess.AppendProperty <| Structure.Property <| str
 
 
 {-| Helper function to concatenate a list of values together
@@ -5002,7 +5009,7 @@ nowrap =
 -}
 all : BaseValue a -> Style
 all (Value val) =
-    AppendProperty ("all:" ++ val)
+    appendProperty ("all:" ++ val)
 
 
 ------------------------------------------------------------------------
@@ -5062,7 +5069,7 @@ display :
         }
     -> Style
 display (Value val) =
-    AppendProperty ("display:" ++ val)
+    appendProperty ("display:" ++ val)
 
 
 {-| Sets [`display`](https://css-tricks.com/almanac/properties/d/display/).
@@ -5094,7 +5101,7 @@ display2 :
             }
     -> Style
 display2 (Value displayOutside) (Value displayInside) =
-    AppendProperty ("display:" ++ displayOutside ++ " " ++ displayInside)
+    appendProperty ("display:" ++ displayOutside ++ " " ++ displayInside)
 
 
 {-| The [`display`](https://css-tricks.com/almanac/properties/d/display/) property.
@@ -5114,7 +5121,7 @@ displayListItem2 :
         }
     -> Style
 displayListItem2 (Value val) =
-    AppendProperty ("display:list-item " ++ val)
+    appendProperty ("display:list-item " ++ val)
 
 
 {-| The [`display`](https://css-tricks.com/almanac/properties/d/display/) property.
@@ -5137,7 +5144,7 @@ displayListItem3 :
             }
     -> Style
 displayListItem3 (Value displayOutside) (Value displayFlow) =
-    AppendProperty ("display:list-item " ++ displayOutside ++ " " ++ displayFlow)
+    appendProperty ("display:list-item " ++ displayOutside ++ " " ++ displayFlow)
 
 
 {-| The `flex` value used by [`display`](#display).
@@ -5418,7 +5425,7 @@ position :
         }
     -> Style
 position (Value val) =
-    AppendProperty ("position:" ++ val)
+    appendProperty ("position:" ++ val)
 
 
 {-| An [`absolute` `position`](https://developer.mozilla.org/en-US/docs/Web/CSS/position#relative).
@@ -5520,7 +5527,7 @@ zIndex :
         }
     -> Style
 zIndex (Value val) =
-    AppendProperty ("z-index:" ++ val)
+    appendProperty ("z-index:" ++ val)
 
 
 {-| Sets [`isolation`](https://css-tricks.com/almanac/properties/i/isolation/)
@@ -5537,7 +5544,7 @@ isolation :
         }
     -> Style
 isolation (Value val) =
-    AppendProperty ("isolation:" ++ val)
+    appendProperty ("isolation:" ++ val)
 
 
 {-| Sets [`box-sizing`](https://css-tricks.com/almanac/properties/b/box-sizing/) property.
@@ -5554,7 +5561,7 @@ boxSizing :
         }
     -> Style
 boxSizing (Value value) =
-    AppendProperty ("box-sizing:" ++ value)
+    appendProperty ("box-sizing:" ++ value)
 
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
@@ -5597,7 +5604,7 @@ contain :
         }
     -> Style
 contain (Value value) =
-    AppendProperty ("contain:" ++ value)
+    appendProperty ("contain:" ++ value)
 
 
 {-| The [`contain`](https://css-tricks.com/almanac/properties/c/contain/) property.
@@ -5624,7 +5631,7 @@ contain2 :
             }
     -> Style
 contain2 (Value value1) (Value value2) =
-    AppendProperty ("contain:" ++ value1 ++ " " ++ value2)
+    appendProperty ("contain:" ++ value1 ++ " " ++ value2)
 
 
 {-| The [`contain`](https://css-tricks.com/almanac/properties/c/contain/) property.
@@ -5658,7 +5665,7 @@ contain3 :
             }
     -> Style
 contain3 (Value value1) (Value value2) (Value value3) =
-    AppendProperty ("contain:" ++ value1 ++ " " ++ value2 ++ " " ++ value3)
+    appendProperty ("contain:" ++ value1 ++ " " ++ value2 ++ " " ++ value3)
 
 
 {-| The [`contain`](https://css-tricks.com/almanac/properties/c/contain/) property.
@@ -5701,7 +5708,7 @@ contain4 :
             }
     -> Style
 contain4 (Value value1) (Value value2) (Value value3) (Value value4) =
-    AppendProperty ("contain:" ++ value1 ++ " " ++ value2 ++ " " ++ value3 ++ " " ++ value4)
+    appendProperty ("contain:" ++ value1 ++ " " ++ value2 ++ " " ++ value3 ++ " " ++ value4)
 
 
 {-| Sets the `size` value for [`contain`](#contain).
@@ -5774,7 +5781,7 @@ containIntrinsicSize :
         )
     -> Style
 containIntrinsicSize (Value val) =
-    AppendProperty <| "contain-intrinsic-size:" ++ val
+    appendProperty <| "contain-intrinsic-size:" ++ val
 
 
 {-| The [`contain-intrinsic-size`](https://developer.mozilla.org/en-US/docs/Web/CSS/contain-intrinsic-size)
@@ -5809,7 +5816,7 @@ containIntrinsicSize2 :
     -> Value (Length)
     -> Style
 containIntrinsicSize2 (Value val1) (Value val2) =
-    AppendProperty <| "contain-intrinsic-size:" ++ val1 ++ " " ++ val2
+    appendProperty <| "contain-intrinsic-size:" ++ val1 ++ " " ++ val2
 
 
 {-| The [`contain-intrinsic-size`](https://developer.mozilla.org/en-US/docs/Web/CSS/contain-intrinsic-size)
@@ -5844,7 +5851,7 @@ containIntrinsicSize4 :
     -> Value (Length)
     -> Style
 containIntrinsicSize4 (Value valAutoX) (Value valX) (Value valAutoY) (Value valY) =
-    AppendProperty
+    appendProperty
         <| "contain-intrinsic-size:"
         ++ valAutoX
         ++ " "
@@ -5879,7 +5886,7 @@ containIntrinsicWidth :
         )
     -> Style
 containIntrinsicWidth (Value val) =
-    AppendProperty <| "contain-intrinsic-width:" ++ val
+    appendProperty <| "contain-intrinsic-width:" ++ val
 
 
 {-| The [`contain-intrinsic-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/contain-intrinsic-width)
@@ -5905,7 +5912,7 @@ containIntrinsicWidth2 :
     -> Value (Length)
     -> Style
 containIntrinsicWidth2 (Value valAuto) (Value val) =
-    AppendProperty <| "contain-intrinsic-width:" ++ valAuto ++ " " ++ val
+    appendProperty <| "contain-intrinsic-width:" ++ valAuto ++ " " ++ val
 
 
 {-| The [`contain-intrinsic-height`](https://developer.mozilla.org/en-US/docs/Web/CSS/contain-intrinsic-height)
@@ -5932,7 +5939,7 @@ containIntrinsicHeight :
         )
     -> Style
 containIntrinsicHeight (Value val) =
-    AppendProperty <| "contain-intrinsic-height:" ++ val
+    appendProperty <| "contain-intrinsic-height:" ++ val
 
 
 {-| The [`contain-intrinsic-height`](https://developer.mozilla.org/en-US/docs/Web/CSS/contain-intrinsic-height)
@@ -5958,7 +5965,7 @@ containIntrinsicHeight2 :
     -> Value (Length)
     -> Style
 containIntrinsicHeight2 (Value valAuto) (Value val) =
-    AppendProperty <| "contain-intrinsic-height:" ++ valAuto ++ " " ++ val
+    appendProperty <| "contain-intrinsic-height:" ++ valAuto ++ " " ++ val
 
 
 {-| The [`contain-intrinsic-inline-size`](https://developer.mozilla.org/en-US/docs/Web/CSS/contain-intrinsic-inline-size)
@@ -5985,7 +5992,7 @@ containIntrinsicInlineSize :
         )
     -> Style
 containIntrinsicInlineSize (Value val) =
-    AppendProperty <| "contain-intrinsic-inline-size:" ++ val
+    appendProperty <| "contain-intrinsic-inline-size:" ++ val
 
 
 {-| The [`contain-intrinsic-inline-size`](https://developer.mozilla.org/en-US/docs/Web/CSS/contain-intrinsic-inline-size)
@@ -6011,7 +6018,7 @@ containIntrinsicInlineSize2 :
     -> Value (Length)
     -> Style
 containIntrinsicInlineSize2 (Value valAuto) (Value val) =
-    AppendProperty <| "contain-intrinsic-inline-size:" ++ valAuto ++ " " ++ val
+    appendProperty <| "contain-intrinsic-inline-size:" ++ valAuto ++ " " ++ val
 
 
 {-| The [`contain-intrinsic-block-size`](https://developer.mozilla.org/en-US/docs/Web/CSS/contain-intrinsic-block-size)
@@ -6038,7 +6045,7 @@ containIntrinsicBlockSize :
         )
     -> Style
 containIntrinsicBlockSize (Value val) =
-    AppendProperty <| "contain-intrinsic-block-size:" ++ val
+    appendProperty <| "contain-intrinsic-block-size:" ++ val
 
 
 {-| The [`contain-intrinsic-block-size`](https://developer.mozilla.org/en-US/docs/Web/CSS/contain-intrinsic-block-size)
@@ -6064,7 +6071,7 @@ containIntrinsicBlockSize2 :
     -> Value (Length)
     -> Style
 containIntrinsicBlockSize2 (Value valAuto) (Value val) =
-    AppendProperty <| "contain-intrinsic-block-size:" ++ valAuto ++ " " ++ val
+    appendProperty <| "contain-intrinsic-block-size:" ++ valAuto ++ " " ++ val
 
 
 ------------------------------------------------------------------------
@@ -6106,7 +6113,7 @@ width :
         )
     -> Style
 width (Value sizeVal) =
-    AppendProperty ("width:" ++ sizeVal)
+    appendProperty ("width:" ++ sizeVal)
 
 
 {-| The [`min-width`](https://css-tricks.com/almanac/properties/m/min-width/) property.
@@ -6130,7 +6137,7 @@ minWidth :
         )
     -> Style
 minWidth (Value sizeVal) =
-    AppendProperty ("min-width:" ++ sizeVal)
+    appendProperty ("min-width:" ++ sizeVal)
 
 
 {-| The [`max-width`](https://css-tricks.com/almanac/properties/m/max-width/) property.
@@ -6155,7 +6162,7 @@ maxWidth :
         )
     -> Style
 maxWidth (Value sizeVal) =
-    AppendProperty ("max-width:" ++ sizeVal)
+    appendProperty ("max-width:" ++ sizeVal)
 
 
 {-| The [`height`](https://css-tricks.com/almanac/properties/h/height/) property.
@@ -6176,7 +6183,7 @@ height :
         )
     -> Style
 height (Value val) =
-    AppendProperty ("height:" ++ val)
+    appendProperty ("height:" ++ val)
 
 
 {-| The [`min-height`](https://css-tricks.com/almanac/properties/m/min-height/) property.
@@ -6196,7 +6203,7 @@ minHeight :
         )
     -> Style
 minHeight (Value val) =
-    AppendProperty ("min-height:" ++ val)
+    appendProperty ("min-height:" ++ val)
 
 
 {-| The [`max-height`](https://css-tricks.com/almanac/properties/m/min-height/) property.
@@ -6217,7 +6224,7 @@ maxHeight :
         )
     -> Style
 maxHeight (Value val) =
-    AppendProperty ("max-height:" ++ val)
+    appendProperty ("max-height:" ++ val)
 
 
 {-| The [`block-size`](https://css-tricks.com/almanac/properties/b/block-size/) property.
@@ -6238,7 +6245,7 @@ blockSize :
         )
     -> Style
 blockSize (Value val) =
-    AppendProperty ("block-size:" ++ val)
+    appendProperty ("block-size:" ++ val)
 
 
 {-| The [`min-block-size`](https://developer.mozilla.org/en-US/docs/Web/CSS/min-block-size) property.
@@ -6258,7 +6265,7 @@ minBlockSize :
         )
     -> Style
 minBlockSize (Value val) =
-    AppendProperty ("min-block-size:" ++ val)
+    appendProperty ("min-block-size:" ++ val)
 
 
 {-| The [`max-block-size`](https://developer.mozilla.org/en-US/docs/Web/CSS/max-block-size) property.
@@ -6279,7 +6286,7 @@ maxBlockSize :
         )
     -> Style
 maxBlockSize (Value val) =
-    AppendProperty ("max-block-size:" ++ val)
+    appendProperty ("max-block-size:" ++ val)
 
 
 {-| The [`inline-size`](https://css-tricks.com/almanac/properties/i/inline-size/) property.
@@ -6300,7 +6307,7 @@ inlineSize :
         )
     -> Style
 inlineSize (Value val) =
-    AppendProperty ("inline-size:" ++ val)
+    appendProperty ("inline-size:" ++ val)
 
 
 {-| The [`min-inline-size`](https://developer.mozilla.org/en-US/docs/Web/CSS/min-inline-size) property.
@@ -6320,7 +6327,7 @@ minInlineSize :
         )
     -> Style
 minInlineSize (Value val) =
-    AppendProperty ("min-inline-size:" ++ val)
+    appendProperty ("min-inline-size:" ++ val)
 
 
 {-| The [`max-inline-size`](https://developer.mozilla.org/en-US/docs/Web/CSS/max-inline-size) property.
@@ -6341,7 +6348,7 @@ maxInlineSize :
         )
     -> Style
 maxInlineSize (Value val) =
-    AppendProperty ("max-inline-size:" ++ val)
+    appendProperty ("max-inline-size:" ++ val)
 
 
 
@@ -6382,7 +6389,7 @@ inset :
         )
     -> Style
 inset (Value val) =
-    AppendProperty ("inset:" ++ val)
+    appendProperty ("inset:" ++ val)
 
 
 {-| Sets the [`inset`](https://developer.mozilla.org/en-US/docs/Web/CSS/inset) property.
@@ -6414,7 +6421,7 @@ inset2 :
             )
     -> Style
 inset2 (Value valTopBottom) (Value valRightLeft) =
-    AppendProperty ("inset:" ++ valTopBottom ++ " " ++ valRightLeft)
+    appendProperty ("inset:" ++ valTopBottom ++ " " ++ valRightLeft)
 
 
 {-| Sets the [`inset`](https://developer.mozilla.org/en-US/docs/Web/CSS/inset) property.
@@ -6453,7 +6460,7 @@ inset3 :
             )
     -> Style
 inset3 (Value valTop) (Value valRightLeft) (Value valBottom) =
-    AppendProperty ("inset:" ++ valTop ++ " " ++ valRightLeft ++ " " ++ valBottom)
+    appendProperty ("inset:" ++ valTop ++ " " ++ valRightLeft ++ " " ++ valBottom)
 
 
 {-| Sets the [`inset`](https://developer.mozilla.org/en-US/docs/Web/CSS/inset) property.
@@ -6499,7 +6506,7 @@ inset4 :
             )
     -> Style
 inset4 (Value valTop) (Value valRight) (Value valBottom) (Value valLeft) =
-    AppendProperty ("inset:" ++ valTop ++ " " ++ valRight ++ " " ++ valBottom ++ " " ++ valLeft)
+    appendProperty ("inset:" ++ valTop ++ " " ++ valRight ++ " " ++ valBottom ++ " " ++ valLeft)
 
 
 {-| Sets the [`top`](https://css-tricks.com/almanac/properties/t/top/) property.
@@ -6525,7 +6532,7 @@ top :
         )
     -> Style
 top (Value val) =
-    AppendProperty ("top:" ++ val)
+    appendProperty ("top:" ++ val)
 
 
 {-| Sets the [`bottom`](https://css-tricks.com/almanac/properties/b/bottom/) property.
@@ -6551,7 +6558,7 @@ bottom :
         )
     -> Style
 bottom (Value val) =
-    AppendProperty ("bottom:" ++ val)
+    appendProperty ("bottom:" ++ val)
 
 
 {-| Sets the [`left`](https://css-tricks.com/almanac/properties/l/left/) property.
@@ -6577,7 +6584,7 @@ left :
         )
     -> Style
 left (Value val) =
-    AppendProperty ("left:" ++ val)
+    appendProperty ("left:" ++ val)
 
 
 {-| Sets the [`right`](https://css-tricks.com/almanac/properties/r/right) property.
@@ -6603,7 +6610,7 @@ right :
         )
     -> Style
 right (Value val) =
-    AppendProperty ("right:" ++ val)
+    appendProperty ("right:" ++ val)
 
 
 {-| Sets the [`inset-block`](https://css-tricks.com/almanac/properties/i/inset-block/) property.
@@ -6624,7 +6631,7 @@ insetBlock :
         )
     -> Style
 insetBlock (Value val) =
-    AppendProperty ("inset-block:" ++ val)
+    appendProperty ("inset-block:" ++ val)
 
 
 {-| Sets the [`inset-block`](https://css-tricks.com/almanac/properties/i/inset-block/) property.
@@ -6652,7 +6659,7 @@ insetBlock2 :
             )
     -> Style
 insetBlock2 (Value valStart) (Value valEnd) =
-    AppendProperty ("inset-block:" ++ valStart ++ " " ++ valEnd)
+    appendProperty ("inset-block:" ++ valStart ++ " " ++ valEnd)
 
 
 {-| Sets the [`inset-inline`](https://css-tricks.com/almanac/properties/i/inset-inline) property.
@@ -6673,7 +6680,7 @@ insetInline :
         )
     -> Style
 insetInline (Value val) =
-    AppendProperty ("inset-inline:" ++ val)
+    appendProperty ("inset-inline:" ++ val)
 
 
 {-| Sets the [`inset-inline`](https://css-tricks.com/almanac/properties/i/inset-inline) property.
@@ -6701,7 +6708,7 @@ insetInline2 :
             )
     -> Style
 insetInline2 (Value valStart) (Value valEnd) =
-    AppendProperty ("inset-inline:" ++ valStart ++ " " ++ valEnd)
+    appendProperty ("inset-inline:" ++ valStart ++ " " ++ valEnd)
 
 
 {-| Sets the [`inset-block-start`](https://developer.mozilla.org/en-US/docs/Web/CSS/inset-block-start) property.
@@ -6724,7 +6731,7 @@ insetBlockStart :
         )
     -> Style
 insetBlockStart (Value val) =
-    AppendProperty ("inset-block-start:" ++ val)
+    appendProperty ("inset-block-start:" ++ val)
 
 
 {-| Sets the [`inset-block-end`](https://developer.mozilla.org/en-US/docs/Web/CSS/inset-block-end) property.
@@ -6747,7 +6754,7 @@ insetBlockEnd :
         )
     -> Style
 insetBlockEnd (Value val) =
-    AppendProperty ("inset-block-end:" ++ val)
+    appendProperty ("inset-block-end:" ++ val)
 
 
 {-| Sets the [`inset-inline-start`](https://developer.mozilla.org/en-US/docs/Web/CSS/inset-inline-start) property.
@@ -6770,7 +6777,7 @@ insetInlineStart :
         )
     -> Style
 insetInlineStart (Value val) =
-    AppendProperty ("inset-inline-start:" ++ val)
+    appendProperty ("inset-inline-start:" ++ val)
 
 
 {-| Sets the [`inset-inline-end`](https://developer.mozilla.org/en-US/docs/Web/CSS/inset-inline-end) property.
@@ -6793,7 +6800,7 @@ insetInlineEnd :
         )
     -> Style
 insetInlineEnd (Value val) =
-    AppendProperty ("inset-inline-end:" ++ val)
+    appendProperty ("inset-inline-end:" ++ val)
 
 
 ------------------------------------------------------------------------
@@ -6842,7 +6849,7 @@ margin :
         )
     -> Style
 margin (Value value) =
-    AppendProperty ("margin:" ++ value)
+    appendProperty ("margin:" ++ value)
 
 
 {-| Sets [`margin`](https://css-tricks.com/almanac/properties/m/margin/) property.
@@ -6873,7 +6880,7 @@ margin2 :
             )
     -> Style
 margin2 (Value valueTopBottom) (Value valueRightLeft) =
-    AppendProperty ("margin:" ++ valueTopBottom ++ " " ++ valueRightLeft)
+    appendProperty ("margin:" ++ valueTopBottom ++ " " ++ valueRightLeft)
 
 
 {-| Sets [`margin`](https://css-tricks.com/almanac/properties/m/margin/) property.
@@ -6911,7 +6918,7 @@ margin3 :
             )
     -> Style
 margin3 (Value valueTop) (Value valueRightLeft) (Value valueBottom) =
-    AppendProperty ("margin:" ++ valueTop ++ " " ++ valueRightLeft ++ " " ++ valueBottom)
+    appendProperty ("margin:" ++ valueTop ++ " " ++ valueRightLeft ++ " " ++ valueBottom)
 
 
 {-| Sets [`margin`](https://css-tricks.com/almanac/properties/m/margin/) property.
@@ -6955,7 +6962,7 @@ margin4 :
             )
     -> Style
 margin4 (Value valueTop) (Value valueRight) (Value valueBottom) (Value valueLeft) =
-    AppendProperty ("margin:" ++ valueTop ++ " " ++ valueRight ++ " " ++ valueBottom ++ " " ++ valueLeft)
+    appendProperty ("margin:" ++ valueTop ++ " " ++ valueRight ++ " " ++ valueBottom ++ " " ++ valueLeft)
 
 
 {-| Sets [`margin-top`](https://developer.mozilla.org/en-US/docs/Web/CSS/margin-top) property.
@@ -6974,7 +6981,7 @@ marginTop :
         )
     -> Style
 marginTop (Value value) =
-    AppendProperty ("margin-top:" ++ value)
+    appendProperty ("margin-top:" ++ value)
 
 
 {-| Sets [`margin-right`](https://developer.mozilla.org/en-US/docs/Web/CSS/margin-right) property.
@@ -6991,7 +6998,7 @@ marginRight :
         )
     -> Style
 marginRight (Value value) =
-    AppendProperty ("margin-right:" ++ value)
+    appendProperty ("margin-right:" ++ value)
 
 
 {-| Sets [`margin-bottom`](https://developer.mozilla.org/en-US/docs/Web/CSS/margin-bottom) property.
@@ -7010,7 +7017,7 @@ marginBottom :
         )
     -> Style
 marginBottom (Value value) =
-    AppendProperty ("margin-bottom:" ++ value)
+    appendProperty ("margin-bottom:" ++ value)
 
 
 {-| Sets [`margin-left`](https://developer.mozilla.org/en-US/docs/Web/CSS/margin-left) property.
@@ -7027,7 +7034,7 @@ marginLeft :
         )
     -> Style
 marginLeft (Value value) =
-    AppendProperty ("margin-left:" ++ value)
+    appendProperty ("margin-left:" ++ value)
 
 
 
@@ -7055,7 +7062,7 @@ marginBlock :
         )
     -> Style
 marginBlock (Value value) =
-    AppendProperty ("margin-block:" ++ value)
+    appendProperty ("margin-block:" ++ value)
 
 
 {-| Sets [`margin-block`](https://css-tricks.com/almanac/properties/m/margin-block/) property.
@@ -7086,7 +7093,7 @@ marginBlock2 :
             )
     -> Style
 marginBlock2 (Value valueStart) (Value valueEnd) =
-    AppendProperty ("margin-block:" ++ valueStart ++ " " ++ valueEnd)
+    appendProperty ("margin-block:" ++ valueStart ++ " " ++ valueEnd)
 
 
 {-| Sets [`margin-block-start`](https://developer.mozilla.org/en-US/docs/Web/CSS/margin-block-start) property.
@@ -7103,7 +7110,7 @@ marginBlockStart :
         )
     -> Style
 marginBlockStart (Value value) =
-    AppendProperty ("margin-block-start:" ++ value)
+    appendProperty ("margin-block-start:" ++ value)
 
 
 {-| Sets [`margin-block-end`](https://developer.mozilla.org/en-US/docs/Web/CSS/margin-block-end) property.
@@ -7120,7 +7127,7 @@ marginBlockEnd :
         )
     -> Style
 marginBlockEnd (Value value) =
-    AppendProperty ("margin-block-end:" ++ value)
+    appendProperty ("margin-block-end:" ++ value)
 
 
 {-| Sets [`margin-inline`](https://css-tricks.com/almanac/properties/m/margin-inline/) property.
@@ -7147,7 +7154,7 @@ marginInline :
         )
     -> Style
 marginInline (Value value) =
-    AppendProperty ("margin-inline:" ++ value)
+    appendProperty ("margin-inline:" ++ value)
 
 
 {-| Sets [`margin-inline`](https://css-tricks.com/almanac/properties/m/margin-inline/) property.
@@ -7178,7 +7185,7 @@ marginInline2 :
             )
     -> Style
 marginInline2 (Value valueStart) (Value valueEnd) =
-    AppendProperty ("margin-inline:" ++ valueStart ++ " " ++ valueEnd)
+    appendProperty ("margin-inline:" ++ valueStart ++ " " ++ valueEnd)
 
 
 {-| Sets [`margin-inline-start`](https://developer.mozilla.org/en-US/docs/Web/CSS/margin-inline-start) property.
@@ -7195,7 +7202,7 @@ marginInlineStart :
         )
     -> Style
 marginInlineStart (Value value) =
-    AppendProperty ("margin-inline-start:" ++ value)
+    appendProperty ("margin-inline-start:" ++ value)
 
 
 {-| Sets [`margin-inline-end`](https://developer.mozilla.org/en-US/docs/Web/CSS/margin-inline-end) property.
@@ -7212,7 +7219,7 @@ marginInlineEnd :
         )
     -> Style
 marginInlineEnd (Value value) =
-    AppendProperty ("margin-inline-end:" ++ value)
+    appendProperty ("margin-inline-end:" ++ value)
 
 
 ------------------------------------------------------------------------
@@ -7258,7 +7265,7 @@ padding :
         )
     -> Style
 padding (Value value) =
-    AppendProperty ("padding:" ++ value)
+    appendProperty ("padding:" ++ value)
 
 
 {-| Sets [`padding`](https://css-tricks.com/almanac/properties/p/padding/) property.
@@ -7285,7 +7292,7 @@ padding2 :
             )
     -> Style
 padding2 (Value valueTopBottom) (Value valueRightLeft) =
-    AppendProperty ("padding:" ++ valueTopBottom ++ " " ++ valueRightLeft)
+    appendProperty ("padding:" ++ valueTopBottom ++ " " ++ valueRightLeft)
 
 
 {-| Sets [`padding`](https://css-tricks.com/almanac/properties/p/padding/) property.
@@ -7318,7 +7325,7 @@ padding3 :
             )
     -> Style
 padding3 (Value valueTop) (Value valueRightLeft) (Value valueBottom) =
-    AppendProperty ("padding:" ++ valueTop ++ " " ++ valueRightLeft ++ " " ++ valueBottom)
+    appendProperty ("padding:" ++ valueTop ++ " " ++ valueRightLeft ++ " " ++ valueBottom)
 
 
 {-| Sets [`padding`](https://css-tricks.com/almanac/properties/p/padding/) property.
@@ -7356,7 +7363,7 @@ padding4 :
             )
     -> Style
 padding4 (Value valueTop) (Value valueRight) (Value valueBottom) (Value valueLeft) =
-    AppendProperty ("padding:" ++ valueTop ++ " " ++ valueRight ++ " " ++ valueBottom ++ " " ++ valueLeft)
+    appendProperty ("padding:" ++ valueTop ++ " " ++ valueRight ++ " " ++ valueBottom ++ " " ++ valueLeft)
 
 
 {-| Sets [`padding-top`](https://developer.mozilla.org/en-US/docs/Web/CSS/padding-top) property.
@@ -7372,7 +7379,7 @@ paddingTop :
         )
     -> Style
 paddingTop (Value value) =
-    AppendProperty ("padding-top:" ++ value)
+    appendProperty ("padding-top:" ++ value)
 
 
 {-| Sets [`padding-right`](https://developer.mozilla.org/en-US/docs/Web/CSS/padding-right) property.
@@ -7388,7 +7395,7 @@ paddingRight :
         )
     -> Style
 paddingRight (Value value) =
-    AppendProperty ("padding-right:" ++ value)
+    appendProperty ("padding-right:" ++ value)
 
 
 {-| Sets [`padding-bottom`](https://developer.mozilla.org/en-US/docs/Web/CSS/padding-bottom) property.
@@ -7404,7 +7411,7 @@ paddingBottom :
         )
     -> Style
 paddingBottom (Value value) =
-    AppendProperty ("padding-bottom:" ++ value)
+    appendProperty ("padding-bottom:" ++ value)
 
 
 {-| Sets [`padding-left`](https://developer.mozilla.org/en-US/docs/Web/CSS/padding-left) property.
@@ -7420,7 +7427,7 @@ paddingLeft :
         )
     -> Style
 paddingLeft (Value value) =
-    AppendProperty ("padding-left:" ++ value)
+    appendProperty ("padding-left:" ++ value)
 
 
 {-| Sets [`padding-block`](https://css-tricks.com/almanac/properties/p/padding-block/) property.
@@ -7443,7 +7450,7 @@ paddingBlock :
         )
     -> Style
 paddingBlock (Value value) =
-    AppendProperty ("padding-block:" ++ value)
+    appendProperty ("padding-block:" ++ value)
 
 
 {-| Sets [`padding-block`](https://css-tricks.com/almanac/properties/p/padding-block/) property.
@@ -7470,7 +7477,7 @@ paddingBlock2 :
             )
     -> Style
 paddingBlock2 (Value valueStart) (Value valueEnd) =
-    AppendProperty ("padding-block:" ++ valueStart ++ " " ++ valueEnd)
+    appendProperty ("padding-block:" ++ valueStart ++ " " ++ valueEnd)
 
 
 {-| Sets [`padding-block-start`](https://developer.mozilla.org/en-US/docs/Web/CSS/padding-block-start) property.
@@ -7486,7 +7493,7 @@ paddingBlockStart :
         )
     -> Style
 paddingBlockStart (Value value) =
-    AppendProperty ("padding-block-start:" ++ value)
+    appendProperty ("padding-block-start:" ++ value)
 
 
 {-| Sets [`padding-block-end`](https://developer.mozilla.org/en-US/docs/Web/CSS/padding-block-end) property.
@@ -7502,7 +7509,7 @@ paddingBlockEnd :
         )
     -> Style
 paddingBlockEnd (Value value) =
-    AppendProperty ("padding-block-end:" ++ value)
+    appendProperty ("padding-block-end:" ++ value)
 
 
 {-| Sets [`padding-inline`](https://css-tricks.com/almanac/properties/p/padding-inline/) property.
@@ -7526,7 +7533,7 @@ paddingInline :
         )
     -> Style
 paddingInline (Value value) =
-    AppendProperty ("padding-inline:" ++ value)
+    appendProperty ("padding-inline:" ++ value)
 
 
 {-| Sets [`padding-inline`](https://css-tricks.com/almanac/properties/p/padding-inline/) property.
@@ -7553,7 +7560,7 @@ paddingInline2 :
             )
     -> Style
 paddingInline2 (Value valueStart) (Value valueEnd) =
-    AppendProperty ("padding-inline:" ++ valueStart ++ " " ++ valueEnd)
+    appendProperty ("padding-inline:" ++ valueStart ++ " " ++ valueEnd)
 
 
 {-| Sets [`padding-inline-start`](https://developer.mozilla.org/en-US/docs/Web/CSS/padding-inline-start) property.
@@ -7569,7 +7576,7 @@ paddingInlineStart :
         )
     -> Style
 paddingInlineStart (Value value) =
-    AppendProperty ("padding-inline-start:" ++ value)
+    appendProperty ("padding-inline-start:" ++ value)
 
 
 {-| Sets [`padding-inline-end`](https://developer.mozilla.org/en-US/docs/Web/CSS/padding-inline-end) property.
@@ -7585,7 +7592,7 @@ paddingInlineEnd :
         )
     -> Style
 paddingInlineEnd (Value value) =
-    AppendProperty ("padding-inline-end:" ++ value)
+    appendProperty ("padding-inline-end:" ++ value)
 
 
 ------------------------------------------------------------------------
@@ -7614,7 +7621,7 @@ paddingInlineEnd (Value value) =
 -}
 border : BaseValue LineWidth -> Style
 border (Value widthVal) =
-    AppendProperty ("border:" ++ widthVal)
+    appendProperty ("border:" ++ widthVal)
 
 
 {-| Sets [`border`](https://css-tricks.com/almanac/properties/b/border/) property.
@@ -7628,7 +7635,7 @@ border (Value widthVal) =
 -}
 border2 : Value LineWidth -> Value LineStyle -> Style
 border2 (Value widthVal) (Value styleVal) =
-    AppendProperty ("border:" ++ widthVal ++ " " ++ styleVal)
+    appendProperty ("border:" ++ widthVal ++ " " ++ styleVal)
 
 
 {-| Sets [`border`](https://css-tricks.com/almanac/properties/b/border/) property.
@@ -7642,7 +7649,7 @@ border2 (Value widthVal) (Value styleVal) =
 -}
 border3 : Value LineWidth -> Value LineStyle -> Value Color -> Style
 border3 (Value widthVal) (Value styleVal) (Value colorVal) =
-    AppendProperty ("border:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
+    appendProperty ("border:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
 
 
 {-| Sets [`border-top`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-top) property.
@@ -7656,7 +7663,7 @@ border3 (Value widthVal) (Value styleVal) (Value colorVal) =
 -}
 borderTop : BaseValue LineWidth -> Style
 borderTop (Value widthVal) =
-    AppendProperty ("border-top:" ++ widthVal)
+    appendProperty ("border-top:" ++ widthVal)
 
 
 {-| Sets [`border-top`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-top) property.
@@ -7670,7 +7677,7 @@ borderTop (Value widthVal) =
 -}
 borderTop2 : Value LineWidth -> Value LineStyle -> Style
 borderTop2 (Value widthVal) (Value styleVal) =
-    AppendProperty ("border-top:" ++ widthVal ++ " " ++ styleVal)
+    appendProperty ("border-top:" ++ widthVal ++ " " ++ styleVal)
 
 
 {-| Sets [`border-top`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-top) property.
@@ -7684,7 +7691,7 @@ borderTop2 (Value widthVal) (Value styleVal) =
 -}
 borderTop3 : Value LineWidth -> Value LineStyle -> Value Color -> Style
 borderTop3 (Value widthVal) (Value styleVal) (Value colorVal) =
-    AppendProperty ("border-top:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
+    appendProperty ("border-top:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
 
 
 {-| Sets [`border-right`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-right) property.
@@ -7698,7 +7705,7 @@ borderTop3 (Value widthVal) (Value styleVal) (Value colorVal) =
 -}
 borderRight : BaseValue LineWidth -> Style
 borderRight (Value widthVal) =
-    AppendProperty ("border-right:" ++ widthVal)
+    appendProperty ("border-right:" ++ widthVal)
 
 
 {-| Sets [`border-right`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-right) property.
@@ -7712,7 +7719,7 @@ borderRight (Value widthVal) =
 -}
 borderRight2 : Value LineWidth -> Value LineStyle -> Style
 borderRight2 (Value widthVal) (Value styleVal) =
-    AppendProperty ("border-right:" ++ widthVal ++ " " ++ styleVal)
+    appendProperty ("border-right:" ++ widthVal ++ " " ++ styleVal)
 
 
 {-| Sets [`border-right`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-right) property.
@@ -7726,7 +7733,7 @@ borderRight2 (Value widthVal) (Value styleVal) =
 -}
 borderRight3 : Value LineWidth -> Value LineStyle -> Value Color -> Style
 borderRight3 (Value widthVal) (Value styleVal) (Value colorVal) =
-    AppendProperty ("border-right:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
+    appendProperty ("border-right:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
 
 
 {-| Sets [`border-bottom`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom) property.
@@ -7740,7 +7747,7 @@ borderRight3 (Value widthVal) (Value styleVal) (Value colorVal) =
 -}
 borderBottom : BaseValue LineWidth -> Style
 borderBottom (Value widthVal) =
-    AppendProperty ("border-bottom:" ++ widthVal)
+    appendProperty ("border-bottom:" ++ widthVal)
 
 
 {-| Sets [`border-bottom`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom) property.
@@ -7754,7 +7761,7 @@ borderBottom (Value widthVal) =
 -}
 borderBottom2 : Value LineWidth -> Value LineStyle -> Style
 borderBottom2 (Value widthVal) (Value styleVal) =
-    AppendProperty ("border-bottom:" ++ widthVal ++ " " ++ styleVal)
+    appendProperty ("border-bottom:" ++ widthVal ++ " " ++ styleVal)
 
 
 {-| Sets [`border-bottom`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom) property.
@@ -7768,7 +7775,7 @@ borderBottom2 (Value widthVal) (Value styleVal) =
 -}
 borderBottom3 : Value LineWidth -> Value LineStyle -> Value Color -> Style
 borderBottom3 (Value widthVal) (Value styleVal) (Value colorVal) =
-    AppendProperty ("border-bottom:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
+    appendProperty ("border-bottom:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
 
 
 {-| Sets [`border-left`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-left) property.
@@ -7782,7 +7789,7 @@ borderBottom3 (Value widthVal) (Value styleVal) (Value colorVal) =
 -}
 borderLeft : BaseValue LineWidth -> Style
 borderLeft (Value widthVal) =
-    AppendProperty ("border-left:" ++ widthVal)
+    appendProperty ("border-left:" ++ widthVal)
 
 
 {-| Sets [`border-left`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-left) property.
@@ -7796,7 +7803,7 @@ borderLeft (Value widthVal) =
 -}
 borderLeft2 : Value LineWidth -> Value LineStyle -> Style
 borderLeft2 (Value widthVal) (Value styleVal) =
-    AppendProperty ("border-left:" ++ widthVal ++ " " ++ styleVal)
+    appendProperty ("border-left:" ++ widthVal ++ " " ++ styleVal)
 
 
 {-| Sets [`border-left`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-left) property.
@@ -7810,7 +7817,7 @@ borderLeft2 (Value widthVal) (Value styleVal) =
 -}
 borderLeft3 : Value LineWidth -> Value LineStyle -> Value Color -> Style
 borderLeft3 (Value widthVal) (Value styleVal) (Value colorVal) =
-    AppendProperty ("border-left:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
+    appendProperty ("border-left:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
 
 
 {-| Sets [`border-block`](https://css-tricks.com/almanac/properties/b/border-block/) property.
@@ -7824,7 +7831,7 @@ borderLeft3 (Value widthVal) (Value styleVal) (Value colorVal) =
 -}
 borderBlock : BaseValue LineWidth -> Style
 borderBlock (Value widthVal) =
-    AppendProperty ("border-block:" ++ widthVal)
+    appendProperty ("border-block:" ++ widthVal)
 
 
 {-| Sets [`border-block`](https://css-tricks.com/almanac/properties/b/border-block/) property.
@@ -7838,7 +7845,7 @@ borderBlock (Value widthVal) =
 -}
 borderBlock2 : Value LineWidth -> Value LineStyle -> Style
 borderBlock2 (Value widthVal) (Value styleVal) =
-    AppendProperty ("border-block:" ++ widthVal ++ " " ++ styleVal)
+    appendProperty ("border-block:" ++ widthVal ++ " " ++ styleVal)
 
 
 {-| Sets [`border-block`](https://css-tricks.com/almanac/properties/b/border-block/) property.
@@ -7852,7 +7859,7 @@ borderBlock2 (Value widthVal) (Value styleVal) =
 -}
 borderBlock3 : Value LineWidth -> Value LineStyle -> Value Color -> Style
 borderBlock3 (Value widthVal) (Value styleVal) (Value colorVal) =
-    AppendProperty ("border-block:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
+    appendProperty ("border-block:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
 
 
 {-| Sets [`border-block-start`](https://css-tricks.com/almanac/properties/b/border-block-start/) property.
@@ -7866,7 +7873,7 @@ borderBlock3 (Value widthVal) (Value styleVal) (Value colorVal) =
 -}
 borderBlockStart : BaseValue LineWidth -> Style
 borderBlockStart (Value widthVal) =
-    AppendProperty ("border-block-start:" ++ widthVal)
+    appendProperty ("border-block-start:" ++ widthVal)
 
 
 {-| Sets [`border-block-start`](https://css-tricks.com/almanac/properties/b/border-block-start/) property.
@@ -7880,7 +7887,7 @@ borderBlockStart (Value widthVal) =
 -}
 borderBlockStart2 : Value LineWidth -> Value LineStyle -> Style
 borderBlockStart2 (Value widthVal) (Value styleVal) =
-    AppendProperty ("border-block-start:" ++ widthVal ++ " " ++ styleVal)
+    appendProperty ("border-block-start:" ++ widthVal ++ " " ++ styleVal)
 
 
 {-| Sets [`border-block-start`](https://css-tricks.com/almanac/properties/b/border-block-start/) property.
@@ -7894,7 +7901,7 @@ borderBlockStart2 (Value widthVal) (Value styleVal) =
 -}
 borderBlockStart3 : Value LineWidth -> Value LineStyle -> Value Color -> Style
 borderBlockStart3 (Value widthVal) (Value styleVal) (Value colorVal) =
-    AppendProperty ("border-block-start:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
+    appendProperty ("border-block-start:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
 
 
 {-| Sets [`border-block-end`](https://css-tricks.com/almanac/properties/b/border-block-end/) property.
@@ -7908,7 +7915,7 @@ borderBlockStart3 (Value widthVal) (Value styleVal) (Value colorVal) =
 -}
 borderBlockEnd : BaseValue LineWidth -> Style
 borderBlockEnd (Value widthVal) =
-    AppendProperty ("border-block-end:" ++ widthVal)
+    appendProperty ("border-block-end:" ++ widthVal)
 
 
 {-| Sets [`border-block-end`](https://css-tricks.com/almanac/properties/b/border-block-end/) property.
@@ -7922,7 +7929,7 @@ borderBlockEnd (Value widthVal) =
 -}
 borderBlockEnd2 : Value LineWidth -> Value LineStyle -> Style
 borderBlockEnd2 (Value widthVal) (Value styleVal) =
-    AppendProperty ("border-block-end:" ++ widthVal ++ " " ++ styleVal)
+    appendProperty ("border-block-end:" ++ widthVal ++ " " ++ styleVal)
 
 
 {-| Sets [`border-block-end`](https://css-tricks.com/almanac/properties/b/border-block-end/) property.
@@ -7936,7 +7943,7 @@ borderBlockEnd2 (Value widthVal) (Value styleVal) =
 -}
 borderBlockEnd3 : Value LineWidth -> Value LineStyle -> Value Color -> Style
 borderBlockEnd3 (Value widthVal) (Value styleVal) (Value colorVal) =
-    AppendProperty ("border-block-end:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
+    appendProperty ("border-block-end:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
 
 
 {-| Sets [`border-inline`](https://css-tricks.com/almanac/properties/b/border-inline/) property.
@@ -7950,7 +7957,7 @@ borderBlockEnd3 (Value widthVal) (Value styleVal) (Value colorVal) =
 -}
 borderInline : BaseValue LineWidth -> Style
 borderInline (Value widthVal) =
-    AppendProperty ("border-inline:" ++ widthVal)
+    appendProperty ("border-inline:" ++ widthVal)
 
 
 {-| Sets [`border-inline`](https://css-tricks.com/almanac/properties/b/border-inline/) property.
@@ -7964,7 +7971,7 @@ borderInline (Value widthVal) =
 -}
 borderInline2 : Value LineWidth -> Value LineStyle -> Style
 borderInline2 (Value widthVal) (Value styleVal) =
-    AppendProperty ("border-inline:" ++ widthVal ++ " " ++ styleVal)
+    appendProperty ("border-inline:" ++ widthVal ++ " " ++ styleVal)
 
 
 {-| Sets [`border-inline`](https://css-tricks.com/almanac/properties/b/border-inline/) property.
@@ -7978,7 +7985,7 @@ borderInline2 (Value widthVal) (Value styleVal) =
 -}
 borderInline3 : Value LineWidth -> Value LineStyle -> Value Color -> Style
 borderInline3 (Value widthVal) (Value styleVal) (Value colorVal) =
-    AppendProperty ("border-inline:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
+    appendProperty ("border-inline:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
 
 
 {-| Sets [`border-inline-start`](https://css-tricks.com/almanac/properties/b/border-inline-start/) property.
@@ -7992,7 +7999,7 @@ borderInline3 (Value widthVal) (Value styleVal) (Value colorVal) =
 -}
 borderInlineStart : BaseValue LineWidth -> Style
 borderInlineStart (Value widthVal) =
-    AppendProperty ("border-inline-start:" ++ widthVal)
+    appendProperty ("border-inline-start:" ++ widthVal)
 
 
 {-| Sets [`border-inline-start`](https://css-tricks.com/almanac/properties/b/border-inline-start/) property.
@@ -8006,7 +8013,7 @@ borderInlineStart (Value widthVal) =
 -}
 borderInlineStart2 : Value LineWidth -> Value LineStyle -> Style
 borderInlineStart2 (Value widthVal) (Value styleVal) =
-    AppendProperty ("border-inline-start:" ++ widthVal ++ " " ++ styleVal)
+    appendProperty ("border-inline-start:" ++ widthVal ++ " " ++ styleVal)
 
 
 {-| Sets [`border-inline-start`](https://css-tricks.com/almanac/properties/b/border-inline-start/) property.
@@ -8020,7 +8027,7 @@ borderInlineStart2 (Value widthVal) (Value styleVal) =
 -}
 borderInlineStart3 : Value LineWidth -> Value LineStyle -> Value Color -> Style
 borderInlineStart3 (Value widthVal) (Value styleVal) (Value colorVal) =
-    AppendProperty ("border-inline-start:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
+    appendProperty ("border-inline-start:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
 
 
 {-| Sets [`border-inline-end`](https://css-tricks.com/almanac/properties/b/border-inline-end/) property.
@@ -8034,7 +8041,7 @@ borderInlineStart3 (Value widthVal) (Value styleVal) (Value colorVal) =
 -}
 borderInlineEnd : BaseValue LineWidth -> Style
 borderInlineEnd (Value widthVal) =
-    AppendProperty ("border-inline-end:" ++ widthVal)
+    appendProperty ("border-inline-end:" ++ widthVal)
 
 
 {-| Sets [`border-inline-end`](https://css-tricks.com/almanac/properties/b/border-inline-end/) property.
@@ -8048,7 +8055,7 @@ borderInlineEnd (Value widthVal) =
 -}
 borderInlineEnd2 : Value LineWidth -> Value LineStyle -> Style
 borderInlineEnd2 (Value widthVal) (Value styleVal) =
-    AppendProperty ("border-inline-end:" ++ widthVal ++ " " ++ styleVal)
+    appendProperty ("border-inline-end:" ++ widthVal ++ " " ++ styleVal)
 
 
 {-| Sets [`border-inline-end`](https://css-tricks.com/almanac/properties/b/border-inline-end/) property.
@@ -8062,7 +8069,7 @@ borderInlineEnd2 (Value widthVal) (Value styleVal) =
 -}
 borderInlineEnd3 : Value LineWidth -> Value LineStyle -> Value Color -> Style
 borderInlineEnd3 (Value widthVal) (Value styleVal) (Value colorVal) =
-    AppendProperty ("border-inline-end:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
+    appendProperty ("border-inline-end:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
 
 
 {-| Sets [`border-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-width) property.
@@ -8078,7 +8085,7 @@ borderInlineEnd3 (Value widthVal) (Value styleVal) (Value colorVal) =
 -}
 borderWidth : BaseValue LineWidth -> Style
 borderWidth (Value widthVal) =
-    AppendProperty ("border-width:" ++ widthVal)
+    appendProperty ("border-width:" ++ widthVal)
 
 
 {-| Sets [`border-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-width) property.
@@ -8094,7 +8101,7 @@ borderWidth (Value widthVal) =
 -}
 borderWidth2 : Value LineWidth -> Value LineWidth -> Style
 borderWidth2 (Value widthTopBottom) (Value widthRightLeft) =
-    AppendProperty ("border-width:" ++ widthTopBottom ++ " " ++ widthRightLeft)
+    appendProperty ("border-width:" ++ widthTopBottom ++ " " ++ widthRightLeft)
 
 
 {-| Sets [`border-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-width) property.
@@ -8110,7 +8117,7 @@ borderWidth2 (Value widthTopBottom) (Value widthRightLeft) =
 -}
 borderWidth3 : Value LineWidth -> Value LineWidth -> Value LineWidth -> Style
 borderWidth3 (Value widthTop) (Value widthRightLeft) (Value widthBottom) =
-    AppendProperty ("border-width:" ++ widthTop ++ " " ++ widthRightLeft ++ " " ++ widthBottom)
+    appendProperty ("border-width:" ++ widthTop ++ " " ++ widthRightLeft ++ " " ++ widthBottom)
 
 
 {-| Sets [`border-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-width) property.
@@ -8126,7 +8133,7 @@ borderWidth3 (Value widthTop) (Value widthRightLeft) (Value widthBottom) =
 -}
 borderWidth4 : Value LineWidth -> Value LineWidth -> Value LineWidth -> Value LineWidth -> Style
 borderWidth4 (Value widthTop) (Value widthRight) (Value widthBottom) (Value widthLeft) =
-    AppendProperty ("border-width:" ++ widthTop ++ " " ++ widthRight ++ " " ++ widthBottom ++ " " ++ widthLeft)
+    appendProperty ("border-width:" ++ widthTop ++ " " ++ widthRight ++ " " ++ widthBottom ++ " " ++ widthLeft)
 
 
 {-| Sets [`border-top-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-top-width) property.
@@ -8136,7 +8143,7 @@ borderWidth4 (Value widthTop) (Value widthRight) (Value widthBottom) (Value widt
 -}
 borderTopWidth : BaseValue LineWidth -> Style
 borderTopWidth (Value widthVal) =
-    AppendProperty ("border-top-width:" ++ widthVal)
+    appendProperty ("border-top-width:" ++ widthVal)
 
 
 {-| Sets [`border-right-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-right-width) property.
@@ -8146,7 +8153,7 @@ borderTopWidth (Value widthVal) =
 -}
 borderRightWidth : BaseValue LineWidth -> Style
 borderRightWidth (Value widthVal) =
-    AppendProperty ("border-right-width:" ++ widthVal)
+    appendProperty ("border-right-width:" ++ widthVal)
 
 
 {-| Sets [`border-bottom-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-width) property.
@@ -8156,7 +8163,7 @@ borderRightWidth (Value widthVal) =
 -}
 borderBottomWidth : BaseValue LineWidth -> Style
 borderBottomWidth (Value widthVal) =
-    AppendProperty ("border-bottom-width:" ++ widthVal)
+    appendProperty ("border-bottom-width:" ++ widthVal)
 
 
 {-| Sets [`border-left-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-left-width) property.
@@ -8166,7 +8173,7 @@ borderBottomWidth (Value widthVal) =
 -}
 borderLeftWidth : BaseValue LineWidth -> Style
 borderLeftWidth (Value widthVal) =
-    AppendProperty ("border-left-width:" ++ widthVal)
+    appendProperty ("border-left-width:" ++ widthVal)
 
 
 {-| Sets [`border-block-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-block-width) property.
@@ -8176,7 +8183,7 @@ borderLeftWidth (Value widthVal) =
 -}
 borderBlockWidth : BaseValue LineWidth -> Style
 borderBlockWidth (Value widthVal) =
-    AppendProperty ("border-block-width:" ++ widthVal)
+    appendProperty ("border-block-width:" ++ widthVal)
 
 
 {-| Sets [`border-block-start-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-block-start-width) property.
@@ -8186,7 +8193,7 @@ borderBlockWidth (Value widthVal) =
 -}
 borderBlockStartWidth : BaseValue LineWidth -> Style
 borderBlockStartWidth (Value widthVal) =
-    AppendProperty ("border-block-start-width:" ++ widthVal)
+    appendProperty ("border-block-start-width:" ++ widthVal)
 
 
 {-| Sets [`border-block-end-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-block-end-width) property.
@@ -8196,7 +8203,7 @@ borderBlockStartWidth (Value widthVal) =
 -}
 borderBlockEndWidth : BaseValue LineWidth -> Style
 borderBlockEndWidth (Value widthVal) =
-    AppendProperty ("border-block-end-width:" ++ widthVal)
+    appendProperty ("border-block-end-width:" ++ widthVal)
 
 
 {-| Sets [`border-inline-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-inline-width) property.
@@ -8206,7 +8213,7 @@ borderBlockEndWidth (Value widthVal) =
 -}
 borderInlineWidth : BaseValue LineWidth -> Style
 borderInlineWidth (Value widthVal) =
-    AppendProperty ("border-inline-width:" ++ widthVal)
+    appendProperty ("border-inline-width:" ++ widthVal)
 
 
 {-| Sets [`border-inline-start-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-inline-start-width) property.
@@ -8216,7 +8223,7 @@ borderInlineWidth (Value widthVal) =
 -}
 borderInlineStartWidth : BaseValue LineWidth -> Style
 borderInlineStartWidth (Value widthVal) =
-    AppendProperty ("border-inline-start-width:" ++ widthVal)
+    appendProperty ("border-inline-start-width:" ++ widthVal)
 
 
 {-| Sets [`border-inline-end-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-inline-end-width) property.
@@ -8226,7 +8233,7 @@ borderInlineStartWidth (Value widthVal) =
 -}
 borderInlineEndWidth : BaseValue LineWidth -> Style
 borderInlineEndWidth (Value widthVal) =
-    AppendProperty ("border-inline-end-width:" ++ widthVal)
+    appendProperty ("border-inline-end-width:" ++ widthVal)
 
 
 {-| Sets [`border-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) property.
@@ -8242,7 +8249,7 @@ borderInlineEndWidth (Value widthVal) =
 -}
 borderStyle : BaseValue LineStyle -> Style
 borderStyle (Value styleVal) =
-    AppendProperty ("border-style:" ++ styleVal)
+    appendProperty ("border-style:" ++ styleVal)
 
 
 {-| Sets [`border-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) property.
@@ -8252,7 +8259,7 @@ borderStyle (Value styleVal) =
 -}
 borderStyle2 : Value LineStyle -> Value LineStyle -> Style
 borderStyle2 (Value styleTopBottom) (Value styleRigthLeft) =
-    AppendProperty ("border-style:" ++ styleTopBottom ++ " " ++ styleRigthLeft)
+    appendProperty ("border-style:" ++ styleTopBottom ++ " " ++ styleRigthLeft)
 
 
 {-| Sets [`border-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) property.
@@ -8262,7 +8269,7 @@ borderStyle2 (Value styleTopBottom) (Value styleRigthLeft) =
 -}
 borderStyle3 : Value LineStyle -> Value LineStyle -> Value LineStyle -> Style
 borderStyle3 (Value styleTop) (Value styleRigthLeft) (Value styleBottom) =
-    AppendProperty ("border-style:" ++ styleTop ++ " " ++ styleRigthLeft ++ " " ++ styleBottom)
+    appendProperty ("border-style:" ++ styleTop ++ " " ++ styleRigthLeft ++ " " ++ styleBottom)
 
 
 {-| Sets [`border-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) property.
@@ -8272,7 +8279,7 @@ borderStyle3 (Value styleTop) (Value styleRigthLeft) (Value styleBottom) =
 -}
 borderStyle4 : Value LineStyle -> Value LineStyle -> Value LineStyle -> Value LineStyle -> Style
 borderStyle4 (Value styleTop) (Value styleRigt) (Value styleBottom) (Value styleLeft) =
-    AppendProperty ("border-style:" ++ styleTop ++ " " ++ styleRigt ++ " " ++ styleBottom ++ " " ++ styleLeft)
+    appendProperty ("border-style:" ++ styleTop ++ " " ++ styleRigt ++ " " ++ styleBottom ++ " " ++ styleLeft)
 
 
 {-| Sets [`border-top-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-top-style) property.
@@ -8282,7 +8289,7 @@ borderStyle4 (Value styleTop) (Value styleRigt) (Value styleBottom) (Value style
 -}
 borderTopStyle : BaseValue LineStyle -> Style
 borderTopStyle (Value styleVal) =
-    AppendProperty ("border-top-style:" ++ styleVal)
+    appendProperty ("border-top-style:" ++ styleVal)
 
 
 {-| Sets [`border-right-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-right-style) property.
@@ -8292,7 +8299,7 @@ borderTopStyle (Value styleVal) =
 -}
 borderRightStyle : BaseValue LineStyle -> Style
 borderRightStyle (Value styleVal) =
-    AppendProperty ("border-right-style:" ++ styleVal)
+    appendProperty ("border-right-style:" ++ styleVal)
 
 
 {-| Sets [`border-bottom-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-style) property.
@@ -8302,7 +8309,7 @@ borderRightStyle (Value styleVal) =
 -}
 borderBottomStyle : BaseValue LineStyle -> Style
 borderBottomStyle (Value styleVal) =
-    AppendProperty ("border-bottom-style:" ++ styleVal)
+    appendProperty ("border-bottom-style:" ++ styleVal)
 
 
 {-| Sets [`border-left-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-left-style) property.
@@ -8312,7 +8319,7 @@ borderBottomStyle (Value styleVal) =
 -}
 borderLeftStyle : BaseValue LineStyle -> Style
 borderLeftStyle (Value styleVal) =
-    AppendProperty ("border-left-style:" ++ styleVal)
+    appendProperty ("border-left-style:" ++ styleVal)
 
 
 {-| Sets [`border-block-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-block-style) property.
@@ -8322,7 +8329,7 @@ borderLeftStyle (Value styleVal) =
 -}
 borderBlockStyle : BaseValue LineStyle -> Style
 borderBlockStyle (Value styleVal) =
-    AppendProperty ("border-block-style:" ++ styleVal)
+    appendProperty ("border-block-style:" ++ styleVal)
 
 
 {-| Sets [`border-block-start-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-block-start-style) property.
@@ -8332,7 +8339,7 @@ borderBlockStyle (Value styleVal) =
 -}
 borderBlockStartStyle : BaseValue LineStyle -> Style
 borderBlockStartStyle (Value styleVal) =
-    AppendProperty ("border-block-start-style:" ++ styleVal)
+    appendProperty ("border-block-start-style:" ++ styleVal)
 
 
 {-| Sets [`border-block-end-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-block-end-style) property.
@@ -8342,7 +8349,7 @@ borderBlockStartStyle (Value styleVal) =
 -}
 borderBlockEndStyle : BaseValue LineStyle -> Style
 borderBlockEndStyle (Value styleVal) =
-    AppendProperty ("border-block-end-style:" ++ styleVal)
+    appendProperty ("border-block-end-style:" ++ styleVal)
 
 
 {-| Sets [`border-inline-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-inline-style) property.
@@ -8352,7 +8359,7 @@ borderBlockEndStyle (Value styleVal) =
 -}
 borderInlineStyle : BaseValue LineStyle -> Style
 borderInlineStyle (Value styleVal) =
-    AppendProperty ("border-inline-style:" ++ styleVal)
+    appendProperty ("border-inline-style:" ++ styleVal)
 
 
 {-| Sets [`border-inline-start-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-inline-start-style) property.
@@ -8362,7 +8369,7 @@ borderInlineStyle (Value styleVal) =
 -}
 borderInlineStartStyle : BaseValue LineStyle -> Style
 borderInlineStartStyle (Value styleVal) =
-    AppendProperty ("border-inline-start-style:" ++ styleVal)
+    appendProperty ("border-inline-start-style:" ++ styleVal)
 
 
 {-| Sets [`border-inline-end-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-inline-end-style) property.
@@ -8372,7 +8379,7 @@ borderInlineStartStyle (Value styleVal) =
 -}
 borderInlineEndStyle : BaseValue LineStyle -> Style
 borderInlineEndStyle (Value styleVal) =
-    AppendProperty ("border-inline-end-style:" ++ styleVal)
+    appendProperty ("border-inline-end-style:" ++ styleVal)
 
 
 {-| Sets [`border-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-color) property.
@@ -8388,7 +8395,7 @@ borderInlineEndStyle (Value styleVal) =
 -}
 borderColor : BaseValue Color -> Style
 borderColor (Value colorVal) =
-    AppendProperty ("border-color:" ++ colorVal)
+    appendProperty ("border-color:" ++ colorVal)
 
 
 {-| Sets [`border-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-color) property.
@@ -8404,7 +8411,7 @@ borderColor (Value colorVal) =
 -}
 borderColor2 : Value Color -> Value Color -> Style
 borderColor2 (Value colorTopBottom) (Value colorRightLeft) =
-    AppendProperty ("border-color:" ++ colorTopBottom ++ " " ++ colorRightLeft)
+    appendProperty ("border-color:" ++ colorTopBottom ++ " " ++ colorRightLeft)
 
 
 {-| Sets [`border-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-color) property.
@@ -8420,7 +8427,7 @@ borderColor2 (Value colorTopBottom) (Value colorRightLeft) =
 -}
 borderColor3 : Value Color -> Value Color -> Value Color -> Style
 borderColor3 (Value colorTop) (Value colorRightLeft) (Value colorBottom) =
-    AppendProperty ("border-color:" ++ colorTop ++ " " ++ colorRightLeft ++ " " ++ colorBottom)
+    appendProperty ("border-color:" ++ colorTop ++ " " ++ colorRightLeft ++ " " ++ colorBottom)
 
 
 {-| Sets [`border-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-color) property.
@@ -8436,7 +8443,7 @@ borderColor3 (Value colorTop) (Value colorRightLeft) (Value colorBottom) =
 -}
 borderColor4 : Value Color -> Value Color -> Value Color -> Value Color -> Style
 borderColor4 (Value colorTop) (Value colorRight) (Value colorBottom) (Value colorLeft) =
-    AppendProperty ("border-color:" ++ colorTop ++ " " ++ colorRight ++ " " ++ colorBottom ++ " " ++ colorLeft)
+    appendProperty ("border-color:" ++ colorTop ++ " " ++ colorRight ++ " " ++ colorBottom ++ " " ++ colorLeft)
 
 
 {-| Sets [`border-top-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-top-color) property.
@@ -8446,7 +8453,7 @@ borderColor4 (Value colorTop) (Value colorRight) (Value colorBottom) (Value colo
 -}
 borderTopColor : BaseValue Color -> Style
 borderTopColor (Value colorVal) =
-    AppendProperty ("border-top-color:" ++ colorVal)
+    appendProperty ("border-top-color:" ++ colorVal)
 
 
 {-| Sets [`border-right-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-right-color) property.
@@ -8456,7 +8463,7 @@ borderTopColor (Value colorVal) =
 -}
 borderRightColor : BaseValue Color -> Style
 borderRightColor (Value colorVal) =
-    AppendProperty ("border-right-color:" ++ colorVal)
+    appendProperty ("border-right-color:" ++ colorVal)
 
 
 {-| Sets [`border-bottom-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-color) property.
@@ -8466,7 +8473,7 @@ borderRightColor (Value colorVal) =
 -}
 borderBottomColor : BaseValue Color -> Style
 borderBottomColor (Value colorVal) =
-    AppendProperty ("border-bottom-color:" ++ colorVal)
+    appendProperty ("border-bottom-color:" ++ colorVal)
 
 
 {-| Sets [`border-left-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-left-color) property.
@@ -8476,7 +8483,7 @@ borderBottomColor (Value colorVal) =
 -}
 borderLeftColor : BaseValue Color -> Style
 borderLeftColor (Value colorVal) =
-    AppendProperty ("border-left-color:" ++ colorVal)
+    appendProperty ("border-left-color:" ++ colorVal)
 
 
 {-| Sets [`border-block-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-block-color) property.
@@ -8486,7 +8493,7 @@ borderLeftColor (Value colorVal) =
 -}
 borderBlockColor : BaseValue Color -> Style
 borderBlockColor (Value colorVal) =
-    AppendProperty ("border-block-color:" ++ colorVal)
+    appendProperty ("border-block-color:" ++ colorVal)
 
 
 {-| Sets [`border-block-start-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-block-start-color) property.
@@ -8496,7 +8503,7 @@ borderBlockColor (Value colorVal) =
 -}
 borderBlockStartColor : BaseValue Color -> Style
 borderBlockStartColor (Value colorVal) =
-    AppendProperty ("border-block-start-color:" ++ colorVal)
+    appendProperty ("border-block-start-color:" ++ colorVal)
 
 
 {-| Sets [`border-block-end-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-block-end-color) property.
@@ -8506,7 +8513,7 @@ borderBlockStartColor (Value colorVal) =
 -}
 borderBlockEndColor : BaseValue Color -> Style
 borderBlockEndColor (Value colorVal) =
-    AppendProperty ("border-block-end-color:" ++ colorVal)
+    appendProperty ("border-block-end-color:" ++ colorVal)
 
 
 {-| Sets [`border-inline-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-inline-color) property.
@@ -8516,7 +8523,7 @@ borderBlockEndColor (Value colorVal) =
 -}
 borderInlineColor : BaseValue Color -> Style
 borderInlineColor (Value colorVal) =
-    AppendProperty ("border-inline-color:" ++ colorVal)
+    appendProperty ("border-inline-color:" ++ colorVal)
 
 
 {-| Sets [`border-inline-start-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-inline-start-color) property.
@@ -8526,7 +8533,7 @@ borderInlineColor (Value colorVal) =
 -}
 borderInlineStartColor : BaseValue Color -> Style
 borderInlineStartColor (Value colorVal) =
-    AppendProperty ("border-inline-start-color:" ++ colorVal)
+    appendProperty ("border-inline-start-color:" ++ colorVal)
 
 
 {-| Sets [`border-inline-end-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-inline-end-color) property.
@@ -8536,7 +8543,7 @@ borderInlineStartColor (Value colorVal) =
 -}
 borderInlineEndColor : BaseValue Color -> Style
 borderInlineEndColor (Value colorVal) =
-    AppendProperty ("border-inline-end-color:" ++ colorVal)
+    appendProperty ("border-inline-end-color:" ++ colorVal)
 
 
 
@@ -8711,7 +8718,7 @@ borderRadius :
         )
     -> Style
 borderRadius (Value radius) =
-    AppendProperty ("border-radius:" ++ radius)
+    appendProperty ("border-radius:" ++ radius)
 
 
 {-| Sets [`border-radius`](https://css-tricks.com/almanac/properties/b/border-radius/) property.
@@ -8739,7 +8746,7 @@ borderRadius2 :
             )
     -> Style
 borderRadius2 (Value radiusTopLeftAndBottomRight) (Value radiusTopRightAndBottomLeft) =
-    AppendProperty ("border-radius:" ++ radiusTopLeftAndBottomRight ++ " " ++ radiusTopRightAndBottomLeft)
+    appendProperty ("border-radius:" ++ radiusTopLeftAndBottomRight ++ " " ++ radiusTopRightAndBottomLeft)
 
 
 {-| Sets [`border-radius`](https://css-tricks.com/almanac/properties/b/border-radius/) property.
@@ -8773,7 +8780,7 @@ borderRadius3 :
             )
     -> Style
 borderRadius3 (Value radiusTopLeft) (Value radiusTopRightAndBottomLeft) (Value radiusBottomRight) =
-    AppendProperty ("border-radius:" ++ radiusTopLeft ++ " " ++ radiusTopRightAndBottomLeft ++ " " ++ radiusBottomRight)
+    appendProperty ("border-radius:" ++ radiusTopLeft ++ " " ++ radiusTopRightAndBottomLeft ++ " " ++ radiusBottomRight)
 
 
 {-| Sets [`border-radius`](https://css-tricks.com/almanac/properties/b/border-radius/) property.
@@ -8813,7 +8820,7 @@ borderRadius4 :
             )
     -> Style
 borderRadius4 (Value radiusTopLeft) (Value radiusTopRight) (Value radiusBottomRight) (Value radiusBottomLeft) =
-    AppendProperty ("border-radius:" ++ radiusTopLeft ++ " " ++ radiusTopRight ++ " " ++ radiusBottomRight ++ " " ++ radiusBottomLeft)
+    appendProperty ("border-radius:" ++ radiusTopLeft ++ " " ++ radiusTopRight ++ " " ++ radiusBottomRight ++ " " ++ radiusBottomLeft)
 
 
 {-| Sets [`border-top-left-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-top-left-radius) property.
@@ -8831,7 +8838,7 @@ borderTopLeftRadius :
         )
     -> Style
 borderTopLeftRadius (Value radius) =
-    AppendProperty ("border-top-left-radius:" ++ radius)
+    appendProperty ("border-top-left-radius:" ++ radius)
 
 
 {-| Sets [`border-top-left-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-top-left-radius) property.
@@ -8855,7 +8862,7 @@ borderTopLeftRadius2 :
             )
     -> Style
 borderTopLeftRadius2 (Value valHorizontal) (Value valVertical) =
-    AppendProperty ("border-top-left-radius:" ++ valHorizontal ++ " " ++ valVertical)
+    appendProperty ("border-top-left-radius:" ++ valHorizontal ++ " " ++ valVertical)
 
 
 {-| Sets [`border-top-right-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-top-right-radius) property.
@@ -8873,7 +8880,7 @@ borderTopRightRadius :
         )
     -> Style
 borderTopRightRadius (Value radius) =
-    AppendProperty ("border-top-right-radius:" ++ radius)
+    appendProperty ("border-top-right-radius:" ++ radius)
 
 
 {-| Sets [`border-top-right-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-top-right-radius) property.
@@ -8897,7 +8904,7 @@ borderTopRightRadius2 :
             )
     -> Style
 borderTopRightRadius2 (Value valHorizontal) (Value valVertical) =
-    AppendProperty ("border-top-right-radius:" ++ valHorizontal ++ " " ++ valVertical)
+    appendProperty ("border-top-right-radius:" ++ valHorizontal ++ " " ++ valVertical)
 
 
 {-| Sets [`border-bottom-right-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-right-radius) property.
@@ -8915,7 +8922,7 @@ borderBottomRightRadius :
         )
     -> Style
 borderBottomRightRadius (Value radius) =
-    AppendProperty ("border-bottom-right-radius:" ++ radius)
+    appendProperty ("border-bottom-right-radius:" ++ radius)
 
 
 {-| Sets [`border-bottom-right-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-right-radius) property.
@@ -8939,7 +8946,7 @@ borderBottomRightRadius2 :
             )
     -> Style
 borderBottomRightRadius2 (Value valHorizontal) (Value valVertical) =
-    AppendProperty ("border-bottom-right-radius:" ++ valHorizontal ++ " " ++ valVertical)
+    appendProperty ("border-bottom-right-radius:" ++ valHorizontal ++ " " ++ valVertical)
 
 
 {-| Sets [`border-bottom-left-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-left-radius) property.
@@ -8957,7 +8964,7 @@ borderBottomLeftRadius :
         )
     -> Style
 borderBottomLeftRadius (Value radius) =
-    AppendProperty ("border-bottom-left-radius:" ++ radius)
+    appendProperty ("border-bottom-left-radius:" ++ radius)
 
 
 {-| Sets [`border-bottom-left-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-left-radius) property.
@@ -8981,7 +8988,7 @@ borderBottomLeftRadius2 :
             )
     -> Style
 borderBottomLeftRadius2 (Value valHorizontal) (Value valVertical) =
-    AppendProperty ("border-bottom-left-radius:" ++ valHorizontal ++ " " ++ valVertical)
+    appendProperty ("border-bottom-left-radius:" ++ valHorizontal ++ " " ++ valVertical)
 
 
 {-| Sets [`border-start-start-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-start-start-radius) property.
@@ -8999,7 +9006,7 @@ borderStartStartRadius :
         )
     -> Style
 borderStartStartRadius (Value radius) =
-    AppendProperty ("border-start-start-radius:" ++ radius)
+    appendProperty ("border-start-start-radius:" ++ radius)
 
 
 {-| Sets [`border-start-start-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-start-start-radius) property.
@@ -9023,7 +9030,7 @@ borderStartStartRadius2 :
             )
     -> Style
 borderStartStartRadius2 (Value horizontalValue) (Value verticalValue) =
-    AppendProperty ("border-start-start-radius:" ++ horizontalValue ++ " " ++ verticalValue)
+    appendProperty ("border-start-start-radius:" ++ horizontalValue ++ " " ++ verticalValue)
 
 
 {-| Sets [`border-start-end-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-start-end-radius) property.
@@ -9041,7 +9048,7 @@ borderStartEndRadius :
         )
     -> Style
 borderStartEndRadius (Value radius) =
-    AppendProperty ("border-start-end-radius:" ++ radius)
+    appendProperty ("border-start-end-radius:" ++ radius)
 
 
 {-| Sets [`border-start-end-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-start-end-radius) property.
@@ -9065,7 +9072,7 @@ borderStartEndRadius2 :
             )
     -> Style
 borderStartEndRadius2 (Value horizontalValue) (Value verticalValue) =
-    AppendProperty ("border-start-end-radius:" ++ horizontalValue ++ " " ++ verticalValue)
+    appendProperty ("border-start-end-radius:" ++ horizontalValue ++ " " ++ verticalValue)
 
 
 {-| Sets [`border-end-start-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-end-start-radius) property.
@@ -9083,7 +9090,7 @@ borderEndStartRadius :
         )
     -> Style
 borderEndStartRadius (Value radius) =
-    AppendProperty ("border-end-start-radius:" ++ radius)
+    appendProperty ("border-end-start-radius:" ++ radius)
 
 
 {-| Sets [`border-end-start-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-end-start-radius) property.
@@ -9107,7 +9114,7 @@ borderEndStartRadius2 :
             )
     -> Style
 borderEndStartRadius2 (Value horizontalValue) (Value verticalValue) =
-    AppendProperty ("border-end-start-radius:" ++ horizontalValue ++ " " ++ verticalValue)
+    appendProperty ("border-end-start-radius:" ++ horizontalValue ++ " " ++ verticalValue)
 
 
 {-| Sets [`border-end-end-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-end-end-radius) property.
@@ -9125,7 +9132,7 @@ borderEndEndRadius :
         )
     -> Style
 borderEndEndRadius (Value radius) =
-    AppendProperty ("border-end-end-radius:" ++ radius)
+    appendProperty ("border-end-end-radius:" ++ radius)
 
 
 {-| Sets [`border-end-end-radius`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-end-end-radius) property.
@@ -9149,7 +9156,7 @@ borderEndEndRadius2 :
             )
     -> Style
 borderEndEndRadius2 (Value horizontalValue) (Value verticalValue) =
-    AppendProperty ("border-end-end-radius:" ++ horizontalValue ++ " " ++ verticalValue)
+    appendProperty ("border-end-end-radius:" ++ horizontalValue ++ " " ++ verticalValue)
 
 
 {-| Sets [`border-image-outset`](https://css-tricks.com/almanac/properties/b/border-image/) property.
@@ -9173,7 +9180,7 @@ borderImageOutset :
         )
     -> Style
 borderImageOutset (Value widthVal) =
-    AppendProperty ("border-image-outset:" ++ widthVal)
+    appendProperty ("border-image-outset:" ++ widthVal)
 
 
 {-| Sets [`border-image-outset`](https://css-tricks.com/almanac/properties/b/border-image/) property.
@@ -9203,7 +9210,7 @@ borderImageOutset2 :
             )
     -> Style
 borderImageOutset2 (Value valueTopBottom) (Value valueRightLeft) =
-    AppendProperty ("border-image-outset:" ++ valueTopBottom ++ " " ++ valueRightLeft)
+    appendProperty ("border-image-outset:" ++ valueTopBottom ++ " " ++ valueRightLeft)
 
 
 {-| Sets [`border-image-outset`](https://css-tricks.com/almanac/properties/b/border-image/) property.
@@ -9239,7 +9246,7 @@ borderImageOutset3 :
             )
     -> Style
 borderImageOutset3 (Value valueTop) (Value valueRightLeft) (Value valueBottom) =
-    AppendProperty ("border-image-outset:" ++ valueTop ++ " " ++ valueRightLeft ++ " " ++ valueBottom)
+    appendProperty ("border-image-outset:" ++ valueTop ++ " " ++ valueRightLeft ++ " " ++ valueBottom)
 
 
 {-| Sets [`border-image-outset`](https://css-tricks.com/almanac/properties/b/border-image/) property.
@@ -9281,7 +9288,7 @@ borderImageOutset4 :
             )
     -> Style
 borderImageOutset4 (Value valueTop) (Value valueRight) (Value valueBottom) (Value valueLeft) =
-    AppendProperty ("border-image-outset:" ++ valueTop ++ " " ++ valueRight ++ " " ++ valueBottom ++ " " ++ valueLeft)
+    appendProperty ("border-image-outset:" ++ valueTop ++ " " ++ valueRight ++ " " ++ valueBottom ++ " " ++ valueLeft)
 
 
 {-| Sets [`border-image-width`](https://css-tricks.com/almanac/properties/b/border-image/) property.
@@ -9307,7 +9314,7 @@ borderImageWidth :
         )
     -> Style
 borderImageWidth (Value widthVal) =
-    AppendProperty ("border-image-width:" ++ widthVal)
+    appendProperty ("border-image-width:" ++ widthVal)
 
 
 {-| Sets [`border-image-width`](https://css-tricks.com/almanac/properties/b/border-image/) property.
@@ -9341,7 +9348,7 @@ borderImageWidth2 :
             )
     -> Style
 borderImageWidth2 (Value valueTopBottom) (Value valueRightLeft) =
-    AppendProperty ("border-image-width:" ++ valueTopBottom ++ " " ++ valueRightLeft)
+    appendProperty ("border-image-width:" ++ valueTopBottom ++ " " ++ valueRightLeft)
 
 
 {-| Sets [`border-image-width`](https://css-tricks.com/almanac/properties/b/border-image/) property.
@@ -9382,7 +9389,7 @@ borderImageWidth3 :
             )
     -> Style
 borderImageWidth3 (Value valueTop) (Value valueRightLeft) (Value valueBottom) =
-    AppendProperty ("border-image-width:" ++ valueTop ++ " " ++ valueRightLeft ++ " " ++ valueBottom)
+    appendProperty ("border-image-width:" ++ valueTop ++ " " ++ valueRightLeft ++ " " ++ valueBottom)
 
 
 {-| Sets [`border-image-width`](https://css-tricks.com/almanac/properties/b/border-image/) property.
@@ -9432,7 +9439,7 @@ borderImageWidth4 :
             )
     -> Style
 borderImageWidth4 (Value valueTop) (Value valueRight) (Value valueBottom) (Value valueLeft) =
-    AppendProperty ("border-image-width:" ++ valueTop ++ " " ++ valueRight ++ " " ++ valueBottom ++ " " ++ valueLeft)
+    appendProperty ("border-image-width:" ++ valueTop ++ " " ++ valueRight ++ " " ++ valueBottom ++ " " ++ valueLeft)
 
 
 ------------------------------------------------------------------------
@@ -9470,7 +9477,7 @@ outline :
         )
     -> Style
 outline (Value val) =
-    AppendProperty ("outline:" ++ val)
+    appendProperty ("outline:" ++ val)
 
 
 {-| Sets [`outline`](https://css-tricks.com/almanac/properties/o/outline/).
@@ -9484,7 +9491,7 @@ outline3 :
     -> Value (ColorSupported { invert : Supported })
     -> Style
 outline3 (Value widthVal) (Value styleVal) (Value colorVal) =
-    AppendProperty
+    appendProperty
         ("outline:"
             ++ widthVal
             ++ " "
@@ -9503,7 +9510,7 @@ outline3 (Value widthVal) (Value styleVal) (Value colorVal) =
 -}
 outlineWidth : BaseValue LineWidth -> Style
 outlineWidth (Value val) =
-    AppendProperty ("outline-width:" ++ val)
+    appendProperty ("outline-width:" ++ val)
 
 
 {-| Sets [`outline-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/outline-color).
@@ -9515,7 +9522,7 @@ outlineWidth (Value val) =
 -}
 outlineColor : BaseValue (ColorSupported { invert : Supported }) -> Style
 outlineColor (Value val) =
-    AppendProperty ("outline-color:" ++ val)
+    appendProperty ("outline-color:" ++ val)
 
 
 {-| The `invert` value used by properties such as [`outlineColor`](#outlineColor)
@@ -9537,7 +9544,7 @@ invert =
 -}
 outlineStyle : BaseValue (LineStyleSupported { auto : Supported }) -> Style
 outlineStyle (Value val) =
-    AppendProperty ("outline-style:" ++ val)
+    appendProperty ("outline-style:" ++ val)
 
 
 {-| Sets [`outline-offset`](https://css-tricks.com/almanac/properties/o/outline-offset/).
@@ -9547,7 +9554,7 @@ outlineStyle (Value val) =
 -}
 outlineOffset : BaseValue Length -> Style
 outlineOffset (Value val) =
-    AppendProperty ("outline-offset:" ++ val)
+    appendProperty ("outline-offset:" ++ val)
 
 
 
@@ -9588,7 +9595,7 @@ overflow :
         }
     -> Style
 overflow (Value val) =
-    AppendProperty ("overflow:" ++ val)
+    appendProperty ("overflow:" ++ val)
 
 
 {-| Sets [`overflow-x`](https://css-tricks.com/almanac/properties/o/overflow/).
@@ -9612,7 +9619,7 @@ overflowX :
         }
     -> Style
 overflowX (Value val) =
-    AppendProperty ("overflow-x:" ++ val)
+    appendProperty ("overflow-x:" ++ val)
 
 
 {-| Sets [`overflow-y`](https://css-tricks.com/almanac/properties/o/overflow/).
@@ -9636,7 +9643,7 @@ overflowY :
         }
     -> Style
 overflowY (Value val) =
-    AppendProperty ("overflow-y:" ++ val)
+    appendProperty ("overflow-y:" ++ val)
 
 
 {-| Sets [`overflow-block`](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-block).
@@ -9659,7 +9666,7 @@ overflowBlock :
         }
     -> Style
 overflowBlock (Value val) =
-    AppendProperty ("overflow-block:" ++ val)
+    appendProperty ("overflow-block:" ++ val)
 
 
 {-| Sets [`overflow-inline`](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-inline).
@@ -9682,7 +9689,7 @@ overflowInline :
         }
     -> Style
 overflowInline (Value val) =
-    AppendProperty ("overflow-inline:" ++ val)
+    appendProperty ("overflow-inline:" ++ val)
 
 
 {-| Sets [`overflow-wrap`](https://css-tricks.com/almanac/properties/o/overflow-wrap/)
@@ -9700,7 +9707,7 @@ overflowWrap :
         }
     -> Style
 overflowWrap (Value val) =
-    AppendProperty ("overflow-wrap:" ++ val)
+    appendProperty ("overflow-wrap:" ++ val)
 
 
 {-| Sets [`overflow-anchor`](https://css-tricks.com/almanac/properties/o/overflow-anchor/)
@@ -9717,7 +9724,7 @@ overflowAnchor :
         }
     -> Style
 overflowAnchor (Value val) =
-    AppendProperty ("overflow-anchor:" ++ val)
+    appendProperty ("overflow-anchor:" ++ val)
 
 
 {-| The `break-word` value, which can be used with such properties as
@@ -9766,7 +9773,7 @@ resize :
         }
     -> Style
 resize (Value value) =
-    AppendProperty ("resize:" ++ value)
+    appendProperty ("resize:" ++ value)
 
 
 {-| The `horizontal` value used by [`resize`](#resize).
@@ -9823,7 +9830,7 @@ flex :
         )
     -> Style
 flex (Value growOrBasis) =
-    AppendProperty ("flex:" ++ growOrBasis)
+    appendProperty ("flex:" ++ growOrBasis)
 
 
 {-| The [`flex`](https://css-tricks.com/almanac/properties/f/flex/) shorthand property.
@@ -9846,7 +9853,7 @@ flex2 :
             )
     -> Style
 flex2 (Value grow) (Value shrinkOrBasis) =
-    AppendProperty ("flex:" ++ grow ++ " " ++ shrinkOrBasis)
+    appendProperty ("flex:" ++ grow ++ " " ++ shrinkOrBasis)
 
 
 {-| The [`flex`](https://css-tricks.com/almanac/properties/f/flex/) shorthand property.
@@ -9869,7 +9876,7 @@ flex3 :
     -> Value (WidthSupported { content : Supported })
     -> Style
 flex3 (Value grow) (Value shrink) (Value basis) =
-    AppendProperty ("flex:" ++ grow ++ " " ++ shrink ++ " " ++ basis)
+    appendProperty ("flex:" ++ grow ++ " " ++ shrink ++ " " ++ basis)
 
 
 {-| Sets [`flex-basis`](https://css-tricks.com/almanac/properties/f/flex-basis/).
@@ -9885,7 +9892,7 @@ flex3 (Value grow) (Value shrink) (Value basis) =
 -}
 flexBasis : BaseValue (WidthSupported { content : Supported }) -> Style
 flexBasis (Value val) =
-    AppendProperty ("flex-basis:" ++ val)
+    appendProperty ("flex-basis:" ++ val)
 
 
 {-| Sets [`flex-grow`](https://css-tricks.com/almanac/properties/f/flex-grow/).
@@ -9903,7 +9910,7 @@ flexGrow :
         }
     -> Style
 flexGrow (Value val) =
-    AppendProperty ("flex-grow:" ++ val)
+    appendProperty ("flex-grow:" ++ val)
 
 
 {-| Sets [`flex-shrink`](https://css-tricks.com/almanac/properties/f/flex-shrink/).
@@ -9921,7 +9928,7 @@ flexShrink :
         }
     -> Style
 flexShrink (Value val) =
-    AppendProperty ("flex-shrink:" ++ val)
+    appendProperty ("flex-shrink:" ++ val)
 
 
 {-| Sets [`flex-direction`](https://css-tricks.com/almanac/properties/f/flex-direction/).
@@ -9938,7 +9945,7 @@ flexDirection :
         }
     -> Style
 flexDirection (Value val) =
-    AppendProperty ("flex-direction:" ++ val)
+    appendProperty ("flex-direction:" ++ val)
 
 
 {-| Sets [`flex-wrap`](https://css-tricks.com/almanac/properties/f/flex-wrap/).
@@ -9958,7 +9965,7 @@ flexWrap :
         }
     -> Style
 flexWrap (Value val) =
-    AppendProperty ("flex-wrap:" ++ val)
+    appendProperty ("flex-wrap:" ++ val)
 
 
 {-| The [`flex-flow`](https://css-tricks.com/almanac/properties/f/flex-flow/) shorthand property.
@@ -9984,7 +9991,7 @@ flexFlow :
         }
     -> Style
 flexFlow (Value directionOrWrapping) =
-    AppendProperty ("flex-flow:" ++ directionOrWrapping)
+    appendProperty ("flex-flow:" ++ directionOrWrapping)
 
 
 {-| The [`flex-flow`](https://css-tricks.com/almanac/properties/f/flex-flow/) shorthand property.
@@ -10013,7 +10020,7 @@ flexFlow2 :
             }
     -> Style
 flexFlow2 (Value direction_) (Value wrapping) =
-    AppendProperty ("flex-flow:" ++ direction_ ++ " " ++ wrapping)
+    appendProperty ("flex-flow:" ++ direction_ ++ " " ++ wrapping)
 
 
 {-| Sets [`align-content`](https://css-tricks.com/almanac/properties/a/align-content/).
@@ -10041,7 +10048,7 @@ alignContent :
         }
     -> Style
 alignContent (Value val) =
-    AppendProperty ("align-content:" ++ val)
+    appendProperty ("align-content:" ++ val)
 
 
 {-| Sets [`align-content`](https://css-tricks.com/almanac/properties/a/align-content/).
@@ -10066,7 +10073,7 @@ alignContent2 :
             }
     -> Style
 alignContent2 (Value overflowPosition) (Value contentPosition) =
-    AppendProperty ("align-content:" ++ overflowPosition ++ " " ++ contentPosition)
+    appendProperty ("align-content:" ++ overflowPosition ++ " " ++ contentPosition)
 
 
 {-| Sets [`align-items`](https://css-tricks.com/almanac/properties/a/align-items/).
@@ -10091,7 +10098,7 @@ alignItems :
         }
     -> Style
 alignItems (Value val) =
-    AppendProperty ("align-items:" ++ val)
+    appendProperty ("align-items:" ++ val)
 
 
 {-| Sets [`align-items`](https://css-tricks.com/almanac/properties/a/align-items/).
@@ -10116,7 +10123,7 @@ alignItems2 :
             }
     -> Style
 alignItems2 (Value overflowPosition) (Value selfPosition) =
-    AppendProperty ("align-items:" ++ overflowPosition ++ " " ++ selfPosition)
+    appendProperty ("align-items:" ++ overflowPosition ++ " " ++ selfPosition)
 
 
 {-| Sets [`align-self`](https://css-tricks.com/almanac/properties/a/align-self/).
@@ -10142,7 +10149,7 @@ alignSelf :
         }
     -> Style
 alignSelf (Value val) =
-    AppendProperty ("align-self:" ++ val)
+    appendProperty ("align-self:" ++ val)
 
 
 {-| Sets [`align-self`](https://css-tricks.com/almanac/properties/a/align-self/).
@@ -10167,7 +10174,7 @@ alignSelf2 :
             }
     -> Style
 alignSelf2 (Value overflowPosition) (Value selfPosition) =
-    AppendProperty ("align-self:" ++ overflowPosition ++ " " ++ selfPosition)
+    appendProperty ("align-self:" ++ overflowPosition ++ " " ++ selfPosition)
 
 
 {-| Sets [`justify-content`](https://css-tricks.com/almanac/properties/j/justify-content/).
@@ -10194,7 +10201,7 @@ justifyContent :
         }
     -> Style
 justifyContent (Value val) =
-    AppendProperty ("justify-content:" ++ val)
+    appendProperty ("justify-content:" ++ val)
 
 
 {-| Sets [`justify-content`](https://css-tricks.com/almanac/properties/j/justify-content/).
@@ -10221,7 +10228,7 @@ justifyContent2 :
             }
     -> Style
 justifyContent2 (Value overflowPosition) (Value contentPosition) =
-    AppendProperty ("justify-content:" ++ overflowPosition ++ " " ++ contentPosition)
+    appendProperty ("justify-content:" ++ overflowPosition ++ " " ++ contentPosition)
 
 
 {-| The [`justify-items`](https://css-tricks.com/almanac/properties/j/justify-items/) property.
@@ -10252,7 +10259,7 @@ justifyItems :
         }
     -> Style
 justifyItems (Value val) =
-    AppendProperty ("justify-items:" ++ val)
+    appendProperty ("justify-items:" ++ val)
 
 
 {-| The [`justify-items`](https://css-tricks.com/almanac/properties/j/justify-items/) property.
@@ -10279,7 +10286,7 @@ justifyItems2 :
             }
     -> Style
 justifyItems2 (Value overflowPosition) (Value selfPosition) =
-    AppendProperty ("justify-items:" ++ overflowPosition ++ " " ++ selfPosition)
+    appendProperty ("justify-items:" ++ overflowPosition ++ " " ++ selfPosition)
 
 
 {-| The [`justify-self`](https://css-tricks.com/almanac/properties/j/justify-self/) property.
@@ -10309,7 +10316,7 @@ justifySelf :
         }
     -> Style
 justifySelf (Value val) =
-    AppendProperty ("justify-self:" ++ val)
+    appendProperty ("justify-self:" ++ val)
 
 
 {-| The [`justify-self`](https://css-tricks.com/almanac/properties/j/justify-self/) property.
@@ -10335,7 +10342,7 @@ justifySelf2 :
             }
     -> Style
 justifySelf2 (Value overflowPosition) (Value contentPosition) =
-    AppendProperty ("justify-self:" ++ overflowPosition ++ " " ++ contentPosition)
+    appendProperty ("justify-self:" ++ overflowPosition ++ " " ++ contentPosition)
 
 
 {-| The [`place-content`](https://css-tricks.com/almanac/properties/p/place-content) property.
@@ -10354,7 +10361,7 @@ placeContent :
     BaseValue {}
     -> Style
 placeContent (Value value) =
-    AppendProperty ("place-content:" ++ value)
+    appendProperty ("place-content:" ++ value)
 
 
 {-| The [`place-content`](https://css-tricks.com/almanac/properties/p/place-content) property.
@@ -10402,7 +10409,7 @@ placeContent2 :
             }
     -> Style
 placeContent2 (Value alignContentValue) (Value justifyContentValue) =
-    AppendProperty ("place-content:" ++ alignContentValue ++ " " ++ justifyContentValue)
+    appendProperty ("place-content:" ++ alignContentValue ++ " " ++ justifyContentValue)
 
 
 {-| The [`place-items`](https://css-tricks.com/almanac/properties/p/place-items) property.
@@ -10421,7 +10428,7 @@ placeItems :
     BaseValue {}
     -> Style
 placeItems (Value value) =
-    AppendProperty ("place-items:" ++ value)
+    appendProperty ("place-items:" ++ value)
 
 
 {-| The [`place-items`](https://css-tricks.com/almanac/properties/p/place-items) property.
@@ -10474,7 +10481,7 @@ placeItems2 :
             }
     -> Style
 placeItems2 (Value alignItemsValue) (Value justifyItemsValue) =
-    AppendProperty ("place-items:" ++ alignItemsValue ++ " " ++ justifyItemsValue)
+    appendProperty ("place-items:" ++ alignItemsValue ++ " " ++ justifyItemsValue)
 
 
 {-| The [`place-self`](https://css-tricks.com/almanac/properties/p/place-self) property.
@@ -10493,7 +10500,7 @@ placeSelf :
     BaseValue {}
     -> Style
 placeSelf (Value value) =
-    AppendProperty ("place-self:" ++ value)
+    appendProperty ("place-self:" ++ value)
 
 
 {-| The [`place-self`](https://css-tricks.com/almanac/properties/p/place-self) property.
@@ -10544,7 +10551,7 @@ placeSelf2 :
             }
     -> Style
 placeSelf2 (Value alignSelfValue) (Value justifySelfValue) =
-    AppendProperty ("place-self:" ++ alignSelfValue ++ " " ++ justifySelfValue)
+    appendProperty ("place-self:" ++ alignSelfValue ++ " " ++ justifySelfValue)
 
 
 {-| Sets [`order`](https://css-tricks.com/almanac/properties/o/order/)
@@ -10561,7 +10568,7 @@ order :
         }
     -> Style
 order (Value val) =
-    AppendProperty ("order:" ++ val)
+    appendProperty ("order:" ++ val)
 
 
 {-| The `row` [`flex-direction` value](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-direction#Values).
@@ -10890,7 +10897,7 @@ gridAutoRows :
     BaseValue ( TrackSize )
     -> Style
 gridAutoRows (Value val) =
-    AppendProperty ("grid-auto-rows:" ++ val)
+    appendProperty ("grid-auto-rows:" ++ val)
 
 
 {-| The many-argument version of the [`grid-auto-rows`](https://css-tricks.com/almanac/properties/g/grid-auto-rows/)
@@ -10916,7 +10923,7 @@ gridAutoRowsMany :
     List ( Value TrackSize )
     -> Style
 gridAutoRowsMany values =
-    AppendProperty <| "grid-auto-rows" ++ valueListToString " " values
+    appendProperty <| "grid-auto-rows" ++ valueListToString " " values
 
 
 {-| The 1-argument version of the [`grid-auto-columns`](https://css-tricks.com/almanac/properties/g/grid-auto-columns/)
@@ -10938,7 +10945,7 @@ gridAutoColumns :
     BaseValue ( TrackSize )
     -> Style
 gridAutoColumns (Value val) =
-    AppendProperty ("grid-auto-columns:" ++ val)
+    appendProperty ("grid-auto-columns:" ++ val)
 
 
 {-| The many-argument version of the [`grid-auto-columns`](https://css-tricks.com/almanac/properties/g/grid-auto-columns/)
@@ -10964,7 +10971,7 @@ gridAutoColumnsMany :
     List ( Value TrackSize )
     -> Style
 gridAutoColumnsMany values =
-    AppendProperty <| "grid-auto-columns" ++ valueListToString " " values
+    appendProperty <| "grid-auto-columns" ++ valueListToString " " values
 
 
 {-| The 1-argument version of the [`grid-auto-flow`](https://css-tricks.com/almanac/properties/g/grid-auto-flow/)
@@ -10985,7 +10992,7 @@ gridAutoFlow :
     )
     -> Style
 gridAutoFlow (Value val) =
-    AppendProperty ("grid-auto-flow:" ++ val)
+    appendProperty ("grid-auto-flow:" ++ val)
 
 
 {-| The 1-argument version of the [`grid-auto-flow`](https://css-tricks.com/almanac/properties/g/grid-auto-flow/)
@@ -11005,7 +11012,7 @@ gridAutoFlow2 :
     -> Value { dense : Supported }
     -> Style
 gridAutoFlow2 (Value val1) (Value val2) =
-    AppendProperty <|
+    appendProperty <|
         "grid-auto-flow:"
         ++ val1
         ++ " "
@@ -11125,7 +11132,7 @@ gridArea :
     BaseValue ( GridLine )
     -> Style
 gridArea (Value val) =
-    AppendProperty <| "grid-area:" ++ val
+    appendProperty <| "grid-area:" ++ val
 
 
 {-| The [`grid-area`](https://css-tricks.com/almanac/properties/g/grid-area/)
@@ -11165,7 +11172,7 @@ gridArea2 :
     -> Value ( GridLine )
     -> Style
 gridArea2 (Value gl1) (Value gl2) =
-    AppendProperty <| "grid-area:" ++ gl1 ++ "/" ++ gl2
+    appendProperty <| "grid-area:" ++ gl1 ++ "/" ++ gl2
 
 
 {-| The [`grid-area`](https://css-tricks.com/almanac/properties/g/grid-area/)
@@ -11206,7 +11213,7 @@ gridArea3 :
     -> Value ( GridLine )
     -> Style
 gridArea3 (Value gl1) (Value gl2) (Value gl3) =
-    AppendProperty <| "grid-area:" ++ gl1 ++ "/" ++ gl2 ++ "/" ++ gl3
+    appendProperty <| "grid-area:" ++ gl1 ++ "/" ++ gl2 ++ "/" ++ gl3
 
 
 {-| The [`grid-area`](https://css-tricks.com/almanac/properties/g/grid-area/)
@@ -11248,7 +11255,7 @@ gridArea4 :
     -> Value ( GridLine )
     -> Style
 gridArea4 (Value gl1) (Value gl2) (Value gl3) (Value gl4) =
-    AppendProperty <| "grid-area:" ++ gl1 ++ "/" ++ gl2 ++ "/" ++ gl3 ++ "/" ++ gl4
+    appendProperty <| "grid-area:" ++ gl1 ++ "/" ++ gl2 ++ "/" ++ gl3 ++ "/" ++ gl4
 
 
 {-| The [`grid-row`](https://css-tricks.com/almanac/properties/g/grid-row/)
@@ -11274,7 +11281,7 @@ gridRow :
     BaseValue (GridLine)
     -> Style
 gridRow (Value val) =
-    AppendProperty <| "grid-row:" ++ val
+    appendProperty <| "grid-row:" ++ val
 
 
 {-| The [`grid-row`](https://css-tricks.com/almanac/properties/g/grid-row/)
@@ -11300,7 +11307,7 @@ gridRow2 :
     -> Value ( GridLine )
     -> Style
 gridRow2 (Value gl1) (Value gl2) =
-    AppendProperty <| "grid-row:" ++ gl1 ++ "/" ++ gl2
+    appendProperty <| "grid-row:" ++ gl1 ++ "/" ++ gl2
 
 
 {-| The 1-argument version of the [`grid-row-start`](https://css-tricks.com/almanac/properties/g/grid-row-start/)
@@ -11320,7 +11327,7 @@ gridRowStart :
     BaseValue ( GridLine )
     -> Style
 gridRowStart (Value val) =
-    AppendProperty ("grid-row-start:" ++ val)
+    appendProperty ("grid-row-start:" ++ val)
 
 
 
@@ -11341,7 +11348,7 @@ gridRowEnd :
     BaseValue ( GridLine )
     -> Style
 gridRowEnd (Value val) =
-    AppendProperty ("grid-row-end:" ++ val)
+    appendProperty ("grid-row-end:" ++ val)
 
 
 {-| The [`grid-column`](https://css-tricks.com/almanac/properties/g/grid-column/)
@@ -11367,7 +11374,7 @@ gridColumn :
     BaseValue (GridLine)
     -> Style
 gridColumn (Value val) =
-    AppendProperty <| "grid-column:" ++ val
+    appendProperty <| "grid-column:" ++ val
 
 
 {-| The [`grid-column`](https://css-tricks.com/almanac/properties/g/grid-column/)
@@ -11393,7 +11400,7 @@ gridColumn2 :
     -> Value ( GridLine )
     -> Style
 gridColumn2 (Value gl1) (Value gl2) =
-    AppendProperty <| "grid-column:" ++ gl1 ++ "/" ++ gl2
+    appendProperty <| "grid-column:" ++ gl1 ++ "/" ++ gl2
 
 
 {-| The 1-argument version of the [`grid-column-start`](https://css-tricks.com/almanac/properties/g/grid-column-start/)
@@ -11413,7 +11420,7 @@ gridColumnStart :
     BaseValue ( GridLine )
     -> Style
 gridColumnStart (Value val) =
-    AppendProperty ("grid-column-start:" ++ val)
+    appendProperty ("grid-column-start:" ++ val)
 
 
 {-| The 1-argument version of the [`grid-column-end`](https://css-tricks.com/almanac/properties/g/grid-column-end/)
@@ -11433,7 +11440,7 @@ gridColumnEnd :
     BaseValue ( GridLine )
     -> Style
 gridColumnEnd (Value val) =
-    AppendProperty ("grid-column-end:" ++ val)
+    appendProperty ("grid-column-end:" ++ val)
 
     
 {-| The[`grid-template`](https://css-tricks.com/almanac/properties/g/grid-template/)
@@ -11494,7 +11501,7 @@ gridTemplate :
         }
     -> Style
 gridTemplate (Value value) =
-    AppendProperty <| "grid-template:" ++ value
+    appendProperty <| "grid-template:" ++ value
 
 
 {-| The [`grid-template-areas`](https://css-tricks.com/almanac/properties/g/grid-template-areas/)
@@ -11518,7 +11525,7 @@ gridTemplateAreas :
         }
     -> Style
 gridTemplateAreas (Value val) =
-    AppendProperty ("grid-template-areas:" ++ val)
+    appendProperty ("grid-template-areas:" ++ val)
 
 
 {-| A version of [`gridTemplateAreas`](#gridTemplateAreas) that
@@ -11539,7 +11546,7 @@ gridTemplateAreasCells :
     List String
     -> Style
 gridTemplateAreasCells values =
-        AppendProperty <| "grid-template-areas:" ++ stringListToStringEnquoted "" values
+        appendProperty <| "grid-template-areas:" ++ stringListToStringEnquoted "" values
             
 {-| The [`grid-template-rows`](https://css-tricks.com/almanac/properties/g/grid-template-rows/)
 property.
@@ -11576,7 +11583,7 @@ gridTemplateRows :
         }
     -> Style
 gridTemplateRows (Value val) =
-    AppendProperty <| "grid-template-rows:" ++ val
+    appendProperty <| "grid-template-rows:" ++ val
 
 
 {-| The [`grid-template-columns`](https://css-tricks.com/almanac/properties/g/grid-template-columns/)
@@ -11614,7 +11621,7 @@ gridTemplateColumns :
         }
     -> Style
 gridTemplateColumns (Value val) =
-    AppendProperty <| "grid-template-columns:" ++ val
+    appendProperty <| "grid-template-columns:" ++ val
 
 
 {-| Provides structured input for [`gridTemplate`](#gridTemplate) for
@@ -11988,7 +11995,7 @@ gap :
         )
     -> Style
 gap (Value val) =
-    AppendProperty ("gap:" ++ val)
+    appendProperty ("gap:" ++ val)
 
 
 {-| Sets the [`gap`](https://css-tricks.com/almanac/properties/g/gap/) property.
@@ -12016,7 +12023,7 @@ gap2 :
             )
     -> Style
 gap2 (Value rowVal) (Value columnVal) =
-    AppendProperty ("gap:" ++ rowVal ++ " " ++ columnVal)
+    appendProperty ("gap:" ++ rowVal ++ " " ++ columnVal)
 
 
 {-| Sets the [`row-gap`](https://developer.mozilla.org/en-US/docs/Web/CSS/row-gap) property.
@@ -12038,7 +12045,7 @@ rowGap :
         )
     -> Style
 rowGap (Value widthVal) =
-    AppendProperty ("row-gap:" ++ widthVal)
+    appendProperty ("row-gap:" ++ widthVal)
 
 
 {-| Sets the [`column-gap`](https://developer.mozilla.org/en-US/docs/Web/CSS/column-gap) property.
@@ -12060,7 +12067,7 @@ columnGap :
         )
     -> Style
 columnGap (Value widthVal) =
-    AppendProperty ("column-gap:" ++ widthVal)
+    appendProperty ("column-gap:" ++ widthVal)
 
 
 ------------------------------------------------------------------------
@@ -12089,7 +12096,7 @@ columnGap (Value widthVal) =
 -}
 backgroundColor : BaseValue Color -> Style
 backgroundColor (Value val) =
-    AppendProperty ("background-color:" ++ val)
+    appendProperty ("background-color:" ++ val)
 
 
 
@@ -12112,7 +12119,7 @@ backgroundAttachment :
         }
     -> Style
 backgroundAttachment (Value str) =
-    AppendProperty ("background-attachment:" ++ str)
+    appendProperty ("background-attachment:" ++ str)
 
 
 {-| Sets [`background-attachment`](https://css-tricks.com/almanac/properties/b/background-attachment/).
@@ -12139,7 +12146,7 @@ backgroundAttachmentMany :
         )
     -> Style
 backgroundAttachmentMany values =
-    AppendProperty ("background-attachment:" ++ valueListToString "," values)
+    appendProperty ("background-attachment:" ++ valueListToString "," values)
 
 
 {-| The `local` [`background-attachment` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-attachment#Values)
@@ -12187,7 +12194,7 @@ backgroundBlendMode :
         }
     -> Style
 backgroundBlendMode (Value str) =
-    AppendProperty ("background-blend-mode:" ++ str)
+    appendProperty ("background-blend-mode:" ++ str)
 
 
 {-| Sets [`background-blend-mode`](https://css-tricks.com/almanac/properties/b/background-blend-mode/).
@@ -12231,7 +12238,7 @@ backgroundBlendModeMany :
         )
     -> Style
 backgroundBlendModeMany values =
-    AppendProperty ("background-blend-mode:" ++ valueListToString "," values )
+    appendProperty ("background-blend-mode:" ++ valueListToString "," values )
 
 
 {-| The `multiply` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
@@ -12410,7 +12417,7 @@ backgroundClip :
         }
     -> Style
 backgroundClip (Value str) =
-    AppendProperty ("background-clip:" ++ str)
+    appendProperty ("background-clip:" ++ str)
 
 
 {-| Sets [`background-clip`](https://css-tricks.com/almanac/properties/b/background-clip/).
@@ -12441,7 +12448,7 @@ backgroundClipMany :
         )
     -> Style
 backgroundClipMany values =
-    AppendProperty ("background-clip:" ++ valueListToString "," values)
+    appendProperty ("background-clip:" ++ valueListToString "," values)
 
 
 
@@ -12467,7 +12474,7 @@ backgroundOrigin :
         }
     -> Style
 backgroundOrigin (Value str) =
-    AppendProperty ("background-origin:" ++ str)
+    appendProperty ("background-origin:" ++ str)
 
 
 {-| Sets [`background-origin`](https://css-tricks.com/almanac/properties/b/background-origin/).
@@ -12494,7 +12501,7 @@ backgroundOriginMany :
         )
     -> Style
 backgroundOriginMany values =
-    AppendProperty ("background-origin:" ++ valueListToString "," values)
+    appendProperty ("background-origin:" ++ valueListToString "," values)
 
 
 {-| Sets [`background-image`](https://css-tricks.com/almanac/properties/b/background-image/).
@@ -12508,7 +12515,7 @@ See also [`backgroundImages`](#backgroundImages) if you need multiple images.
 -}
 backgroundImage : BaseValue (ImageSupported { none : Supported }) -> Style
 backgroundImage (Value value) =
-    AppendProperty ("background-image:" ++ value)
+    appendProperty ("background-image:" ++ value)
 
 
 {-| Sets [`background-image`](https://css-tricks.com/almanac/properties/b/background-image/) for multiple images.
@@ -12529,7 +12536,7 @@ backgroundImageMany :
     List (Value Image)
     -> Style
 backgroundImageMany values =
-    AppendProperty ("background-image:" ++ valueListToString "," values)
+    appendProperty ("background-image:" ++ valueListToString "," values)
 
 
 -- BACKGROUND POSITION --
@@ -12565,7 +12572,7 @@ backgroundPosition :
         )
     -> Style
 backgroundPosition (Value val) =
-    AppendProperty ("background-position:" ++ val)
+    appendProperty ("background-position:" ++ val)
 
 
 {-| Sets [`background-position`](https://css-tricks.com/almanac/properties/b/background-position/).
@@ -12604,7 +12611,7 @@ backgroundPosition2 :
             )
     -> Style
 backgroundPosition2 (Value horiz) (Value vert) =
-    AppendProperty ("background-position:" ++ horiz ++ " " ++ vert)
+    appendProperty ("background-position:" ++ horiz ++ " " ++ vert)
 
 
 {-| Sets [`background-position`](https://css-tricks.com/almanac/properties/b/background-position/).
@@ -12627,7 +12634,7 @@ backgroundPosition3 :
     -> Value { center : Supported }
     -> Style
 backgroundPosition3 (Value side) (Value amount) (Value centerVal) =
-    AppendProperty
+    appendProperty
         ("background-position:"
             ++ side
             ++ " "
@@ -12664,7 +12671,7 @@ backgroundPosition4 :
     -> Value (LengthSupported { pct : Supported })
     -> Style
 backgroundPosition4 (Value horiz) (Value horizAmount) (Value vert) (Value vertAmount) =
-    AppendProperty
+    appendProperty
         ("background-position:"
             ++ horiz
             ++ " "
@@ -12701,7 +12708,7 @@ backgroundRepeat :
         }
     -> Style
 backgroundRepeat (Value repeatVal) =
-    AppendProperty ("background-repeat:" ++ repeatVal)
+    appendProperty ("background-repeat:" ++ repeatVal)
 
 
 {-| Sets [`background-repeat`](https://css-tricks.com/almanac/properties/b/background-repeat/) along the horizontal axis, then the vertical axis.
@@ -12730,7 +12737,7 @@ backgroundRepeat2 :
             }
     -> Style
 backgroundRepeat2 (Value horiz) (Value vert) =
-    AppendProperty ("background-repeat:" ++ horiz ++ " " ++ vert)
+    appendProperty ("background-repeat:" ++ horiz ++ " " ++ vert)
 
 
 {-| Sets [`background-size`](https://css-tricks.com/almanac/properties/b/background-size/).
@@ -12756,7 +12763,7 @@ backgroundSize :
         )
     -> Style
 backgroundSize (Value sizeVal) =
-    AppendProperty ("background-size:" ++ sizeVal)
+    appendProperty ("background-size:" ++ sizeVal)
 
 
 {-| Sets [`background-size`](https://css-tricks.com/almanac/properties/b/background-size/) for both width and height (in that order.)
@@ -12784,7 +12791,7 @@ backgroundSize2 :
             )
     -> Style
 backgroundSize2 (Value widthVal) (Value heightVal) =
-    AppendProperty ("background-size:" ++ widthVal ++ " " ++ heightVal)
+    appendProperty ("background-size:" ++ widthVal ++ " " ++ heightVal)
 
 
 ------------------------------------------------------------------------
@@ -12813,7 +12820,7 @@ backgroundSize2 (Value widthVal) (Value heightVal) =
 -}
 color : BaseValue Color -> Style
 color (Value val) =
-    AppendProperty ("color:" ++ val)
+    appendProperty ("color:" ++ val)
 
 
 {-| Sets [`font-size`](https://css-tricks.com/almanac/properties/f/font-size/)
@@ -12842,7 +12849,7 @@ fontSize :
         )
     -> Style
 fontSize (Value val) =
-    AppendProperty ("font-size:" ++ val)
+    appendProperty ("font-size:" ++ val)
 
 
 {-| The `xx-small` [`font-size` value](https://developer.mozilla.org/en-US/docs/Web/CSS/font-size#Values).
@@ -12960,7 +12967,7 @@ fontSizeAdjust :
         }
     -> Style
 fontSizeAdjust (Value val) =
-    AppendProperty ("font-size-adjust:" ++ val)
+    appendProperty ("font-size-adjust:" ++ val)
 
 
 ------------------------------------------------------------------------
@@ -13001,7 +13008,7 @@ fontDisplay :
         }
     -> Style
 fontDisplay (Value val) =
-    AppendProperty ("font-display:" ++ val)
+    appendProperty ("font-display:" ++ val)
 
 
 {-| Sets `fallback` value for usage with [`fontDisplay`](#fontDisplay) or [`strokeLinejoin`](#strokeLinejoin2).
@@ -13067,7 +13074,7 @@ fontFamily :
         }
     -> Style
 fontFamily (Value genericFont) =
-    AppendProperty ("font-family:" ++ genericFont)
+    appendProperty ("font-family:" ++ genericFont)
 
 
 {-| The `serif` [generic font family name](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family#%3Cgeneric-name%3E).
@@ -13181,10 +13188,10 @@ fontFamilies :
 fontFamilies list (Value genericFont) =
     case list of
         [] ->
-            AppendProperty ("font-family:" ++ genericFont)
+            appendProperty ("font-family:" ++ genericFont)
 
         fonts ->
-            AppendProperty
+            appendProperty
                 ("font-family:"
                     ++ String.join "," (List.map enquoteIfNotGeneric fonts)
                     ++ ("," ++ genericFont)
@@ -13243,7 +13250,7 @@ fontStyle :
         }
     -> Style
 fontStyle (Value val) =
-    AppendProperty ("font-style:" ++ val)
+    appendProperty ("font-style:" ++ val)
 
 
 {-| -}
@@ -13275,7 +13282,7 @@ fontWeight :
         }
     -> Style
 fontWeight (Value val) =
-    AppendProperty ("font-weight:" ++ val)
+    appendProperty ("font-weight:" ++ val)
 
 
 {-| -}
@@ -13331,7 +13338,7 @@ fontStretch :
         }
     -> Style
 fontStretch (Value val) =
-    AppendProperty ("font-stretch:" ++ val)
+    appendProperty ("font-stretch:" ++ val)
 
 
 {-| Sets `ultra-condensed` value for usage with [`fontStretch`](#fontStretch).
@@ -13434,7 +13441,7 @@ fontSynthesis :
         }
     -> Style
 fontSynthesis (Value val) =
-    AppendProperty ("font-synthesis:" ++ val)
+    appendProperty ("font-synthesis:" ++ val)
 
 
 {-| The [`font-synthesis`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-synthesis) property.
@@ -13459,7 +13466,7 @@ fontSynthesis2 :
             }
     -> Style
 fontSynthesis2 (Value val1) (Value val2) =
-    AppendProperty ("font-synthesis:" ++ val1 ++ " " ++ val2)
+    appendProperty ("font-synthesis:" ++ val1 ++ " " ++ val2)
 
 
 {-| The [`font-synthesis`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-synthesis) property.
@@ -13490,7 +13497,7 @@ fontSynthesis3 :
             }
     -> Style
 fontSynthesis3 (Value val1) (Value val2) (Value val3) =
-    AppendProperty ("font-synthesis:" ++ val1 ++ " " ++ val2 ++ " " ++ val3)
+    appendProperty ("font-synthesis:" ++ val1 ++ " " ++ val2 ++ " " ++ val3)
 
 
 {-| The `weight` value for the [`fontSynthesis`](#fontSynthesis) property.
@@ -13521,7 +13528,7 @@ fontVariationSettings :
         }
     -> Style
 fontVariationSettings (Value val) =
-    AppendProperty ("font-variation-settings:" ++ val)
+    appendProperty ("font-variation-settings:" ++ val)
 
 
 {-| The multi-argument variant of the [`font-variation-settings`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variation-settings)
@@ -13543,7 +13550,7 @@ fontVariationSettingsMany :
         )
     -> Style
 fontVariationSettingsMany list =
-    AppendProperty <|
+    appendProperty <|
         "font-variation-settings:"
         ++
         ( list
@@ -13585,7 +13592,7 @@ fontFeatureSettings :
         }
     -> Style
 fontFeatureSettings (Value val) =
-    AppendProperty ("font-feature-settings:" ++ val)
+    appendProperty ("font-feature-settings:" ++ val)
 
 
 {-| Sets [`font-feature-settings`](https://css-tricks.com/almanac/properties/f/font-feature-settings/)
@@ -13603,7 +13610,7 @@ fontFeatureSettingsMany :
     List (Value { featureTag : Supported })
     -> Style
 fontFeatureSettingsMany values =
-    AppendProperty ("font-feature-settings:" ++ valueListToString "," values)
+    appendProperty ("font-feature-settings:" ++ valueListToString "," values)
 
 
 {-| Creates a [feature-tag-value](https://developer.mozilla.org/en-US/docs/Web/CSS/font-feature-settings#feature-tag-value)
@@ -13688,7 +13695,7 @@ fontVariant :
         )
     -> Style
 fontVariant (Value val) =
-    AppendProperty <| "font-variant:" ++ val
+    appendProperty <| "font-variant:" ++ val
 
 
 {-| The [`font-variant`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant)
@@ -13719,7 +13726,7 @@ fontVariant2 :
     -> Value ( AllFontVariants )
     -> Style
 fontVariant2 (Value val1) (Value val2) =
-    AppendProperty <| "font-variant:" ++ val1 ++ " " ++ val2
+    appendProperty <| "font-variant:" ++ val1 ++ " " ++ val2
 
 
 {-| A type that encapsulates all caps font variant keywords plus additional types.
@@ -13759,7 +13766,7 @@ fontVariantCaps :
         )
     -> Style
 fontVariantCaps (Value str) =
-    AppendProperty ("font-variant-caps:" ++ str)
+    appendProperty ("font-variant-caps:" ++ str)
 
 
 {-| The `small-caps` value used in
@@ -13877,7 +13884,7 @@ fontVariantEastAsian :
         )
     -> Style
 fontVariantEastAsian (Value val) =
-    AppendProperty ("font-variant-east-asian:" ++ val)
+    appendProperty ("font-variant-east-asian:" ++ val)
 
 
 {-| The [`font-variant-east-asian`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-east-asian#syntax) property.
@@ -13893,7 +13900,7 @@ fontVariantEastAsian2 :
         Value (FontVariantEastAsian)
     -> Style
 fontVariantEastAsian2 (Value val1) (Value val2) =
-    AppendProperty ("font-variant-east-asian:" ++ val1 ++ " " ++ val2)
+    appendProperty ("font-variant-east-asian:" ++ val1 ++ " " ++ val2)
 
 
 {-| The [`font-variant-east-asian`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-east-asian#syntax) property.
@@ -13923,7 +13930,7 @@ fontVariantEastAsian3 :
             }
     -> Style
 fontVariantEastAsian3 (Value rubyVal) (Value variantVal) (Value widthVal) =
-    AppendProperty ("font-variant-east-asian:" ++ rubyVal ++ " " ++ variantVal ++ " " ++ widthVal)
+    appendProperty ("font-variant-east-asian:" ++ rubyVal ++ " " ++ variantVal ++ " " ++ widthVal)
 
 
 {-| Sets the [`jis78`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-east-asian#syntax) value for [`fontVariantEastAsian`](#fontVariantEastAsian).
@@ -14052,7 +14059,7 @@ fontVariantLigatures :
         )
     -> Style
 fontVariantLigatures (Value str) =
-    AppendProperty ("font-variant-ligatures:" ++ str)
+    appendProperty ("font-variant-ligatures:" ++ str)
 
 
 {-| The `common-ligatures` [`font-variant-ligatures` value](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-ligatures#Values).
@@ -14175,7 +14182,7 @@ fontVariantNumeric :
         )
     -> Style
 fontVariantNumeric (Value str) =
-    AppendProperty ("font-variant-numeric:" ++ str)
+    appendProperty ("font-variant-numeric:" ++ str)
 
 
 {-| Sets [`font-variant-numeric`](https://css-tricks.com/almanac/properties/f/font-variant-numeric/).
@@ -14197,7 +14204,7 @@ fontVariantNumericMany :
     List (Value (FontVariantNumeric))
     -> Style
 fontVariantNumericMany values =
-    AppendProperty <| "font-variant-numeric:" ++ valueListToString " " values
+    appendProperty <| "font-variant-numeric:" ++ valueListToString " " values
 
 
 {-| The `ordinal` [`font-variant-numeric` value](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-numeric).
@@ -14307,7 +14314,7 @@ fontVariantEmoji :
         )
     -> Style
 fontVariantEmoji (Value val) =
-    AppendProperty <| "font-variant-emoji:" ++ val
+    appendProperty <| "font-variant-emoji:" ++ val
 
 
 {-| The `emoji` value used with [`fontVariantEmoji`](#fontVariantEmoji).
@@ -14352,7 +14359,7 @@ fontVariantPosition :
         )
     -> Style
 fontVariantPosition (Value val) =
-    AppendProperty ("font-variant-position:" ++ val)
+    appendProperty ("font-variant-position:" ++ val)
 
 
 {-| The [`font-kerning`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-kerning) property.
@@ -14368,7 +14375,7 @@ fontKerning :
         }
     -> Style
 fontKerning (Value val) =
-    AppendProperty ("font-kerning:" ++ val)
+    appendProperty ("font-kerning:" ++ val)
 
 
 {-| The [`font-language-override`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-language-override) property.
@@ -14385,7 +14392,7 @@ fontLanguageOverride :
         }
     -> Style
 fontLanguageOverride (Value val) =
-    AppendProperty ("font-language-override:" ++ val)
+    appendProperty ("font-language-override:" ++ val)
 
 
 {-| The [`font-optical-sizing`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-optical-sizing) property.
@@ -14400,7 +14407,7 @@ fontOpticalSizing :
         }
     -> Style
 fontOpticalSizing (Value val) =
-    AppendProperty ("font-optical-sizing:" ++ val)
+    appendProperty ("font-optical-sizing:" ++ val)
 
 
 ------------------------------------------------------------------------
@@ -14439,7 +14446,7 @@ lineHeight :
         )
     -> Style
 lineHeight (Value val) =
-    AppendProperty ("line-height:" ++ val)
+    appendProperty ("line-height:" ++ val)
 
 
 {-| Sets [`letter-spacing`](https://css-tricks.com/almanac/properties/l/letter-spacing/)
@@ -14461,7 +14468,7 @@ letterSpacing :
         )
     -> Style
 letterSpacing (Value val) =
-    AppendProperty ("letter-spacing:" ++ val)
+    appendProperty ("letter-spacing:" ++ val)
 
 
 {-| The [`text-indent`](https://css-tricks.com/almanac/properties/t/text-indent/) property.
@@ -14471,7 +14478,7 @@ letterSpacing (Value val) =
 -}
 textIndent : BaseValue (LengthSupported { pct : Supported }) -> Style
 textIndent (Value val) =
-    AppendProperty ("text-indent:" ++ val)
+    appendProperty ("text-indent:" ++ val)
 
 
 {-| The [`text-indent`](https://css-tricks.com/almanac/properties/t/text-indent/) property.
@@ -14488,7 +14495,7 @@ textIndent2 :
             }
     -> Style
 textIndent2 (Value lengthVal) (Value optionVal) =
-    AppendProperty ("text-indent:" ++ lengthVal ++ " " ++ optionVal)
+    appendProperty ("text-indent:" ++ lengthVal ++ " " ++ optionVal)
 
 
 {-| The [`text-indent`](https://css-tricks.com/almanac/properties/t/text-indent/) property.
@@ -14502,7 +14509,7 @@ textIndent3 :
     -> Value { eachLine : Supported }
     -> Style
 textIndent3 (Value lengthVal) (Value hangingVal) (Value eachLineVal) =
-    AppendProperty
+    appendProperty
         ("text-indent:"
             ++ lengthVal
             ++ " "
@@ -14550,7 +14557,7 @@ wordSpacing :
         )
     -> Style
 wordSpacing (Value str) =
-    AppendProperty ("word-spacing:" ++ str)
+    appendProperty ("word-spacing:" ++ str)
 
 
 {-| Sets [`tab-size`](https://css-tricks.com/almanac/properties/t/tab-size/)
@@ -14568,7 +14575,7 @@ tabSize :
         )
     -> Style
 tabSize (Value val) =
-    AppendProperty ("tab-size:" ++ val)
+    appendProperty ("tab-size:" ++ val)
 
 
 ------------------------------------------------------------------------
@@ -14604,7 +14611,7 @@ wordBreak :
         }
     -> Style
 wordBreak (Value str) =
-    AppendProperty ("word-break:" ++ str)
+    appendProperty ("word-break:" ++ str)
 
 
 {-| A `breakAll` value for the [`word-break`](https://css-tricks.com/almanac/properties/w/word-break/) property.
@@ -14644,7 +14651,7 @@ lineBreak :
         }
     -> Style
 lineBreak (Value value) =
-    AppendProperty ("line-break:" ++ value)
+    appendProperty ("line-break:" ++ value)
 
 
 {-| Sets `loose` value for usage with [`lineBreak`](#lineBreak).
@@ -14679,7 +14686,7 @@ whiteSpace :
         }
     -> Style
 whiteSpace (Value str) =
-    AppendProperty ("white-space:" ++ str)
+    appendProperty ("white-space:" ++ str)
 
 
 {-| A `pre` value for the [`white-space`](#whiteSpace) property.
@@ -14743,7 +14750,7 @@ textOverflow :
         }
     -> Style
 textOverflow (Value value) =
-    AppendProperty ("text-overflow:" ++ value)
+    appendProperty ("text-overflow:" ++ value)
 
 
 {-| Sets the [`text-overflow`](https://css-tricks.com/almanac/properties/t/text-overflow/) property.
@@ -14768,7 +14775,7 @@ textOverflow2 :
             }
     -> Style
 textOverflow2 (Value startValue) (Value endValue) =
-    AppendProperty ("text-overflow:" ++ startValue ++ " " ++ endValue)
+    appendProperty ("text-overflow:" ++ startValue ++ " " ++ endValue)
 
 
 {-| Sets `ellipsis` value for usage with [`textOverflow`](#textOverflow).
@@ -14798,7 +14805,7 @@ hyphens :
         }
     -> Style
 hyphens (Value val) =
-    AppendProperty ("hyphens:" ++ val)
+    appendProperty ("hyphens:" ++ val)
 
 
 {-| Sets `manual` value for usage with [`hyphens`](#hyphens).
@@ -14832,7 +14839,7 @@ hangingPunctuation :
         }
     -> Style
 hangingPunctuation (Value val) =
-    AppendProperty ("hanging-punctuation:" ++ val)
+    appendProperty ("hanging-punctuation:" ++ val)
 
 
 {-| Sets [`hanging-punctuation`](https://css-tricks.com/almanac/properties/h/hanging-punctuation/)
@@ -14854,7 +14861,7 @@ hangingPunctuation2 :
             }
     -> Style
 hangingPunctuation2 (Value val1) (Value val2) =
-    AppendProperty ("hanging-punctuation:" ++ val1 ++ " " ++ val2)
+    appendProperty ("hanging-punctuation:" ++ val1 ++ " " ++ val2)
 
 
 {-| Sets [`hanging-punctuation`](https://css-tricks.com/almanac/properties/h/hanging-punctuation/)
@@ -14879,7 +14886,7 @@ hangingPunctuation3 :
             }
     -> Style
 hangingPunctuation3 (Value val1) (Value val2) (Value val3) =
-    AppendProperty ("hanging-punctuation:" ++ val1 ++ " " ++ val2 ++ " " ++ val3)
+    appendProperty ("hanging-punctuation:" ++ val1 ++ " " ++ val2 ++ " " ++ val3)
 
 
 {-| Sets `first` value for usage with [`hangingPunctuation`](#hangingPunctuation).
@@ -14964,7 +14971,7 @@ textDecoration :
         )
     -> Style
 textDecoration (Value line) =
-    AppendProperty ("text-decoration:" ++ line)
+    appendProperty ("text-decoration:" ++ line)
 
 
 {-| Sets [`text-decoration`][text-decoration] property.
@@ -14991,7 +14998,7 @@ textDecoration2 :
             }
     -> Style
 textDecoration2 (Value line) (Value styleVal) =
-    AppendProperty ("text-decoration:" ++ line ++ " " ++ styleVal)
+    appendProperty ("text-decoration:" ++ line ++ " " ++ styleVal)
 
 
 {-| Sets [`text-decoration`][text-decoration] property.
@@ -15019,7 +15026,7 @@ textDecoration3 :
     -> Value Color
     -> Style
 textDecoration3 (Value line) (Value styleVal) (Value colorVal) =
-    AppendProperty ("text-decoration:" ++ line ++ " " ++ styleVal ++ " " ++ colorVal)
+    appendProperty ("text-decoration:" ++ line ++ " " ++ styleVal ++ " " ++ colorVal)
 
 
 {-| Sets [`text-decoration-line`][text-decoration-line] property.
@@ -15038,7 +15045,7 @@ textDecorationLine :
         }
     -> Style
 textDecorationLine (Value line) =
-    AppendProperty ("text-decoration-line:" ++ line)
+    appendProperty ("text-decoration-line:" ++ line)
 
 
 {-| Sets [`text-decoration-line`][text-decoration-line] property.
@@ -15064,7 +15071,7 @@ textDecorationLine2 :
             }
     -> Style
 textDecorationLine2 (Value line1) (Value line2) =
-    AppendProperty ("text-decoration-line:" ++ line1 ++ " " ++ line2)
+    appendProperty ("text-decoration-line:" ++ line1 ++ " " ++ line2)
 
 
 {-| Sets [`text-decoration-line`][text-decoration-line] property.
@@ -15080,7 +15087,7 @@ textDecorationLine3 :
     -> Value { lineThrough : Supported }
     -> Style
 textDecorationLine3 (Value line1) (Value line2) (Value line3) =
-    AppendProperty ("text-decoration-line:" ++ line1 ++ " " ++ line2 ++ " " ++ line3)
+    appendProperty ("text-decoration-line:" ++ line1 ++ " " ++ line2 ++ " " ++ line3)
 
 
 {-| Sets [`text-decoration-style`][text-decoration-style] property.
@@ -15100,7 +15107,7 @@ textDecorationStyle :
         }
     -> Style
 textDecorationStyle (Value styleVal) =
-    AppendProperty ("text-decoration-style:" ++ styleVal)
+    appendProperty ("text-decoration-style:" ++ styleVal)
 
 
 {-| The `wavy` [`text-decoration-style`][text-decoration-style] value.
@@ -15158,7 +15165,7 @@ lineThrough =
 -}
 textDecorationColor : BaseValue Color -> Style
 textDecorationColor (Value colorVal) =
-    AppendProperty ("text-decoration-color:" ++ colorVal)
+    appendProperty ("text-decoration-color:" ++ colorVal)
 
 
 {-| Sets the [`text-decoration-thickness`](https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration-thickness) property.
@@ -15176,7 +15183,7 @@ textDecorationThickness :
         )
     -> Style
 textDecorationThickness (Value value) =
-    AppendProperty ("text-decoration-thickness:" ++ value)
+    appendProperty ("text-decoration-thickness:" ++ value)
 
 
 {-| Sets the `from-font` value for usage with [`textDecorationThickness`](#textDecorationThickness).
@@ -15206,7 +15213,7 @@ textDecorationSkipInk :
         }
     -> Style
 textDecorationSkipInk (Value val) =
-    AppendProperty ("text-decoration-skip-ink:" ++ val)
+    appendProperty ("text-decoration-skip-ink:" ++ val)
 
 
 {-| Sets [`text-underline-position`](https://css-tricks.com/almanac/properties/t/text-underline-position/)
@@ -15229,7 +15236,7 @@ textUnderlinePosition :
         }
     -> Style
 textUnderlinePosition (Value val) =
-    AppendProperty ("text-underline-position:" ++ val)
+    appendProperty ("text-underline-position:" ++ val)
 
 
 {-| Sets [`text-underline-position`](https://css-tricks.com/almanac/properties/t/text-underline-position/)
@@ -15248,7 +15255,7 @@ textUnderlinePosition2 :
             }
     -> Style
 textUnderlinePosition2 (Value underVal) (Value val) =
-    AppendProperty ("text-underline-position:" ++ underVal ++ " " ++ val)
+    appendProperty ("text-underline-position:" ++ underVal ++ " " ++ val)
 
 
 {-| Sets the [text-underline-offset](https://css-tricks.com/almanac/properties/t/text-underline-offset/) property.
@@ -15264,7 +15271,7 @@ textUnderlineOffset :
         )
     -> Style
 textUnderlineOffset (Value value) =
-    AppendProperty ("text-underline-offset:" ++ value)
+    appendProperty ("text-underline-offset:" ++ value)
 
 
 {-| Sets the [`text-emphasis`](https://css-tricks.com/almanac/properties/t/text-emphasis/) property.
@@ -15295,7 +15302,7 @@ textEmphasis :
         )
     -> Style
 textEmphasis (Value value) =
-    AppendProperty ("text-emphasis:" ++ value)
+    appendProperty ("text-emphasis:" ++ value)
 
 
 {-| Sets the [`text-emphasis`](https://css-tricks.com/almanac/properties/t/text-emphasis/) property.
@@ -15321,7 +15328,7 @@ textEmphasis2 :
             (Color)
     -> Style
 textEmphasis2 (Value value1) (Value value2) =
-    AppendProperty
+    appendProperty
         ("text-emphasis:"
             ++ value1
             ++ " "
@@ -15351,7 +15358,7 @@ textEmphasisStyle :
         }
     -> Style
 textEmphasisStyle (Value value) =
-    AppendProperty ("text-emphasis-style:" ++ value)
+    appendProperty ("text-emphasis-style:" ++ value)
 
 
 {-| Sets the [`text-emphasis-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/text-emphasis-style) property when you want to use two arguments - one for `filled` or `open`, and one for the shape style.
@@ -15374,7 +15381,7 @@ textEmphasisStyle2 :
         }
     -> Style
 textEmphasisStyle2 (Value val1) (Value val2) =
-    AppendProperty
+    appendProperty
         ("text-emphasis-style:"
         ++ val1
         ++ " "
@@ -15392,7 +15399,7 @@ textEmphasisColor :
     BaseValue (Color)
     -> Style
 textEmphasisColor (Value value) =
-    AppendProperty ("text-emphasis-color:" ++ value)
+    appendProperty ("text-emphasis-color:" ++ value)
 
 
 {-| Sets the [`text-emphasis-position`](https://developer.mozilla.org/en-US/docs/Web/CSS/text-emphasis-position) property.
@@ -15414,7 +15421,7 @@ textEmphasisPosition :
     BaseValue a
     -> Style
 textEmphasisPosition (Value value) =
-    AppendProperty ("text-emphasis-position:" ++ value)
+    appendProperty ("text-emphasis-position:" ++ value)
 
 
 {-| Sets the the [`text-emphasis-position`](https://developer.mozilla.org/en-US/docs/Web/CSS/text-emphasis-position) property.
@@ -15443,7 +15450,7 @@ textEmphasisPosition2 :
         }
     -> Style
 textEmphasisPosition2 (Value val1) (Value val2) =
-    AppendProperty
+    appendProperty
         ("text-emphasis-position:"
         ++ val1
         ++ " "
@@ -15539,7 +15546,7 @@ textTransform :
         }
     -> Style
 textTransform (Value str) =
-    AppendProperty ("text-transform:" ++ str)
+    appendProperty ("text-transform:" ++ str)
 
 
 {-| A `capitalize` value for the [`text-transform`](https://developer.mozilla.org/en-US/docs/Web/CSS/text-transform#Syntax) property.
@@ -15616,7 +15623,7 @@ textAlign :
         }
     -> Style
 textAlign (Value str) =
-    AppendProperty ("text-align:" ++ str)
+    appendProperty ("text-align:" ++ str)
 
 
 {-| A `justify` value for the [`text-align`](https://css-tricks.com/almanac/properties/t/text-align/)
@@ -15650,7 +15657,7 @@ textJustify :
         }
     -> Style
 textJustify (Value val) =
-    AppendProperty ("text-justify:" ++ val)
+    appendProperty ("text-justify:" ++ val)
 
 
 {-| A `inter-word` value for the [`textJustify`](#textJustify) property.
@@ -15702,7 +15709,7 @@ direction :
         }
     -> Style
 direction (Value str) =
-    AppendProperty ("direction:" ++ str)
+    appendProperty ("direction:" ++ str)
 
 
 {-| A `ltr` value for the [`direction`](https://css-tricks.com/almanac/properties/d/direction/) property.
@@ -15742,7 +15749,7 @@ writingMode :
         }
     -> Style
 writingMode (Value str) =
-    AppendProperty ("writing-mode:" ++ str)
+    appendProperty ("writing-mode:" ++ str)
 
 
 {-| Sets `horizontal-tb` value for usage with [`writingMode`](#writingMode).
@@ -15801,7 +15808,7 @@ unicodeBidi :
         }
     -> Style
 unicodeBidi (Value val) =
-    AppendProperty ("unicode-bidi:" ++ val)
+    appendProperty ("unicode-bidi:" ++ val)
 
 
 {-| Sets `embed` value for usage with [`unicodeBidi`](#unicodeBidi).
@@ -15861,7 +15868,7 @@ textOrientation :
         }
     -> Style
 textOrientation (Value str) =
-    AppendProperty ("text-orientation:" ++ str)
+    appendProperty ("text-orientation:" ++ str)
 
 
 {-| A `mixed` value for the
@@ -15939,7 +15946,7 @@ quotes :
         }
     -> Style
 quotes (Value val) =
-    AppendProperty ("quotes:" ++ val)
+    appendProperty ("quotes:" ++ val)
 
 
 {-| Sets the [`quotes`](https://css-tricks.com/almanac/properties/q/quotes/) property.
@@ -15967,7 +15974,7 @@ quotes2 :
             }
     -> Style
 quotes2 (Value lv1StartQuote) (Value lv1EndQuote) =
-    AppendProperty ("quotes:" ++ lv1StartQuote ++ " " ++ lv1EndQuote)
+    appendProperty ("quotes:" ++ lv1StartQuote ++ " " ++ lv1EndQuote)
 
 
 {-| Sets the [`quotes`](https://css-tricks.com/almanac/properties/q/quotes/) property.
@@ -16016,7 +16023,7 @@ quotes4 :
             }
     -> Style
 quotes4 (Value lv1StartQuote) (Value lv1EndQuote) (Value lv2StartQuote) (Value lv2EndQuote) =
-    AppendProperty ("quotes:" ++ lv1StartQuote ++ " " ++ lv1EndQuote ++ " " ++ lv2StartQuote ++ " " ++ lv2EndQuote)
+    appendProperty ("quotes:" ++ lv1StartQuote ++ " " ++ lv1EndQuote ++ " " ++ lv2StartQuote ++ " " ++ lv2EndQuote)
 
 
 ------------------------------------------------------------------------
@@ -16050,7 +16057,7 @@ textRendering :
         }
     -> Style
 textRendering (Value str) =
-    AppendProperty ("text-rendering:" ++ str)
+    appendProperty ("text-rendering:" ++ str)
 
 
 {-| A `geometricPrecision` value for the [`text-rendering`](https://css-tricks.com/almanac/properties/t/text-rendering/) property.
@@ -16121,7 +16128,7 @@ userSelect :
         }
     -> Style
 userSelect (Value val) =
-    AppendProperty ("user-select:" ++ val)
+    appendProperty ("user-select:" ++ val)
 
 
 ------------------------------------------------------------------------
@@ -16156,7 +16163,7 @@ speak :
         }
     -> Style
 speak (Value val) =
-    AppendProperty ("speak:" ++ val)
+    appendProperty ("speak:" ++ val)
 
 
 {-| Sets `spellOut` value for usage with [`speak`](#speak).
@@ -16276,7 +16283,7 @@ listStyle :
         )
     -> Style
 listStyle (Value val) =
-    AppendProperty ("list-style:" ++ val)
+    appendProperty ("list-style:" ++ val)
 
 
 {-| The [`list-style`](https://css-tricks.com/almanac/properties/l/list-style/) shorthand property.
@@ -16294,7 +16301,7 @@ listStyle2 :
     -> Value { inside : Supported, outside : Supported }
     -> Style
 listStyle2 (Value typeVal) (Value positionVal) =
-    AppendProperty ("list-style:" ++ typeVal ++ " " ++ positionVal)
+    appendProperty ("list-style:" ++ typeVal ++ " " ++ positionVal)
 
 
 {-| The [`list-style`](https://css-tricks.com/almanac/properties/l/list-style/) shorthand property.
@@ -16312,7 +16319,7 @@ listStyle3 :
     -> Value (ImageSupported { none : Supported })
     -> Style
 listStyle3 (Value typeVal) (Value positionVal) (Value imageVal) =
-    AppendProperty ("list-style:" ++ typeVal ++ " " ++ positionVal ++ " " ++ imageVal)
+    appendProperty ("list-style:" ++ typeVal ++ " " ++ positionVal ++ " " ++ imageVal)
 
 
 {-| The [`list-style-position`](https://developer.mozilla.org/en-US/docs/Web/CSS/list-style-position) property
@@ -16329,7 +16336,7 @@ listStylePosition :
         }
     -> Style
 listStylePosition (Value pos) =
-    AppendProperty ("list-style-position:" ++ pos)
+    appendProperty ("list-style-position:" ++ pos)
 
 
 {-| The `inside` value used for properties such as [`list-style-position`](#listStylePosition),
@@ -16361,7 +16368,7 @@ outside =
 -}
 listStyleType : BaseValue ListStyleType -> Style
 listStyleType (Value val) =
-    AppendProperty ("list-style-type:" ++ val)
+    appendProperty ("list-style-type:" ++ val)
 
 
 
@@ -16373,7 +16380,7 @@ listStyleType (Value val) =
 -}
 listStyleImage : BaseValue (ImageSupported { none : Supported }) -> Style
 listStyleImage (Value val) =
-    AppendProperty ("list-style-image:" ++ val)
+    appendProperty ("list-style-image:" ++ val)
 
 
 
@@ -16993,7 +17000,7 @@ columns :
         )
     -> Style
 columns (Value widthVal) =
-    AppendProperty ("columns:" ++ widthVal)
+    appendProperty ("columns:" ++ widthVal)
 
 
 {-| Sets [`columns`](https://css-tricks.com/almanac/properties/c/columns/)
@@ -17016,7 +17023,7 @@ columns2 :
             }
     -> Style
 columns2 (Value widthVal) (Value count) =
-    AppendProperty ("columns:" ++ widthVal ++ " " ++ count)
+    appendProperty ("columns:" ++ widthVal ++ " " ++ count)
 
 
 {-| Sets [`column-width`](https://css-tricks.com/almanac/properties/c/column-width/)
@@ -17034,7 +17041,7 @@ columnWidth :
         )
     -> Style
 columnWidth (Value widthVal) =
-    AppendProperty ("column-width:" ++ widthVal)
+    appendProperty ("column-width:" ++ widthVal)
 
 
 {-| Sets [`column-count`](https://css-tricks.com/almanac/properties/c/column-count/)
@@ -17051,7 +17058,7 @@ columnCount :
         }
     -> Style
 columnCount (Value count) =
-    AppendProperty ("column-count:" ++ count)
+    appendProperty ("column-count:" ++ count)
 
 
 {-| Sets [`column-fill`](https://css-tricks.com/almanac/properties/c/column-fill/)
@@ -17071,7 +17078,7 @@ columnFill :
         }
     -> Style
 columnFill (Value val) =
-    AppendProperty ("column-fill:" ++ val)
+    appendProperty ("column-fill:" ++ val)
 
 
 {-| A `balance` value used in properties such as [`columnFill`](#columnFill)
@@ -17108,7 +17115,7 @@ columnSpan :
         }
     -> Style
 columnSpan (Value spanVal) =
-    AppendProperty ("column-span:" ++ spanVal)
+    appendProperty ("column-span:" ++ spanVal)
 
 
 {-| Sets [`column-rule`](https://css-tricks.com/almanac/properties/c/column-rule/).
@@ -17125,7 +17132,7 @@ properties.
 -}
 columnRule : BaseValue LineWidth -> Style
 columnRule (Value widthVal) =
-    AppendProperty ("column-rule:" ++ widthVal)
+    appendProperty ("column-rule:" ++ widthVal)
 
 
 {-| Sets [`column-rule`](https://css-tricks.com/almanac/properties/c/column-rule/).
@@ -17142,7 +17149,7 @@ properties.
 -}
 columnRule2 : Value LineWidth -> Value LineStyle -> Style
 columnRule2 (Value widthVal) (Value styleVal) =
-    AppendProperty ("column-rule:" ++ widthVal ++ " " ++ styleVal)
+    appendProperty ("column-rule:" ++ widthVal ++ " " ++ styleVal)
 
 
 {-| Sets [`column-rule`](https://css-tricks.com/almanac/properties/c/column-rule/).
@@ -17159,7 +17166,7 @@ properties.
 -}
 columnRule3 : Value LineWidth -> Value LineStyle -> Value Color -> Style
 columnRule3 (Value widthVal) (Value styleVal) (Value colorVal) =
-    AppendProperty ("column-rule:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
+    appendProperty ("column-rule:" ++ widthVal ++ " " ++ styleVal ++ " " ++ colorVal)
 
 
 {-| Sets [`column-rule-width`](https://www.w3.org/TR/css-multicol-1/#propdef-column-rule-width)
@@ -17171,7 +17178,7 @@ columnRule3 (Value widthVal) (Value styleVal) (Value colorVal) =
 -}
 columnRuleWidth : BaseValue LineWidth -> Style
 columnRuleWidth (Value widthVal) =
-    AppendProperty ("column-rule-width:" ++ widthVal)
+    appendProperty ("column-rule-width:" ++ widthVal)
 
 
 {-| Sets [`column-rule-style`](https://www.w3.org/TR/css-multicol-1/#propdef-column-rule-style)
@@ -17185,7 +17192,7 @@ columnRuleWidth (Value widthVal) =
 -}
 columnRuleStyle : BaseValue LineStyle -> Style
 columnRuleStyle (Value styleVal) =
-    AppendProperty ("column-rule-style:" ++ styleVal)
+    appendProperty ("column-rule-style:" ++ styleVal)
 
 
 {-| Sets [`column-rule-color`](https://www.w3.org/TR/css-multicol-1/#propdef-column-rule-color)
@@ -17197,7 +17204,7 @@ columnRuleStyle (Value styleVal) =
 -}
 columnRuleColor : BaseValue Color -> Style
 columnRuleColor (Value colorVal) =
-    AppendProperty ("column-rule-color:" ++ colorVal)
+    appendProperty ("column-rule-color:" ++ colorVal)
 
 
 ------------------------------------------------------------------------
@@ -17229,7 +17236,7 @@ borderCollapse :
         }
     -> Style
 borderCollapse (Value str) =
-    AppendProperty ("border-collapse:" ++ str)
+    appendProperty ("border-collapse:" ++ str)
 
 
 {-| A `collapse` value for the [`border-collapse`](https://css-tricks.com/almanac/properties/b/border-collapse/) and
@@ -17264,7 +17271,7 @@ separate =
 -}
 borderSpacing : BaseValue Length -> Style
 borderSpacing (Value str) =
-    AppendProperty ("border-spacing:" ++ str)
+    appendProperty ("border-spacing:" ++ str)
 
 
 {-| Sets [`border-spacing`](https://developer.mozilla.org/en-US/docs/Web/CSS/border-spacing), defining horizontal and vertical spacing separately.
@@ -17274,7 +17281,7 @@ borderSpacing (Value str) =
 -}
 borderSpacing2 : Value Length -> Value Length -> Style
 borderSpacing2 (Value valHorizontal) (Value valVertical) =
-    AppendProperty ("border-spacing:" ++ valHorizontal ++ " " ++ valVertical)
+    appendProperty ("border-spacing:" ++ valHorizontal ++ " " ++ valVertical)
 
 
 {-| Sets [`caption-side`](https://css-tricks.com/almanac/properties/c/caption-side/).
@@ -17299,7 +17306,7 @@ captionSide :
         }
     -> Style
 captionSide (Value str) =
-    AppendProperty ("caption-side:" ++ str)
+    appendProperty ("caption-side:" ++ str)
 
 
 {-| Sets [`empty-cells`](https://css-tricks.com/almanac/properties/e/empty-cells/).
@@ -17316,7 +17323,7 @@ emptyCells :
         }
     -> Style
 emptyCells (Value str) =
-    AppendProperty ("empty-cells:" ++ str)
+    appendProperty ("empty-cells:" ++ str)
 
 
 {-| A `show` value for the [`empty-cells`](https://css-tricks.com/almanac/properties/e/empty-cells/) property.
@@ -17353,7 +17360,7 @@ tableLayout :
         }
     -> Style
 tableLayout (Value str) =
-    AppendProperty ("table-layout:" ++ str)
+    appendProperty ("table-layout:" ++ str)
 
 
 
@@ -17391,7 +17398,7 @@ breakBefore :
         }
     -> Style
 breakBefore (Value val) =
-    AppendProperty ("break-before:" ++ val)
+    appendProperty ("break-before:" ++ val)
 
 
 {-| Sets [`break-after`](https://css-tricks.com/almanac/properties/b/break-after/).
@@ -17413,7 +17420,7 @@ breakAfter :
         }
     -> Style
 breakAfter (Value val) =
-    AppendProperty ("break-after:" ++ val)
+    appendProperty ("break-after:" ++ val)
 
 
 {-| Sets [`break-inside`](https://css-tricks.com/almanac/properties/b/break-inside/)
@@ -17436,7 +17443,7 @@ breakInside :
         }
     -> Style
 breakInside (Value val) =
-    AppendProperty ("break-inside:" ++ val)
+    appendProperty ("break-inside:" ++ val)
 
 
 
@@ -17526,7 +17533,7 @@ pageBreakBefore :
         }
     -> Style
 pageBreakBefore (Value val) =
-    AppendProperty ("page-break-before:" ++ val)
+    appendProperty ("page-break-before:" ++ val)
 
 
 {-| Sets [`page-break-after`](https://css-tricks.com/almanac/properties/p/page-break/)
@@ -17556,7 +17563,7 @@ pageBreakAfter :
         }
     -> Style
 pageBreakAfter (Value val) =
-    AppendProperty ("page-break-after:" ++ val)
+    appendProperty ("page-break-after:" ++ val)
 
 
 {-| Sets [`page-break-inside`](https://css-tricks.com/almanac/properties/p/page-break/)
@@ -17573,7 +17580,7 @@ pageBreakInside :
         }
     -> Style
 pageBreakInside (Value val) =
-    AppendProperty ("page-break-inside:" ++ val)
+    appendProperty ("page-break-inside:" ++ val)
 
 
 {-| Sets [`orphans`](https://css-tricks.com/almanac/properties/o/orphans/)
@@ -17588,7 +17595,7 @@ orphans :
         }
     -> Style
 orphans (Value val) =
-    AppendProperty ("orphans:" ++ val)
+    appendProperty ("orphans:" ++ val)
 
 
 {-| Sets [`widows`](https://css-tricks.com/almanac/properties/w/widows/)
@@ -17603,7 +17610,7 @@ widows :
         }
     -> Style
 widows (Value val) =
-    AppendProperty ("widows:" ++ val)
+    appendProperty ("widows:" ++ val)
 
 
 {-| Sets [`box-decoration-break`](https://css-tricks.com/almanac/properties/b/box-decoration-break/)
@@ -17620,7 +17627,7 @@ boxDecorationBreak :
         }
     -> Style
 boxDecorationBreak (Value val) =
-    AppendProperty ("box-decoration-break:" ++ val)
+    appendProperty ("box-decoration-break:" ++ val)
 
 
 ------------------------------------------------------------------------
@@ -17659,7 +17666,7 @@ float :
         }
     -> Style
 float (Value str) =
-    AppendProperty ("float:" ++ str)
+    appendProperty ("float:" ++ str)
 
 
 {-| Sets [`clear`](https://css-tricks.com/almanac/properties/c/clear/) property.
@@ -17688,7 +17695,7 @@ clear :
         }
     -> Style
 clear (Value val) =
-    AppendProperty ("clear:" ++ val)
+    appendProperty ("clear:" ++ val)
 
 
 {-| Sets [`vertical-align`](https://css-tricks.com/almanac/properties/v/vertical-align/).
@@ -17714,7 +17721,7 @@ verticalAlign :
         )
     -> Style
 verticalAlign (Value str) =
-    AppendProperty ("vertical-align:" ++ str)
+    appendProperty ("vertical-align:" ++ str)
 
 
 {-| A `textTop` value for the [`vertical-align`](https://css-tricks.com/almanac/properties/v/vertical-align/) property.
@@ -17785,7 +17792,7 @@ objectFit :
         }
     -> Style
 objectFit (Value val) =
-    AppendProperty ("object-fit:" ++ val)
+    appendProperty ("object-fit:" ++ val)
 
 
 {-| Sets `scale-down` value for usage with [`objectFit`](#objectFit).
@@ -17826,7 +17833,7 @@ objectPosition :
         )
     -> Style
 objectPosition (Value horiz) =
-    AppendProperty ("object-position:" ++ horiz)
+    appendProperty ("object-position:" ++ horiz)
 
 
 {-| Sets [`object-position`](https://css-tricks.com/almanac/properties/o/object-position/).
@@ -17867,7 +17874,7 @@ objectPosition2 :
             )
     -> Style
 objectPosition2 (Value horiz) (Value vert) =
-    AppendProperty ("object-position:" ++ horiz ++ " " ++ vert)
+    appendProperty ("object-position:" ++ horiz ++ " " ++ vert)
 
 
 {-| Sets [`object-position`](https://css-tricks.com/almanac/properties/o/object-position/).
@@ -17907,7 +17914,7 @@ objectPosition4 :
             )
     -> Style
 objectPosition4 (Value horiz) (Value horizAmount) (Value vert) (Value vertAmount) =
-    AppendProperty
+    appendProperty
         ("object-position:"
             ++ horiz
             ++ " "
@@ -17957,7 +17964,7 @@ pointerEvents :
         }
     -> Style
 pointerEvents (Value val) =
-    AppendProperty ("pointer-events:" ++ val)
+    appendProperty ("pointer-events:" ++ val)
 
 
 {-| The `visiblePainted` value used by [`pointerEvents`](#pointerEvents).
@@ -18034,7 +18041,7 @@ touchAction :
         }
     -> Style
 touchAction (Value val) =
-    AppendProperty <| "touch-action:" ++ val
+    appendProperty <| "touch-action:" ++ val
 
 
 {-| The `pan-x` value used by [`touch-action`](#touchAction).
@@ -18108,7 +18115,7 @@ scrollbarColor :
         )
     -> Style
 scrollbarColor (Value val) =
-    AppendProperty ("scrollbar-color:" ++ val)
+    appendProperty ("scrollbar-color:" ++ val)
 
 
 {-| Sets the [`scrollbar-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-width) property.
@@ -18125,7 +18132,7 @@ scrollbarWidth :
         }
     -> Style
 scrollbarWidth (Value val) =
-    AppendProperty ("scrollbar-width:" ++ val)
+    appendProperty ("scrollbar-width:" ++ val)
 
 
 {-| The [`scrollbar-gutter`](https://css-tricks.com/almanac/properties/s/scrollbar-gutter/)
@@ -18146,7 +18153,7 @@ scrollbarGutter :
         }
     -> Style
 scrollbarGutter (Value val) =
-    AppendProperty ("scrollbar-gutter:" ++ val)
+    appendProperty ("scrollbar-gutter:" ++ val)
 
 
 {-| The [`scrollbar-gutter`](https://css-tricks.com/almanac/properties/s/scrollbar-gutter/)
@@ -18165,7 +18172,7 @@ scrollbarGutter2 :
     -> Value { bothEdges : Supported }
     -> Style
 scrollbarGutter2 (Value val1) (Value val2) =
-    AppendProperty ("scrollbar-gutter:" ++ val1 ++ " " ++ val2)
+    appendProperty ("scrollbar-gutter:" ++ val1 ++ " " ++ val2)
 
 
 {-| The `stable` value used by [`scrollbarGutter`](#scrollbarGutter).
@@ -18217,7 +18224,7 @@ scrollBehavior :
         }
     -> Style
 scrollBehavior (Value val) =
-    AppendProperty ("scroll-behavior:" ++ val)
+    appendProperty ("scroll-behavior:" ++ val)
 
 
 {-| Sets `smooth` value for usage with [`scrollBehavior`](#scrollBehavior).
@@ -18247,7 +18254,7 @@ overscrollBehavior :
         }
     -> Style
 overscrollBehavior (Value value) =
-    AppendProperty ("overscroll-behavior:" ++ value)
+    appendProperty ("overscroll-behavior:" ++ value)
 
 
 {-| Sets the [`overscroll-behavior`](https://css-tricks.com/almanac/properties/o/overscroll-behavior/) property.
@@ -18271,7 +18278,7 @@ overscrollBehavior2 :
             }
     -> Style
 overscrollBehavior2 (Value xValue) (Value yValue) =
-    AppendProperty ("overscroll-behavior:" ++ xValue ++ " " ++ yValue)
+    appendProperty ("overscroll-behavior:" ++ xValue ++ " " ++ yValue)
 
 
 {-| Sets the [`overscroll-behavior-x`](https://css-tricks.com/almanac/properties/o/overscroll-behavior/) property.
@@ -18289,7 +18296,7 @@ overscrollBehaviorX :
         }
     -> Style
 overscrollBehaviorX (Value value) =
-    AppendProperty ("overscroll-behavior-x:" ++ value)
+    appendProperty ("overscroll-behavior-x:" ++ value)
 
 
 {-| Sets the [`overscroll-behavior-y`](https://css-tricks.com/almanac/properties/o/overscroll-behavior/) property.
@@ -18307,7 +18314,7 @@ overscrollBehaviorY :
         }
     -> Style
 overscrollBehaviorY (Value value) =
-    AppendProperty ("overscroll-behavior-y:" ++ value)
+    appendProperty ("overscroll-behavior-y:" ++ value)
 
 
 {-| Sets the [`overscroll-behavior-block`](https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior-block) property.
@@ -18325,7 +18332,7 @@ overscrollBehaviorBlock :
         }
     -> Style
 overscrollBehaviorBlock (Value value) =
-    AppendProperty ("overscroll-behavior-block:" ++ value)
+    appendProperty ("overscroll-behavior-block:" ++ value)
 
 
 {-| Sets the [`overscroll-behavior-inline`](https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior-inline) property.
@@ -18343,7 +18350,7 @@ overscrollBehaviorInline :
         }
     -> Style
 overscrollBehaviorInline (Value value) =
-    AppendProperty ("overscroll-behavior-inline:" ++ value)
+    appendProperty ("overscroll-behavior-inline:" ++ value)
 
 
 ------------------------------------------------------------------------
@@ -18377,7 +18384,7 @@ scrollSnapType :
         }
     -> Style
 scrollSnapType (Value val) =
-    AppendProperty ("scroll-snap-type:" ++ val)
+    appendProperty ("scroll-snap-type:" ++ val)
 
 
 {-| Sets [`scroll-snap-type`](https://css-tricks.com/almanac/properties/s/scroll-snap-type/)
@@ -18402,7 +18409,7 @@ scrollSnapType2 :
             }
     -> Style
 scrollSnapType2 (Value val1) (Value val2) =
-    AppendProperty ("scroll-snap-type:" ++ val1 ++ " " ++ val2)
+    appendProperty ("scroll-snap-type:" ++ val1 ++ " " ++ val2)
 
 
 {-| Sets [`scroll-snap-align`](https://css-tricks.com/almanac/properties/s/scroll-snap-align/)
@@ -18425,7 +18432,7 @@ scrollSnapAlign :
         }
     -> Style
 scrollSnapAlign (Value val) =
-    AppendProperty ("scroll-snap-align:" ++ val)
+    appendProperty ("scroll-snap-align:" ++ val)
 
 
 {-| Sets [`scroll-snap-stop`](https://css-tricks.com/almanac/properties/s/scroll-snap-stop/)
@@ -18442,7 +18449,7 @@ scrollSnapStop :
         }
     -> Style
 scrollSnapStop (Value val) =
-    AppendProperty ("scroll-snap-stop:" ++ val)
+    appendProperty ("scroll-snap-stop:" ++ val)
 
 
 {-| Sets `mandatory` value for usage with [`scrollSnapType2`](#scrollSnapType2).
@@ -18491,7 +18498,7 @@ scrollMargin :
         Length
     -> Style
 scrollMargin (Value value) =
-    AppendProperty ("scroll-margin:" ++ value)
+    appendProperty ("scroll-margin:" ++ value)
 
 
 {-| Sets [`scroll-margin`](https://css-tricks.com/almanac/properties/s/scroll-margin/) property.
@@ -18513,7 +18520,7 @@ scrollMargin2 :
             Length
     -> Style
 scrollMargin2 (Value valueTopBottom) (Value valueRightLeft) =
-    AppendProperty ("scroll-margin:" ++ valueTopBottom ++ " " ++ valueRightLeft)
+    appendProperty ("scroll-margin:" ++ valueTopBottom ++ " " ++ valueRightLeft)
 
 
 {-| Sets [`scroll-margin`](https://css-tricks.com/almanac/properties/s/scroll-margin/) property.
@@ -18538,7 +18545,7 @@ scrollMargin3 :
             Length
     -> Style
 scrollMargin3 (Value valueTop) (Value valueRightLeft) (Value valueBottom) =
-    AppendProperty ("scroll-margin:" ++ valueTop ++ " " ++ valueRightLeft ++ " " ++ valueBottom)
+    appendProperty ("scroll-margin:" ++ valueTop ++ " " ++ valueRightLeft ++ " " ++ valueBottom)
 
 
 {-| Sets [`scroll-margin`](https://css-tricks.com/almanac/properties/s/scroll-margin/) property.
@@ -18565,7 +18572,7 @@ scrollMargin4 :
             Length
     -> Style
 scrollMargin4 (Value valueTop) (Value valueRight) (Value valueBottom) (Value valueLeft) =
-    AppendProperty ("scroll-margin:" ++ valueTop ++ " " ++ valueRight ++ " " ++ valueBottom ++ " " ++ valueLeft)
+    appendProperty ("scroll-margin:" ++ valueTop ++ " " ++ valueRight ++ " " ++ valueBottom ++ " " ++ valueLeft)
 
 
 {-| Sets [`scroll-margin-top`](https://css-tricks.com/almanac/properties/s/scroll-margin/) property.
@@ -18578,7 +18585,7 @@ scrollMarginTop :
         Length
     -> Style
 scrollMarginTop (Value value) =
-    AppendProperty ("scroll-margin-top:" ++ value)
+    appendProperty ("scroll-margin-top:" ++ value)
 
 
 {-| Sets [`scroll-margin-right`](https://css-tricks.com/almanac/properties/s/scroll-margin/) property.
@@ -18591,7 +18598,7 @@ scrollMarginRight :
         Length
     -> Style
 scrollMarginRight (Value value) =
-    AppendProperty ("scroll-margin-right:" ++ value)
+    appendProperty ("scroll-margin-right:" ++ value)
 
 
 {-| Sets [`scroll-margin-bottom`](https://css-tricks.com/almanac/properties/s/scroll-margin/) property.
@@ -18604,7 +18611,7 @@ scrollMarginBottom :
         Length
     -> Style
 scrollMarginBottom (Value value) =
-    AppendProperty ("scroll-margin-bottom:" ++ value)
+    appendProperty ("scroll-margin-bottom:" ++ value)
 
 
 {-| Sets [`scroll-margin-left`](https://css-tricks.com/almanac/properties/s/scroll-margin/) property.
@@ -18617,7 +18624,7 @@ scrollMarginLeft :
         Length
     -> Style
 scrollMarginLeft (Value value) =
-    AppendProperty ("scroll-margin-left:" ++ value)
+    appendProperty ("scroll-margin-left:" ++ value)
 
 
 {-| Sets [`scroll-margin-block`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin-block) property.
@@ -18638,7 +18645,7 @@ scrollMarginBlock :
         Length
     -> Style
 scrollMarginBlock (Value value) =
-    AppendProperty ("scroll-margin-block:" ++ value)
+    appendProperty ("scroll-margin-block:" ++ value)
 
 
 {-| Sets [`scroll-margin-block`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin-block) property.
@@ -18659,7 +18666,7 @@ scrollMarginBlock2 :
             Length
     -> Style
 scrollMarginBlock2 (Value valueStart) (Value valueEnd) =
-    AppendProperty ("scroll-margin-block:" ++ valueStart ++ " " ++ valueEnd)
+    appendProperty ("scroll-margin-block:" ++ valueStart ++ " " ++ valueEnd)
 
 
 {-| Sets [`scroll-margin-inline`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin-inline) property.
@@ -18680,7 +18687,7 @@ scrollMarginInline :
         Length
     -> Style
 scrollMarginInline (Value value) =
-    AppendProperty ("scroll-margin-inline:" ++ value)
+    appendProperty ("scroll-margin-inline:" ++ value)
 
 
 {-| Sets [`scroll-margin-inline`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin-inline) property.
@@ -18701,7 +18708,7 @@ scrollMarginInline2 :
             Length
     -> Style
 scrollMarginInline2 (Value valueStart) (Value valueEnd) =
-    AppendProperty ("scroll-margin-inline:" ++ valueStart ++ " " ++ valueEnd)
+    appendProperty ("scroll-margin-inline:" ++ valueStart ++ " " ++ valueEnd)
 
 
 {-| Sets [`scroll-margin-block-start`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin-block-start) property.
@@ -18714,7 +18721,7 @@ scrollMarginBlockStart :
         Length
     -> Style
 scrollMarginBlockStart (Value value) =
-    AppendProperty ("scroll-margin-block-start:" ++ value)
+    appendProperty ("scroll-margin-block-start:" ++ value)
 
 
 {-| Sets [`scroll-margin-block-end`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin-block-end) property.
@@ -18727,7 +18734,7 @@ scrollMarginBlockEnd :
         Length
     -> Style
 scrollMarginBlockEnd (Value value) =
-    AppendProperty ("scroll-margin-block-end:" ++ value)
+    appendProperty ("scroll-margin-block-end:" ++ value)
 
 
 {-| Sets [`scroll-margin-inline-start`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin-inline-start) property.
@@ -18740,7 +18747,7 @@ scrollMarginInlineStart :
         Length
     -> Style
 scrollMarginInlineStart (Value value) =
-    AppendProperty ("scroll-margin-inline-start:" ++ value)
+    appendProperty ("scroll-margin-inline-start:" ++ value)
 
 
 {-| Sets [`scroll-margin-inline-end`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin-inline-end) property.
@@ -18753,7 +18760,7 @@ scrollMarginInlineEnd :
         Length
     -> Style
 scrollMarginInlineEnd (Value value) =
-    AppendProperty ("scroll-margin-inline-end:" ++ value)
+    appendProperty ("scroll-margin-inline-end:" ++ value)
 
 
 {-| Sets [`scroll-padding`](https://css-tricks.com/almanac/properties/s/scroll-padding/) property.
@@ -18786,7 +18793,7 @@ scrollPadding :
         )
     -> Style
 scrollPadding (Value value) =
-    AppendProperty ("scroll-padding:" ++ value)
+    appendProperty ("scroll-padding:" ++ value)
 
 
 {-| Sets [`scroll-padding`](https://css-tricks.com/almanac/properties/s/scroll-padding/) property.
@@ -18816,7 +18823,7 @@ scrollPadding2 :
             )
     -> Style
 scrollPadding2 (Value valueTopBottom) (Value valueRightLeft) =
-    AppendProperty ("scroll-padding:" ++ valueTopBottom ++ " " ++ valueRightLeft)
+    appendProperty ("scroll-padding:" ++ valueTopBottom ++ " " ++ valueRightLeft)
 
 
 {-| Sets [`scroll-padding`](https://css-tricks.com/almanac/properties/s/scroll-padding/) property.
@@ -18853,7 +18860,7 @@ scrollPadding3 :
             )
     -> Style
 scrollPadding3 (Value valueTop) (Value valueRightLeft) (Value valueBottom) =
-    AppendProperty ("scroll-padding:" ++ valueTop ++ " " ++ valueRightLeft ++ " " ++ valueBottom)
+    appendProperty ("scroll-padding:" ++ valueTop ++ " " ++ valueRightLeft ++ " " ++ valueBottom)
 
 
 {-| Sets [`scroll-padding`](https://css-tricks.com/almanac/properties/s/scroll-padding/) property.
@@ -18896,7 +18903,7 @@ scrollPadding4 :
             )
     -> Style
 scrollPadding4 (Value valueTop) (Value valueRight) (Value valueBottom) (Value valueLeft) =
-    AppendProperty ("scroll-padding:" ++ valueTop ++ " " ++ valueRight ++ " " ++ valueBottom ++ " " ++ valueLeft)
+    appendProperty ("scroll-padding:" ++ valueTop ++ " " ++ valueRight ++ " " ++ valueBottom ++ " " ++ valueLeft)
 
 
 {-| Sets [`scroll-padding-top`](https://css-tricks.com/almanac/properties/s/scroll-padding/) property.
@@ -18913,7 +18920,7 @@ scrollPaddingTop :
         )
     -> Style
 scrollPaddingTop (Value value) =
-    AppendProperty ("scroll-padding-top:" ++ value)
+    appendProperty ("scroll-padding-top:" ++ value)
 
 
 {-| Sets [`scroll-padding-right`](https://css-tricks.com/almanac/properties/s/scroll-padding/) property.
@@ -18930,7 +18937,7 @@ scrollPaddingRight :
         )
     -> Style
 scrollPaddingRight (Value value) =
-    AppendProperty ("scroll-padding-right:" ++ value)
+    appendProperty ("scroll-padding-right:" ++ value)
 
 
 {-| Sets [`scroll-padding-bottom`](https://css-tricks.com/almanac/properties/s/scroll-padding/) property.
@@ -18947,7 +18954,7 @@ scrollPaddingBottom :
         )
     -> Style
 scrollPaddingBottom (Value value) =
-    AppendProperty ("scroll-padding-bottom:" ++ value)
+    appendProperty ("scroll-padding-bottom:" ++ value)
 
 
 {-| Sets [`scroll-padding-left`](https://css-tricks.com/almanac/properties/s/scroll-padding/) property.
@@ -18964,7 +18971,7 @@ scrollPaddingLeft :
         )
     -> Style
 scrollPaddingLeft (Value value) =
-    AppendProperty ("scroll-padding-left:" ++ value)
+    appendProperty ("scroll-padding-left:" ++ value)
 
 
 {-| Sets [`scroll-padding-block`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-padding-block) property.
@@ -18989,7 +18996,7 @@ scrollPaddingBlock :
         )
     -> Style
 scrollPaddingBlock (Value value) =
-    AppendProperty ("scroll-padding-block:" ++ value)
+    appendProperty ("scroll-padding-block:" ++ value)
 
 
 {-| Sets [`scroll-padding-block`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-padding-block) property.
@@ -19018,7 +19025,7 @@ scrollPaddingBlock2 :
             )
     -> Style
 scrollPaddingBlock2 (Value valueStart) (Value valueEnd) =
-    AppendProperty ("scroll-padding-block:" ++ valueStart ++ " " ++ valueEnd)
+    appendProperty ("scroll-padding-block:" ++ valueStart ++ " " ++ valueEnd)
 
 
 {-| Sets [`scroll-padding-inline`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-padding-inline) property.
@@ -19043,7 +19050,7 @@ scrollPaddingInline :
         )
     -> Style
 scrollPaddingInline (Value value) =
-    AppendProperty ("scroll-padding-inline:" ++ value)
+    appendProperty ("scroll-padding-inline:" ++ value)
 
 
 {-| Sets [`scroll-padding-inline`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-padding-inline) property.
@@ -19072,7 +19079,7 @@ scrollPaddingInline2 :
             )
     -> Style
 scrollPaddingInline2 (Value valueStart) (Value valueEnd) =
-    AppendProperty ("scroll-padding-inline:" ++ valueStart ++ " " ++ valueEnd)
+    appendProperty ("scroll-padding-inline:" ++ valueStart ++ " " ++ valueEnd)
 
 
 {-| Sets [`scroll-padding-block-start`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-padding-block-start) property.
@@ -19089,7 +19096,7 @@ scrollPaddingBlockStart :
         )
     -> Style
 scrollPaddingBlockStart (Value value) =
-    AppendProperty ("scroll-padding-block-start:" ++ value)
+    appendProperty ("scroll-padding-block-start:" ++ value)
 
 
 {-| Sets [`scroll-padding-block-end`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-padding-block-end) property.
@@ -19106,7 +19113,7 @@ scrollPaddingBlockEnd :
         )
     -> Style
 scrollPaddingBlockEnd (Value value) =
-    AppendProperty ("scroll-padding-block-end:" ++ value)
+    appendProperty ("scroll-padding-block-end:" ++ value)
 
 
 {-| Sets [`scroll-padding-inline-start`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-padding-inline-start) property.
@@ -19123,7 +19130,7 @@ scrollPaddingInlineStart :
         )
     -> Style
 scrollPaddingInlineStart (Value value) =
-    AppendProperty ("scroll-padding-inline-start:" ++ value)
+    appendProperty ("scroll-padding-inline-start:" ++ value)
 
 
 {-| Sets [`scroll-padding-inline-end`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-padding-inline-end) property.
@@ -19140,7 +19147,7 @@ scrollPaddingInlineEnd :
         )
     -> Style
 scrollPaddingInlineEnd (Value value) =
-    AppendProperty ("scroll-padding-inline-end:" ++ value)
+    appendProperty ("scroll-padding-inline-end:" ++ value)
 
 
 ------------------------------------------------------------------------
@@ -19208,7 +19215,7 @@ property.
 -}
 cursor : BaseValue CursorKeyword -> Style
 cursor (Value val) =
-    AppendProperty ("cursor:" ++ val)
+    appendProperty ("cursor:" ++ val)
 
 
 {-| The [`cursor`](https://css-tricks.com/almanac/properties/c/cursor/)
@@ -19219,7 +19226,7 @@ property.
 -}
 cursor2 : Value { url : Supported } -> Value CursorKeyword -> Style
 cursor2 (Value urlVal) (Value fallbackVal) =
-    AppendProperty ("cursor:" ++ urlVal ++ "," ++ fallbackVal)
+    appendProperty ("cursor:" ++ urlVal ++ "," ++ fallbackVal)
 
 
 {-| The [`cursor`](https://css-tricks.com/almanac/properties/c/cursor/)
@@ -19244,7 +19251,7 @@ cursor4 :
     -> Value CursorKeyword
     -> Style
 cursor4 (Value urlVal) (Value xVal) (Value yVal) (Value fallbackVal) =
-    AppendProperty
+    appendProperty
         ("cursor:"
             ++ urlVal
             ++ " "
@@ -19507,7 +19514,7 @@ caretColor :
         )
     -> Style
 caretColor (Value val) =
-    AppendProperty ("caret-color:" ++ val)
+    appendProperty ("caret-color:" ++ val)
 
 
 ------------------------------------------------------------------------
@@ -19837,7 +19844,7 @@ For defining shadows look at [`boxShadows`](#boxShadows).
 -}
 boxShadow : BaseValue { none : Supported } -> Style
 boxShadow (Value val) =
-    AppendProperty ("box-shadow:" ++ val)
+    appendProperty ("box-shadow:" ++ val)
 
 
 {-| Sets [`box-shadow`](https://css-tricks.com/almanac/properties/b/box-shadow/).
@@ -19875,7 +19882,7 @@ boxShadowMany configs =
                         |> List.map boxShadowConfigToString
                         |> String.join ", "
     in
-    AppendProperty ("box-shadow:" ++ value)
+    appendProperty ("box-shadow:" ++ value)
 
 
 boxShadowConfigToString : BoxShadowConfig -> String
@@ -19998,7 +20005,7 @@ textShadow configs =
                         |> List.map textShadowConfigToString
                         |> String.join ","
     in
-    AppendProperty ("text-shadow:" ++ values)
+    appendProperty ("text-shadow:" ++ values)
 
 
 textShadowConfigToString : TextShadowConfig -> String
@@ -20108,7 +20115,7 @@ type alias TransformFunctionSupported supported =
 -}
 transform : BaseValue (TransformFunctionSupported { none : Supported }) -> Style
 transform (Value val) =
-    AppendProperty ("transform:" ++ val)
+    appendProperty ("transform:" ++ val)
 
 
 {-| Sets [`transform`](https://css-tricks.com/almanac/properties/t/transform/)
@@ -20126,7 +20133,7 @@ transformMany :
     List (Value TransformFunction)
     -> Style
 transformMany values =
-    AppendProperty ("transform:" ++ valueListToString " " values)
+    appendProperty ("transform:" ++ valueListToString " " values)
 
 
 {-| Sets [`transform-origin`](https://css-tricks.com/almanac/properties/t/transform-origin/).
@@ -20150,7 +20157,7 @@ transformOrigin :
         }
     -> Style
 transformOrigin (Value vert) =
-    AppendProperty ("transform-origin:" ++ vert)
+    appendProperty ("transform-origin:" ++ vert)
 
 
 {-| Sets [`transform-origin`](https://css-tricks.com/almanac/properties/t/transform-origin/).
@@ -20182,7 +20189,7 @@ transformOrigin2 :
             }
     -> Style
 transformOrigin2 (Value vert) (Value horiz) =
-    AppendProperty ("transform-origin:" ++ vert ++ " " ++ horiz)
+    appendProperty ("transform-origin:" ++ vert ++ " " ++ horiz)
 
 
 {-| Sets the [`transform-box`](https://developer.mozilla.org/en-US/docs/Web/CSS/transform-box) property.
@@ -20201,7 +20208,7 @@ transformBox :
         }
     -> Style
 transformBox (Value val) =
-    AppendProperty ("transform-box:" ++ val)
+    appendProperty ("transform-box:" ++ val)
 
 
 {-| Sets the [`transform-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/transform-style) property.
@@ -20217,7 +20224,7 @@ transformStyle :
         }
     -> Style
 transformStyle (Value val) =
-    AppendProperty <| "transform-style:" ++ val
+    appendProperty <| "transform-style:" ++ val
 
 
 {-| The `flat` value used in the [`transformStyle`](#transformStyle) property.
@@ -20450,7 +20457,7 @@ scale :
         }
     -> Style
 scale (Value val) =
-    AppendProperty ("scale:" ++ val)
+    appendProperty ("scale:" ++ val)
 
 
 {-| The [`scale`](https://css-tricks.com/almanac/properties/s/scale) property.
@@ -20471,7 +20478,7 @@ scale2 :
             }
     -> Style
 scale2 (Value xVal) (Value yVal) =
-    AppendProperty ("scale:" ++ xVal ++ " " ++ yVal)
+    appendProperty ("scale:" ++ xVal ++ " " ++ yVal)
 
 
 {-| The [`scale`](https://css-tricks.com/almanac/properties/s/scale) property.
@@ -20496,7 +20503,7 @@ scale3 :
             }
     -> Style
 scale3 (Value xVal) (Value yVal) (Value zVal) =
-    AppendProperty ("scale:" ++ xVal ++ " " ++ yVal ++ " " ++ zVal)
+    appendProperty ("scale:" ++ xVal ++ " " ++ yVal ++ " " ++ zVal)
 
 
 {-| Sets `scale` value for usage with [`transform`](#transform).
@@ -20595,7 +20602,7 @@ rotate :
         )
     -> Style
 rotate (Value value) =
-    AppendProperty ("rotate:" ++ value)
+    appendProperty ("rotate:" ++ value)
 
 
 {-| The [`rotate`](https://css-tricks.com/almanac/properties/r/rotate/) property.
@@ -20619,7 +20626,7 @@ rotate2 :
     -> Value Angle
     -> Style
 rotate2 (Value axisOrVecVal) (Value angleVal) =
-    AppendProperty ("rotate:" ++ axisOrVecVal ++ " " ++ angleVal)
+    appendProperty ("rotate:" ++ axisOrVecVal ++ " " ++ angleVal)
 
 
 {-| Sets `rotate` value for usage with [`transform`](#transform).
@@ -20789,7 +20796,7 @@ perspective :
         )
     -> Style
 perspective (Value val) =
-    AppendProperty ("perspective:" ++ val)
+    appendProperty ("perspective:" ++ val)
 
 
 {-| The [`perspective-origin`](https://css-tricks.com/almanac/properties/p/perspective-origin/) property.
@@ -20818,7 +20825,7 @@ perspectiveOrigin :
         )
     -> Style
 perspectiveOrigin (Value val) =
-    AppendProperty ("perspective-origin:" ++ val)
+    appendProperty ("perspective-origin:" ++ val)
 
 
 {-| The [`perspective-origin`](https://css-tricks.com/almanac/properties/p/perspective-origin/) property.
@@ -20850,7 +20857,7 @@ perspectiveOrigin2 :
             )
     -> Style
 perspectiveOrigin2 (Value xVal) (Value yVal) =
-    AppendProperty ("perspective-origin:" ++ xVal ++ " " ++ yVal)
+    appendProperty ("perspective-origin:" ++ xVal ++ " " ++ yVal)
 
 
 {-| Sets `perspective` value for usage with [`transform`](#transform).
@@ -20882,7 +20889,7 @@ backfaceVisibility :
         }
     -> Style
 backfaceVisibility (Value val) =
-    AppendProperty ("backface-visibility" ++ val)
+    appendProperty ("backface-visibility" ++ val)
 
 
 ------------------------------------------------------------------------
@@ -20913,7 +20920,7 @@ animationName :
         }
     -> Style
 animationName (Value val) =
-    AppendProperty ("animation-name:" ++ val)
+    appendProperty ("animation-name:" ++ val)
 
 
 {-| The [`animation-name`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-name) property.
@@ -20935,7 +20942,7 @@ animationNameMany :
         )
     -> Style
 animationNameMany values =
-    AppendProperty ("animation-name:" ++ valueListToString "," values)
+    appendProperty ("animation-name:" ++ valueListToString "," values)
 
 
 {-| The [`animation-duration`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-duration) property.
@@ -20945,7 +20952,7 @@ animationNameMany values =
 -}
 animationDuration : BaseValue Time -> Style
 animationDuration (Value val) =
-    AppendProperty ("animation-duration:" ++ val)
+    appendProperty ("animation-duration:" ++ val)
 
 
 {-| The [`animation-duration`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-duration) property.
@@ -20960,7 +20967,7 @@ to have no values in the output.
 -}
 animationDurationMany : List (Value Time) -> Style
 animationDurationMany values =
-    AppendProperty ("animation-duration:" ++ valueListToString "," values)
+    appendProperty ("animation-duration:" ++ valueListToString "," values)
 
 
 {-| The [`animation-timing-function`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-timing-function) property.
@@ -20970,7 +20977,7 @@ animationDurationMany values =
 -}
 animationTimingFunction : BaseValue EasingFunction -> Style
 animationTimingFunction (Value val) =
-    AppendProperty ("animation-timing-function:" ++ val)
+    appendProperty ("animation-timing-function:" ++ val)
 
 
 {-| The [`animation-timing-function`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-timing-function) property.
@@ -20984,7 +20991,7 @@ to have no values in the output.
 -}
 animationTimingFunctionMany : List (Value EasingFunction) -> Style
 animationTimingFunctionMany values =
-    AppendProperty ("animation-timing-function:" ++ valueListToString "," values)
+    appendProperty ("animation-timing-function:" ++ valueListToString "," values)
 
 
 {-| The [`animation-iteration-count`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-iteration-count) property.
@@ -21003,7 +21010,7 @@ animationIterationCount :
         }
     -> Style
 animationIterationCount (Value val) =
-    AppendProperty ("animation-iteration-count:" ++ val)
+    appendProperty ("animation-iteration-count:" ++ val)
 
 
 {-| The [`animation-iteration-count`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-iteration-count) property.
@@ -21026,7 +21033,7 @@ animationIterationCountMany :
         )
     -> Style
 animationIterationCountMany values =
-    AppendProperty ("animation-iteration-count:" ++ valueListToString "," values)
+    appendProperty ("animation-iteration-count:" ++ valueListToString "," values)
 
 
 {-| The [`animation-direction`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-direction) property.
@@ -21043,7 +21050,7 @@ animationDirection :
         }
     -> Style
 animationDirection (Value val) =
-    AppendProperty ("animation-direction:" ++ val)
+    appendProperty ("animation-direction:" ++ val)
 
 
 {-| The [`animation-direction`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-direction) property.
@@ -21066,7 +21073,7 @@ animationDirectionMany :
         )
     -> Style
 animationDirectionMany values =
-    AppendProperty ("animation-direction:" ++ valueListToString "," values)
+    appendProperty ("animation-direction:" ++ valueListToString "," values)
 
 
 {-| The [`animation-play-state`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-play-state) property.
@@ -21081,7 +21088,7 @@ animationPlayState :
         }
     -> Style
 animationPlayState (Value val) =
-    AppendProperty ("animation-play-state:" ++ val)
+    appendProperty ("animation-play-state:" ++ val)
 
 
 {-| The [`animation-play-state`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-play-state) property.
@@ -21102,7 +21109,7 @@ animationPlayStateMany :
         )
     -> Style
 animationPlayStateMany values =
-    AppendProperty ("animation-play-state:" ++ valueListToString "," values)
+    appendProperty ("animation-play-state:" ++ valueListToString "," values)
 
 
 {-| The [`animation-delay`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-delay) property.
@@ -21112,7 +21119,7 @@ animationPlayStateMany values =
 -}
 animationDelay : BaseValue Time -> Style
 animationDelay (Value val) =
-    AppendProperty ("animation-delay:" ++ val)
+    appendProperty ("animation-delay:" ++ val)
 
 
 {-| The [`animation-delay`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-delay) property.
@@ -21126,7 +21133,7 @@ to have no values in the output.
 -}
 animationDelayMany : List (Value Time) -> Style
 animationDelayMany values =
-    AppendProperty ("animation-delay:" ++ valueListToString "," values)
+    appendProperty ("animation-delay:" ++ valueListToString "," values)
 
 
 {-| The [`animation-fill-mode`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-fill-mode) property.
@@ -21143,7 +21150,7 @@ animationFillMode :
         }
     -> Style
 animationFillMode (Value val) =
-    AppendProperty ("animation-fill-mode:" ++ val)
+    appendProperty ("animation-fill-mode:" ++ val)
 
 
 {-| The [`animation-fill-mode`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-fill-mode) property.
@@ -21166,7 +21173,7 @@ animationFillModeMany :
         )
     -> Style
 animationFillModeMany values =
-    AppendProperty ("animation-fill-mode:" ++ valueListToString "," values)
+    appendProperty ("animation-fill-mode:" ++ valueListToString "," values)
 
 
 
@@ -21470,7 +21477,7 @@ opacity :
         }
     -> Style
 opacity (Value val) =
-    AppendProperty ("opacity:" ++ val)
+    appendProperty ("opacity:" ++ val)
 
 
 {-| Sets [`visibility`](https://css-tricks.com/almanac/properties/v/visibility/)
@@ -21488,7 +21495,7 @@ visibility :
         }
     -> Style
 visibility (Value str) =
-    AppendProperty ("visibility:" ++ str)
+    appendProperty ("visibility:" ++ str)
 
 
 {-| Sets [`mix-blend-mode`](https://css-tricks.com/almanac/properties/m/mix-blend-mode/)
@@ -21519,7 +21526,7 @@ mixBlendMode :
         }
     -> Style
 mixBlendMode (Value val) =
-    AppendProperty ("mix-blend-mode:" ++ val)
+    appendProperty ("mix-blend-mode:" ++ val)
 
 
 {-| Sets [`image-rendering`](https://css-tricks.com/almanac/properties/i/image-rendering/)
@@ -21539,7 +21546,7 @@ imageRendering :
         }
     -> Style
 imageRendering (Value val) =
-    AppendProperty ("image-rendering:" ++ val)
+    appendProperty ("image-rendering:" ++ val)
 
 
 {-| Sets `pixelated` value for usage with [`imageRendering`](#imageRendering).
@@ -21587,7 +21594,7 @@ clipPath :
         )
     -> Style
 clipPath (Value val) =
-    AppendProperty ("clip-path:" ++ val)
+    appendProperty ("clip-path:" ++ val)
 
 
 {-| The 2-argument variant of the
@@ -21608,7 +21615,7 @@ clipPath2 :
     -> Value (BasicShapeSupported a)
     -> Style
 clipPath2 (Value val1) (Value val2) =
-    AppendProperty ("clip-path:" ++ val1 ++ " " ++ val2)
+    appendProperty ("clip-path:" ++ val1 ++ " " ++ val2)
 
 
 ------------------------------------------------------------------------
@@ -21640,7 +21647,7 @@ maskBorderMode :
         }
     -> Style
 maskBorderMode (Value val) =
-    AppendProperty <| "mask-border-mode:" ++ val
+    appendProperty <| "mask-border-mode:" ++ val
 
 
 
@@ -21662,7 +21669,7 @@ maskBorderRepeat :
         }
     -> Style
 maskBorderRepeat (Value val) =
-    AppendProperty <| "mask-border-repeat:" ++ val
+    appendProperty <| "mask-border-repeat:" ++ val
 
 
 {-| Sets the 2-argument variant of the [`mask-border-repeat`](https://developer.mozilla.org/en-US/docs/Web/CSS/mask-border-repeat)
@@ -21685,7 +21692,7 @@ maskBorderRepeat2 :
         }
     -> Style
 maskBorderRepeat2 (Value val1) (Value val2) =
-    AppendProperty <|
+    appendProperty <|
         "mask-border-repeat:"
         ++ val1
         ++ " "
@@ -21717,7 +21724,7 @@ maskBorderOutset :
         )
     -> Style
 maskBorderOutset (Value val) =
-    AppendProperty <| "mask-border-outset:" ++ val
+    appendProperty <| "mask-border-outset:" ++ val
 
 
 {-| Sets the 2-argument variant of the [`mask-border-outset`](https://developer.mozilla.org/en-US/docs/Web/CSS/mask-border-outset)
@@ -21737,7 +21744,7 @@ maskBorderOutset2 :
         )
     -> Style
 maskBorderOutset2 (Value valTB) (Value valLR) =
-    AppendProperty <|
+    appendProperty <|
         "mask-border-outset:"
         ++ valTB
         ++ " "
@@ -21765,7 +21772,7 @@ maskBorderOutset3 :
         )
     -> Style
 maskBorderOutset3 (Value valTop) (Value valLR) (Value valBottom) =
-    AppendProperty <|
+    appendProperty <|
         "mask-border-outset:"
         ++ valTop
         ++ " "
@@ -21799,7 +21806,7 @@ maskBorderOutset4 :
         )
     -> Style
 maskBorderOutset4 (Value valTop) (Value valRight) (Value valBottom) (Value valLeft) =
-    AppendProperty <|
+    appendProperty <|
         "mask-border-outset:"
         ++ valTop
         ++ " "
@@ -21836,7 +21843,7 @@ maskBorderSlice :
         }
     -> Style
 maskBorderSlice (Value val) =
-    AppendProperty <| "mask-border-slice:" ++ val
+    appendProperty <| "mask-border-slice:" ++ val
 
 
 {-| Sets the 2-argument variant of the [`mask-border-slice`](https://developer.mozilla.org/en-US/docs/Web/CSS/mask-border-slice)
@@ -21858,7 +21865,7 @@ maskBorderSlice2 :
         }
     -> Style
 maskBorderSlice2 (Value valTB) (Value valLR) =
-    AppendProperty <|
+    appendProperty <|
         "mask-border-slice:"
         ++ valTB
         ++ " "
@@ -21889,7 +21896,7 @@ maskBorderSlice3 :
         }
     -> Style
 maskBorderSlice3 (Value valTop) (Value valLR) (Value valBottom) =
-    AppendProperty <|
+    appendProperty <|
         "mask-border-slice:"
         ++ valTop
         ++ " "
@@ -21927,7 +21934,7 @@ maskBorderSlice4 :
         }
     -> Style
 maskBorderSlice4 (Value valTop) (Value valRight) (Value valBottom) (Value valLeft) =
-    AppendProperty <|
+    appendProperty <|
         "mask-border-slice:"
         ++ valTop
         ++ " "
@@ -21966,7 +21973,7 @@ maskBorderWidth :
         )
     -> Style
 maskBorderWidth (Value val) =
-    AppendProperty <| "mask-border-width:" ++ val
+    appendProperty <| "mask-border-width:" ++ val
 
 
 {-| Sets the 2-argument variant of the [`mask-border-width`](https://developer.mozilla.org/en-US/docs/Web/CSS/mask-border-width)
@@ -21992,7 +21999,7 @@ maskBorderWidth2 :
         )
     -> Style
 maskBorderWidth2 (Value valTB) (Value valLR) =
-    AppendProperty <|
+    appendProperty <|
         "mask-border-width:"
         ++ valTB
         ++ " "
@@ -22029,7 +22036,7 @@ maskBorderWidth3 :
         )
     -> Style
 maskBorderWidth3 (Value valTop) (Value valLR) (Value valBottom) =
-    AppendProperty <|
+    appendProperty <|
         "mask-border-width:"
         ++ valTop
         ++ " "
@@ -22075,7 +22082,7 @@ maskBorderWidth4 :
         )
     -> Style
 maskBorderWidth4 (Value valTop) (Value valRight) (Value valBottom) (Value valLeft) =
-    AppendProperty <|
+    appendProperty <|
         "mask-border-width:"
         ++ valTop
         ++ " "
@@ -22111,7 +22118,7 @@ maskClip :
         }
     -> Style
 maskClip (Value val) =
-    AppendProperty <| "mask-clip:" ++ val
+    appendProperty <| "mask-clip:" ++ val
 
 
 {-| The multi-argument variant of the [`mask-clip`](https://css-tricks.com/almanac/properties/m/mask-clip/)
@@ -22141,7 +22148,7 @@ maskClipMany :
         )
     -> Style
 maskClipMany values =
-    AppendProperty <| "mask-clip:" ++ valueListToString "," values
+    appendProperty <| "mask-clip:" ++ valueListToString "," values
 
 
 {-| The [`mask-composite`](https://css-tricks.com/almanac/properties/m/mask-composite/)
@@ -22160,7 +22167,7 @@ maskComposite :
         }
     -> Style
 maskComposite (Value val) =
-    AppendProperty ("mask-composite:" ++ val)
+    appendProperty ("mask-composite:" ++ val)
 
 
 {-| The 1-argument variant of the [`mask-mode`](https://css-tricks.com/almanac/properties/m/mask-mode/)
@@ -22180,7 +22187,7 @@ maskMode :
         }
     -> Style
 maskMode (Value val) =
-    AppendProperty ("mask-mode:" ++ val)
+    appendProperty ("mask-mode:" ++ val)
 
 
 {-| The multi-argument variant of the [`mask-mode`](https://css-tricks.com/almanac/properties/m/mask-mode/)
@@ -22203,7 +22210,7 @@ maskModeMany :
         )
     -> Style
 maskModeMany values =
-    AppendProperty <| "mask-mode:" ++ valueListToString "," values
+    appendProperty <| "mask-mode:" ++ valueListToString "," values
 
 
 
@@ -22225,7 +22232,7 @@ maskOrigin :
         }
     -> Style
 maskOrigin (Value val) =
-    AppendProperty ("mask-origin:" ++ val)
+    appendProperty ("mask-origin:" ++ val)
 
 
 {-| The multi-argument variant of the [`mask-origin`](https://css-tricks.com/almanac/properties/m/mask-origin/)
@@ -22249,7 +22256,7 @@ maskOriginMany :
         )
     -> Style
 maskOriginMany values =
-    AppendProperty <| "mask-origin:" ++ valueListToString "," values
+    appendProperty <| "mask-origin:" ++ valueListToString "," values
 
 
 {-| The 1-argument variant of the [`mask-position`](https://css-tricks.com/almanac/properties/m/mask-position/)
@@ -22269,7 +22276,7 @@ maskPosition :
         }
     -> Style
 maskPosition (Value val) =
-    AppendProperty <| "mask-position:" ++ val
+    appendProperty <| "mask-position:" ++ val
 
 
 {-| The 1-argument variant of the [`mask-repeat`](https://developer.mozilla.org/en-US/docs/Web/CSS/mask-repeat)
@@ -22293,7 +22300,7 @@ maskRepeat :
         }
     -> Style
 maskRepeat (Value val) =
-    AppendProperty <| "mask-repeat:" ++ val
+    appendProperty <| "mask-repeat:" ++ val
 
 
 {-| The 2-argument variant of the [`mask-repeat`](https://developer.mozilla.org/en-US/docs/Web/CSS/mask-repeat)
@@ -22316,7 +22323,7 @@ maskRepeat2 :
         }
     -> Style
 maskRepeat2 (Value valX) (Value valY) =
-    AppendProperty <| "mask-repeat:" ++ valX ++ " " ++ valY
+    appendProperty <| "mask-repeat:" ++ valX ++ " " ++ valY
 
 
 -- {-| The multi-argument variant of the [`mask-repeat`](https://developer.mozilla.org/en-US/docs/Web/CSS/mask-repeat)
@@ -22335,7 +22342,7 @@ maskRepeat2 (Value valX) (Value valY) =
 --         )
 --     -> Style
 -- maskRepeatMany list =
---     AppendProperty <|
+--     appendProperty <|
 --         "mask-repeat:"
 --         ++
 --         ( list
@@ -22367,7 +22374,7 @@ maskSize :
         )
     -> Style
 maskSize (Value val) =
-    AppendProperty <| "mask-size:" ++ val
+    appendProperty <| "mask-size:" ++ val
 
 
 {-| The 2-argument variant of the [`mask-size`](https://css-tricks.com/almanac/properties/m/mask-size/)
@@ -22397,7 +22404,7 @@ maskSize2 :
         )
     -> Style
 maskSize2 (Value valX) (Value valY) =
-    AppendProperty <| "mask-size:" ++ valX ++ " " ++ valY
+    appendProperty <| "mask-size:" ++ valX ++ " " ++ valY
 
 
 -- {-|
@@ -22413,7 +22420,7 @@ maskSize2 (Value valX) (Value valY) =
 --         )
 --     -> Style
 -- maskSizeMany list =
---     AppendProperty <|
+--     appendProperty <|
 --         "mask-size:"
 --         ++
 --         ( list
@@ -22435,7 +22442,7 @@ maskType :
         }
     -> Style
 maskType (Value val) =
-    AppendProperty <| "mask-type:" ++ val
+    appendProperty <| "mask-type:" ++ val
 
 
 {-| Sets `no-clip` value for usage with [`maskClip`](#maskClip).
@@ -22561,7 +22568,7 @@ paintOrder :
         }
     -> Style
 paintOrder (Value val) =
-    AppendProperty ("paint-order:" ++ val)
+    appendProperty ("paint-order:" ++ val)
 
 
 {-| The [`paint-order`](https://css-tricks.com/almanac/properties/p/paint-order/) property.
@@ -22586,7 +22593,7 @@ paintOrder2 :
             }
     -> Style
 paintOrder2 (Value val1) (Value val2) =
-    AppendProperty ("paint-order:" ++ val1 ++ " " ++ val2)
+    appendProperty ("paint-order:" ++ val1 ++ " " ++ val2)
 
 
 {-| The [`paint-order`](https://css-tricks.com/almanac/properties/p/paint-order/) property.
@@ -22617,7 +22624,7 @@ paintOrder3 :
             }
     -> Style
 paintOrder3 (Value val1) (Value val2) (Value val3) =
-    AppendProperty ("paint-order:" ++ val1 ++ " " ++ val2 ++ " " ++ val3)
+    appendProperty ("paint-order:" ++ val1 ++ " " ++ val2 ++ " " ++ val3)
 
 
 {-| Provides the `markers` value for [`paintOrder`](#paintOrder).
@@ -22660,7 +22667,7 @@ bleed :
         )
     -> Style
 bleed (Value val) =
-    AppendProperty ("bleed:" ++ val)
+    appendProperty ("bleed:" ++ val)
 
 
 ------------------------------------------------------------------------
@@ -22698,7 +22705,7 @@ fill :
         )
     -> Style
 fill (Value val) =
-    AppendProperty ("fill:" ++ val)
+    appendProperty ("fill:" ++ val)
 
 
 {-| Sets [`stroke-dasharray`](https://css-tricks.com/almanac/properties/s/stroke-dasharray/)
@@ -22721,7 +22728,7 @@ strokeDasharray :
         )
     -> Style
 strokeDasharray (Value val) =
-    AppendProperty ("stroke-dasharray:" ++ val)
+    appendProperty ("stroke-dasharray:" ++ val)
 
 
 {-| Sets [`stroke-dashoffset`](https://css-tricks.com/almanac/properties/s/stroke-dashoffset/)
@@ -22742,7 +22749,7 @@ strokeDashoffset :
         }
     -> Style
 strokeDashoffset (Value val) =
-    AppendProperty ("stroke-dashoffset:" ++ val)
+    appendProperty ("stroke-dashoffset:" ++ val)
 
 
 {-| Sets [`stroke-width`](https://css-tricks.com/almanac/properties/s/stroke-width/)
@@ -22769,7 +22776,7 @@ strokeWidth :
         )
     -> Style
 strokeWidth (Value val) =
-    AppendProperty ("stroke-width:" ++ val)
+    appendProperty ("stroke-width:" ++ val)
 
 
 {-| Sets [`stroke-align`](https://www.w3.org/TR/fill-stroke-3/#propdef-stroke-align)
@@ -22790,7 +22797,7 @@ strokeAlign :
         }
     -> Style
 strokeAlign (Value val) =
-    AppendProperty ("stroke-align:" ++ val)
+    appendProperty ("stroke-align:" ++ val)
 
 
 {-| Sets [`stroke-color`](https://www.w3.org/TR/fill-stroke-3/#propdef-stroke-color)
@@ -22802,7 +22809,7 @@ strokeAlign (Value val) =
 -}
 strokeColor : BaseValue Color -> Style
 strokeColor (Value val) =
-    AppendProperty ("stroke-color:" ++ val)
+    appendProperty ("stroke-color:" ++ val)
 
 
 {-| Sets [`stroke-image`](https://www.w3.org/TR/fill-stroke-3/#propdef-stroke-image)
@@ -22819,7 +22826,7 @@ strokeImage :
         }
     -> Style
 strokeImage (Value value) =
-    AppendProperty ("stroke-image:" ++ value)
+    appendProperty ("stroke-image:" ++ value)
 
 
 {-| Sets [`stroke-miterlimit`](https://www.w3.org/TR/fill-stroke-3/#propdef-stroke-miterlimit)
@@ -22833,7 +22840,7 @@ strokeMiterlimit :
         }
     -> Style
 strokeMiterlimit (Value val) =
-    AppendProperty ("stroke-miterlimit:" ++ val)
+    appendProperty ("stroke-miterlimit:" ++ val)
 
 
 {-| Sets [`stroke-opacity`](https://www.w3.org/TR/fill-stroke-3/#propdef-stroke-opacity)
@@ -22847,7 +22854,7 @@ strokeOpacity :
         }
     -> Style
 strokeOpacity (Value val) =
-    AppendProperty ("stroke-opacity:" ++ val)
+    appendProperty ("stroke-opacity:" ++ val)
 
 
 {-| Sets [`stroke-position`](https://www.w3.org/TR/fill-stroke-3/#propdef-stroke-position).
@@ -22878,7 +22885,7 @@ strokePosition :
         )
     -> Style
 strokePosition (Value horiz) =
-    AppendProperty ("stroke-position:" ++ horiz)
+    appendProperty ("stroke-position:" ++ horiz)
 
 
 {-| Sets [`stroke-position`](https://www.w3.org/TR/fill-stroke-3/#propdef-stroke-position).
@@ -22919,7 +22926,7 @@ strokePosition2 :
             )
     -> Style
 strokePosition2 (Value horiz) (Value vert) =
-    AppendProperty ("stroke-position:" ++ horiz ++ " " ++ vert)
+    appendProperty ("stroke-position:" ++ horiz ++ " " ++ vert)
 
 
 {-| Sets [`stroke-position`](https://www.w3.org/TR/fill-stroke-3/#propdef-stroke-position).
@@ -22959,7 +22966,7 @@ strokePosition4 :
             )
     -> Style
 strokePosition4 (Value horiz) (Value horizAmount) (Value vert) (Value vertAmount) =
-    AppendProperty
+    appendProperty
         ("stroke-position:"
             ++ horiz
             ++ " "
@@ -22992,7 +22999,7 @@ strokeRepeat :
         }
     -> Style
 strokeRepeat (Value repeatVal) =
-    AppendProperty ("stroke-repeat:" ++ repeatVal)
+    appendProperty ("stroke-repeat:" ++ repeatVal)
 
 
 {-| Sets [`stroke-repeat`](https://www.w3.org/TR/fill-stroke-3/#propdef-stroke-repeat) along the horizontal axis, then the vertical axis.
@@ -23021,7 +23028,7 @@ strokeRepeat2 :
             }
     -> Style
 strokeRepeat2 (Value horiz) (Value vert) =
-    AppendProperty ("stroke-repeat:" ++ horiz ++ " " ++ vert)
+    appendProperty ("stroke-repeat:" ++ horiz ++ " " ++ vert)
 
 
 {-| Sets [`stroke-size`](https://www.w3.org/TR/fill-stroke-3/#propdef-stroke-size).
@@ -23046,7 +23053,7 @@ strokeSize :
         )
     -> Style
 strokeSize (Value sizeVal) =
-    AppendProperty ("stroke-size:" ++ sizeVal)
+    appendProperty ("stroke-size:" ++ sizeVal)
 
 
 {-| Sets [`stroke-size`](https://www.w3.org/TR/fill-stroke-3/#propdef-stroke-size).
@@ -23074,7 +23081,7 @@ strokeSize2 :
             )
     -> Style
 strokeSize2 (Value widthVal) (Value heightVal) =
-    AppendProperty ("stroke-size:" ++ widthVal ++ " " ++ heightVal)
+    appendProperty ("stroke-size:" ++ widthVal ++ " " ++ heightVal)
 
 
 {-| Sets [`stroke-dash-corner`](https://www.w3.org/TR/fill-stroke-3/#propdef-stroke-dash-corner).
@@ -23097,7 +23104,7 @@ strokeDashCorner :
         )
     -> Style
 strokeDashCorner (Value sizeVal) =
-    AppendProperty ("stroke-dash-corner:" ++ sizeVal)
+    appendProperty ("stroke-dash-corner:" ++ sizeVal)
 
 
 {-| Sets [`stroke-linecap`](https://css-tricks.com/almanac/properties/s/stroke-linecap/)
@@ -23117,7 +23124,7 @@ strokeLinecap :
         }
     -> Style
 strokeLinecap (Value val) =
-    AppendProperty ("stroke-linecap:" ++ val)
+    appendProperty ("stroke-linecap:" ++ val)
 
 
 {-| A `butt` value for the [`strokeLinecap`](#strokeLinecap) property.
@@ -23160,7 +23167,7 @@ strokeBreak :
         }
     -> Style
 strokeBreak (Value val) =
-    AppendProperty ("stroke-break:" ++ val)
+    appendProperty ("stroke-break:" ++ val)
 
 
 {-| A `boundingBox` value for the [`strokeBreak`](#strokeBreak) property.
@@ -23223,7 +23230,7 @@ strokeOrigin :
         }
     -> Style
 strokeOrigin (Value val) =
-    AppendProperty ("stroke-origin:" ++ val)
+    appendProperty ("stroke-origin:" ++ val)
 
 
 {-| Sets [`stroke-linejoin`](https://www.w3.org/TR/fill-stroke-3/#propdef-stroke-linejoin).
@@ -23246,7 +23253,7 @@ strokeLinejoin :
         }
     -> Style
 strokeLinejoin (Value val) =
-    AppendProperty ("stroke-linejoin:" ++ val)
+    appendProperty ("stroke-linejoin:" ++ val)
 
 
 {-| Sets [`stroke-linejoin`](https://www.w3.org/TR/fill-stroke-3/#propdef-stroke-linejoin).
@@ -23272,7 +23279,7 @@ strokeLinejoin2 :
             }
     -> Style
 strokeLinejoin2 (Value extendCorner) (Value capRender) =
-    AppendProperty ("stroke-linejoin:" ++ extendCorner ++ " " ++ capRender)
+    appendProperty ("stroke-linejoin:" ++ extendCorner ++ " " ++ capRender)
 
 
 {-| Sets `crop` value for usage with [`strokeLinejoin`](#strokeLinejoin).
@@ -23334,7 +23341,7 @@ strokeDashJustify :
         }
     -> Style
 strokeDashJustify (Value val) =
-    AppendProperty ("stroke-dash-justify:" ++ val)
+    appendProperty ("stroke-dash-justify:" ++ val)
 
 
 {-| Sets `compress` value for usage with [`strokeDashJustify`](#strokeDashJustify).
@@ -23399,5 +23406,5 @@ lineClamp :
         }
     -> Style
 lineClamp (Value val) =
-    AppendProperty ("line-clamp:" ++ val)
+    appendProperty ("line-clamp:" ++ val)
 

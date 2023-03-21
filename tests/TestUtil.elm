@@ -13,6 +13,8 @@ outdented str =
         |> List.map String.trim
         |> String.join "\n"
         |> String.trim
+        |> String.replace "\n" ""
+        |> String.replace " {" "{"
 
 
 prettyPrint : Stylesheet -> String

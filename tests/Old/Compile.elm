@@ -1,7 +1,7 @@
 module Old.Compile exposing (compileTest, dreamwriter, unstyledDiv)
 
 import Old.CompileFixtures
-import Css.Preprocess.Resolve exposing (compile)
+import Css.Preprocess.Resolve as Resolve
 import Expect
 import Test exposing (..)
 import TestUtil exposing (..)
@@ -32,7 +32,7 @@ dreamwriter =
 
         output =
             """
-            html, body {
+            html,body {
               width:100%;
               height:100%;
               box-sizing:border-box;
@@ -77,7 +77,7 @@ compileTest : Test
 compileTest =
     let
         input =
-            compile
+            Resolve.compileSheets
                 [ Old.CompileFixtures.basicStyle1
                 , Old.CompileFixtures.basicStyle2
                 ]

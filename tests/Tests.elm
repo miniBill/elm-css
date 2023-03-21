@@ -53,7 +53,7 @@ simpleEach =
                 height:2em;
             }
 
-            html, body {
+            html,body {
                 box-sizing:border-box;
                 display:none;
             }

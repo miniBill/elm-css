@@ -3,7 +3,7 @@ module Css.Structure exposing
     , KeyframeProperty
     , MediaExpression, MediaQuery(..), MediaType(..)
     , Number
-    , Property, PseudoElement(..)
+    , Property(..), PseudoElement(..)
     , RepeatableSimpleSelector(..), Selector(..)
     , SelectorCombinator(..), SimpleSelectorSequence(..)
     , StyleBlock(..), Stylesheet
