@@ -151,7 +151,8 @@ module Css exposing
     , invert, outlineStyle, outlineOffset
 
     -- overflow and resizing
-    , overflow, overflowX, overflowY, overflowBlock, overflowInline
+    , overflow, overflow2
+    , overflowX, overflowY, overflowBlock, overflowInline
     , overflowWrap, overflowAnchor
     , breakWord, anywhere
     , resize, horizontal, vertical
@@ -874,7 +875,8 @@ Sometimes these keywords mean other things too.
 
 # Overflow and resizing
 
-@docs overflow, overflowX, overflowY, overflowBlock, overflowInline
+@docs overflow, overflow2
+@docs overflowX, overflowY, overflowBlock, overflowInline
 @docs overflowWrap, overflowAnchor
 @docs breakWord, anywhere
 @docs resize, horizontal, vertical
@@ -9584,6 +9586,8 @@ outlineOffset (Value val) =
 
     overflow auto
 
+    overflow2 visible hidden -- x: visible, y: hidden
+
 -}
 overflow :
     BaseValue
@@ -9596,6 +9600,39 @@ overflow :
     -> Style
 overflow (Value val) =
     appendProperty ("overflow:" ++ val)
+
+
+{-| Sets [`overflow`](https://css-tricks.com/almanac/properties/o/overflow/).
+
+    overflow visible
+
+    overflow hidden
+
+    overflow scroll
+
+    overflow auto
+
+    overflow2 visible hidden -- x: visible, y: hidden
+
+-}
+overflow2 :
+    Value
+        { visible : Supported
+        , hidden : Supported
+        , scroll : Supported
+        , auto : Supported
+        , clip : Supported
+        }
+    -> Value
+        { visible : Supported
+        , hidden : Supported
+        , scroll : Supported
+        , auto : Supported
+        , clip : Supported
+        }
+    -> Style
+overflow2 (Value val1) (Value val2) =
+    appendProperty <| "overflow:" ++ val1 ++ " " ++ val2
 
 
 {-| Sets [`overflow-x`](https://css-tricks.com/almanac/properties/o/overflow/).
