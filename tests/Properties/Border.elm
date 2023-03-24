@@ -3,7 +3,7 @@ module Properties.Border exposing (..)
 import Css exposing (..)
 import Css.Global exposing (class)
 import Css.Preprocess exposing (stylesheet)
-import Css.Value exposing (Value, Supported)
+import Css.Value exposing (Value)
 import Compile
 import Test exposing (Test)
 

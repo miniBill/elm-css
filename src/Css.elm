@@ -12076,8 +12076,7 @@ and multi-column layouts.
 rowGap :
     BaseValue
         (LengthSupported
-            { normal : Supported
-            , pct : Supported
+            { pct : Supported
             }
         )
     -> Style
