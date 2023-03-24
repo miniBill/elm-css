@@ -3,7 +3,6 @@ module Properties.TextDecoration exposing (..)
 import Css exposing (..)
 import Css.Global exposing (class)
 import Css.Preprocess exposing (stylesheet)
-import Css.Value exposing (Supported)
 import Compile
 import Test exposing (Test)
 
@@ -99,6 +98,7 @@ textDecorationLine3Test =
             """
             )
 
+
 textDecorationStyleTest : Test
 textDecorationStyleTest =
     Compile.test
@@ -120,7 +120,7 @@ textDecorationStyleTest =
                     [ textDecorationStyle wavy
                     ]
                 , class "six"
-                    [ textDecorationStyle revert
+                    [ textDecorationStyle unset
                     ]
                 ]
             )
@@ -147,8 +147,150 @@ textDecorationStyleTest =
             }
             
             .six {
-                text-decoration-style:inherit;
+                text-decoration-style:unset;
             }
 
+            """
+            )
+
+
+textDecorationColorTest : Test
+textDecorationColorTest =
+    Compile.test
+            "textDecorationColor"
+            ( stylesheet
+                [ class "one"
+                    [ textDecorationColor currentcolor
+                    ]
+                , class "two"
+                    [ textDecorationColor (hex "ff0000")
+                    ]
+                , class "three"
+                    [ textDecorationColor transparent
+                    ]
+                , class "four"
+                    [ textDecorationColor initial
+                    ]
+                ]
+            )
+            (
+            """
+            .one {
+                text-decoration-color:currentcolor;
+            }
+
+            .two {
+                text-decoration-color:#ff0000;
+            }
+
+            .three {
+                text-decoration-color:transparent;
+            }
+
+            .four {
+                text-decoration-color:initial;
+            }
+            """
+            )
+
+
+textDecorationThicknessTest : Test
+textDecorationThicknessTest =
+    Compile.test
+            "textDecorationThickness"
+            ( stylesheet
+                [ class "one"
+                    [ textDecorationThickness auto
+                    ]
+                , class "two"
+                    [ textDecorationThickness fromFont
+                    ]
+                , class "three"
+                    [ textDecorationThickness (em 3)
+                    ]
+                , class "four"
+                    [ textDecorationThickness (px 3)
+                    ]
+                , class "five"
+                    [ textDecorationThickness (pct 100)
+                    ]
+                , class "six"
+                    [ textDecorationThickness revert
+                    ]
+                ]
+            )
+            (
+            """
+            .one {
+                text-decoration-thickness:auto;
+            }
+
+            .two {
+                text-decoration-thickness:from-font;
+            }
+
+            .three {
+                text-decoration-thickness:3em;
+            }
+
+            .four {
+                text-decoration-thickness:3px;
+            }
+
+            .five {
+                text-decoration-thickness:100%;
+            }
+            
+            .six {
+                text-decoration-thickness:revert;
+            }
+
+            """
+            )
+
+
+textDecorationSkipInkTest : Test
+textDecorationSkipInkTest =
+    Compile.test
+            "textDecorationSkipInk"
+            ( stylesheet
+                [ class "one"
+                    [ textDecorationSkipInk none
+                    ]
+                , class "two"
+                    [ textDecorationSkipInk auto
+                    ]
+                , class "three"
+                    [ textDecorationSkipInk all_
+                    ]
+                , class "four"
+                    [ textDecorationSkipInk inherit
+                    ]
+                , class "five"
+                    [ textDecorationSkipInk revert
+                    ]
+                ]
+            )
+            (
+            """
+            .one {
+                text-decoration-skip-ink:none;
+            }
+
+            .two {
+                text-decoration-skip-ink:auto;
+            }
+
+            .three {
+                text-decoration-skip-ink:all;
+            }
+
+            .four {
+                text-decoration-skip-ink:inherit;
+            }
+
+            .five {
+                text-decoration-skip-ink:revert;
+            }
             """
             )

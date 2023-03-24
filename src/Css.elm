@@ -296,7 +296,7 @@ module Css exposing
     , textDecorationLine, textDecorationLine2, textDecorationLine3
     , textDecorationStyle
     , wavy, underline, overline, lineThrough
-    , textDecorationColor
+    , textDecorationColor, transparent
     , textDecorationThickness, fromFont
     , textDecorationSkipInk
     , textUnderlinePosition, textUnderlinePosition2
@@ -1146,7 +1146,7 @@ Other values you can use for flex item alignment:
 @docs textDecorationLine, textDecorationLine2, textDecorationLine3
 @docs textDecorationStyle
 @docs wavy, underline, overline, lineThrough
-@docs textDecorationColor
+@docs textDecorationColor, transparent
 @docs textDecorationThickness, fromFont
 @docs textDecorationSkipInk
 @docs textUnderlinePosition, textUnderlinePosition2
@@ -15199,9 +15199,25 @@ lineThrough =
     textDecorationColor (hex "#0cf")
 
 -}
-textDecorationColor : BaseValue Color -> Style
+textDecorationColor :
+    BaseValue
+        ( ColorSupported
+            { transparent : Supported
+            }
+        )
+    -> Style
 textDecorationColor (Value colorVal) =
     appendProperty ("text-decoration-color:" ++ colorVal)
+
+
+{-| Sets the `transparent` value for usage with [`textDecorationColor`](#textDecorationColor).
+
+    textDecorationColor transparent
+
+-}
+transparent : Value { provides | transparent : Supported }
+transparent =
+    Value "transparent"
 
 
 {-| Sets the [`text-decoration-thickness`](https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration-thickness) property.
@@ -15236,15 +15252,15 @@ fromFont =
 
     textDecorationSkipInk auto
 
-    textDecorationSkipInk all
+    textDecorationSkipInk all_
 
     textDecorationSkipInk none
 
 -}
 textDecorationSkipInk :
-    Value
+    BaseValue
         { auto : Supported
-        , all : Supported
+        , all_ : Supported
         , none : Supported
         }
     -> Style
@@ -17424,7 +17440,7 @@ breakBefore :
         { auto : Supported
         , always : Supported
         , avoid : Supported
-        , all : Supported
+        , all_ : Supported
         , avoidPage : Supported
         , page : Supported
         , left_ : Supported
@@ -17446,7 +17462,7 @@ breakAfter :
         { auto : Supported
         , always : Supported
         , avoid : Supported
-        , all : Supported
+        , all_ : Supported
         , avoidPage : Supported
         , page : Supported
         , left_ : Supported
