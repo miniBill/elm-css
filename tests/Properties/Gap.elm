@@ -3,7 +3,7 @@ module Properties.Gap exposing (..)
 import Css exposing (..)
 import Css.Global exposing (class)
 import Css.Preprocess exposing (stylesheet)
-import Css.Value exposing (Value, Supported)
+import Css.Value exposing (Supported)
 import Compile
 import Test exposing (Test)
 
