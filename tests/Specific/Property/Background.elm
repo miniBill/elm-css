@@ -1,4 +1,4 @@
-module Property.Background exposing (all)
+module Specific.Property.Background exposing (all)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))

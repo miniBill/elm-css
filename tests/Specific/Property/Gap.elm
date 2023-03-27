@@ -1,4 +1,4 @@
-module Property.Gap exposing (all)
+module Specific.Property.Gap exposing (all)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))

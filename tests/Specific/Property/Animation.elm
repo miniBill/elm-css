@@ -1,4 +1,4 @@
-module Property.Animation exposing (..)
+module Specific.Property.Animation exposing (..)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))

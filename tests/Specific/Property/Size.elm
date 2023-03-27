@@ -1,4 +1,4 @@
-module Property.Size exposing (..)
+module Specific.Property.Size exposing (..)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))

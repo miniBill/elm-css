@@ -1,4 +1,4 @@
-module Property.List exposing (all)
+module Specific.Property.List exposing (all)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))

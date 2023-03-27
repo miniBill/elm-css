@@ -1,4 +1,4 @@
-module Property.Margin exposing (all)
+module Specific.Property.Margin exposing (all)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))

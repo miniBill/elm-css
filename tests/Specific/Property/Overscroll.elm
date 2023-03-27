@@ -1,4 +1,4 @@
-module Property.Overscroll exposing (..)
+module Specific.Property.Overscroll exposing (..)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))

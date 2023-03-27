@@ -1,4 +1,4 @@
-module Property.Border exposing (..)
+module Specific.Property.Border exposing (..)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))

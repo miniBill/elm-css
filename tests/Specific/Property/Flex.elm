@@ -1,4 +1,4 @@
-module Property.Flex exposing (all)
+module Specific.Property.Flex exposing (all)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))
@@ -289,5 +289,10 @@ all =
             , ( justifySelf2 safe selfEnd, "safe self-end" )
             , ( justifySelf2 unsafe left_, "unsafe left" )
             , ( justifySelf2 safe right_, "safe right" )
+            ]
+        , CssTest.property1 order
+            { functionName = "order", propertyName = "order" }
+            [ ( int 1, "1" )
+            , ( int -4, "-4" )
             ]
         ]

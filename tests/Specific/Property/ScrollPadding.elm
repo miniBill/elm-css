@@ -1,4 +1,4 @@
-module Property.ScrollPadding exposing (all)
+module Specific.Property.ScrollPadding exposing (all)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))

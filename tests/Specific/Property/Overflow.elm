@@ -1,4 +1,4 @@
-module Property.Overflow exposing (all)
+module Specific.Property.Overflow exposing (all)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))

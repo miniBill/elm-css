@@ -1,4 +1,4 @@
-module Property.Grid exposing (all)
+module Specific.Property.Grid exposing (all)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))

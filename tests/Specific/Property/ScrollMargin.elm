@@ -1,4 +1,4 @@
-module Property.ScrollMargin exposing (all)
+module Specific.Property.ScrollMargin exposing (all)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))

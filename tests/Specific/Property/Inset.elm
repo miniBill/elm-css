@@ -1,4 +1,4 @@
-module Property.Inset exposing (all)
+module Specific.Property.Inset exposing (all)
 
 
 import Css exposing (..)

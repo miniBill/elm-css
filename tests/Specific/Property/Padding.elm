@@ -1,4 +1,4 @@
-module Property.Padding exposing (all)
+module Specific.Property.Padding exposing (all)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))
