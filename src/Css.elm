@@ -86,7 +86,7 @@ module Css exposing
 
     -- contain (DOM)
     , contain, contain2, contain3, contain4
-    , size, layout, paint
+    , size, inlineSize_, layout, paint
     , containIntrinsicSize, containIntrinsicSize2, containIntrinsicSize4
     , containIntrinsicWidth, containIntrinsicWidth2, containIntrinsicHeight, containIntrinsicHeight2
     , containIntrinsicInlineSize, containIntrinsicInlineSize2, containIntrinsicBlockSize, containIntrinsicBlockSize2
@@ -735,7 +735,7 @@ Sometimes these keywords mean other things too.
 # Contain
 
 @docs contain, contain2, contain3, contain4
-@docs size, layout, paint
+@docs size, inlineSize_, layout, paint
 @docs containIntrinsicSize, containIntrinsicSize2, containIntrinsicSize4
 @docs containIntrinsicWidth, containIntrinsicWidth2, containIntrinsicHeight, containIntrinsicHeight2
 @docs containIntrinsicInlineSize, containIntrinsicInlineSize2, containIntrinsicBlockSize, containIntrinsicBlockSize2
@@ -5600,6 +5600,7 @@ contain :
         , strict : Supported
         , content : Supported
         , size : Supported
+        , inlineSize_ : Supported
         , layout : Supported
         , style : Supported
         , paint : Supported
@@ -5620,6 +5621,7 @@ can use for this property.
 contain2 :
     Value
         { size : Supported
+        , inlineSize_ : Supported
         , layout : Supported
         , style : Supported
         , paint : Supported
@@ -5627,6 +5629,7 @@ contain2 :
     ->
         Value
             { size : Supported
+            , inlineSize_ : Supported
             , layout : Supported
             , style : Supported
             , paint : Supported
@@ -5647,6 +5650,7 @@ can use for this property.
 contain3 :
     Value
         { size : Supported
+        , inlineSize_ : Supported
         , layout : Supported
         , style : Supported
         , paint : Supported
@@ -5654,6 +5658,7 @@ contain3 :
     ->
         Value
             { size : Supported
+            , inlineSize_ : Supported
             , layout : Supported
             , style : Supported
             , paint : Supported
@@ -5661,6 +5666,7 @@ contain3 :
     ->
         Value
             { size : Supported
+            , inlineSize_ : Supported
             , layout : Supported
             , style : Supported
             , paint : Supported
@@ -5683,6 +5689,7 @@ can use for this property.
 contain4 :
     Value
         { size : Supported
+        , inlineSize_ : Supported
         , layout : Supported
         , style : Supported
         , paint : Supported
@@ -5690,6 +5697,7 @@ contain4 :
     ->
         Value
             { size : Supported
+            , inlineSize_ : Supported
             , layout : Supported
             , style : Supported
             , paint : Supported
@@ -5697,6 +5705,7 @@ contain4 :
     ->
         Value
             { size : Supported
+            , inlineSize_ : Supported
             , layout : Supported
             , style : Supported
             , paint : Supported
@@ -5704,6 +5713,7 @@ contain4 :
     ->
         Value
             { size : Supported
+            , inlineSize_ : Supported
             , layout : Supported
             , style : Supported
             , paint : Supported
@@ -5724,6 +5734,21 @@ needing to look at the size of its descendants.
 size : Value { provides | size : Supported }
 size =
     Value "size"
+
+
+{-| Sets the `inline-size` value for [`contain`](#contain).
+
+Indicates that inline size containment is applied to the element.
+
+    contain inlineSize_
+
+Note: This is named `inlineSize_` instead of `inlineSize` because
+[it is already a property function](#inlineSize).
+
+-}
+inlineSize_ : Value { provides | inlineSize_ : Supported }
+inlineSize_ =
+    Value "inline-size"
 
 
 {-| Sets the `layout` value for [`contain`](#contain).
