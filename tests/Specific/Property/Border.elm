@@ -2,153 +2,140 @@ module Specific.Property.Border exposing (..)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))
-import CssTest as Test
+import CssTest
 import Test exposing (Test)
 
 
-test2 propertyUnderTest =
-    [ ( propertyUnderTest (px 1) solid, "1px solid" )
-    , ( propertyUnderTest (rem 11) dotted, "11rem dotted" )
-    , ( propertyUnderTest (pc 20) dashed, "20pc dashed" )
-    , ( propertyUnderTest (px 1) ridge, "1px ridge" )
-    ]
-
-test3 propertyUnderTest =
-    [ ( propertyUnderTest (px 1) solid (hex "#000"), "1px solid #000" )
-    , ( propertyUnderTest (rem 11) dotted (rgb 111 230 122), "11rem dotted rgb(111,230,122)" )
-    , ( propertyUnderTest (pc 20) dashed currentcolor, "20pc dashed currentcolor" )
-    , ( propertyUnderTest (px 1) ridge (hsl 33 0.1 0.5), "1px ridge hsl(33,10%,50%)" )
-    ]
 all : Test
 all =
     Test.concat
-        [ Test.property1 border
+        [ CssTest.property1 border
             { functionName = "border", propertyName = "border" }
-            Test.length
-        , Test.property
+            CssTest.length
+        , CssTest.property
             { functionName = "border2", propertyName = "border" }
-            (test2 border2)
-        , Test.property
+            (CssTest.lineWidthAndStyle border2)
+        , CssTest.property
             { functionName = "border3", propertyName = "border" }
-            (test3 border3)
+            (CssTest.lineWidthStyleAndColor border3)
 
 
 
         -- combined in absolute direction
         -----------------------------------------------------
-        , Test.property1 borderTop
+        , CssTest.property1 borderTop
             { functionName = "borderTop", propertyName = "border-top" }
-            Test.length
-        , Test.property
+            CssTest.length
+        , CssTest.property
             { functionName = "borderTop2", propertyName = "border-top" }
-            (test2 borderTop2)
-        , Test.property
+            (CssTest.lineWidthAndStyle borderTop2)
+        , CssTest.property
             { functionName = "borderTop3", propertyName = "border-top" }
-            (test3 borderTop3)
+            (CssTest.lineWidthStyleAndColor borderTop3)
         
-        , Test.property1 borderRight
+        , CssTest.property1 borderRight
             { functionName = "borderRight", propertyName = "border-right" }
-            Test.length
-        , Test.property
+            CssTest.length
+        , CssTest.property
             { functionName = "borderRight2", propertyName = "border-right" }
-            (test2 borderRight2)
-        , Test.property
+            (CssTest.lineWidthAndStyle borderRight2)
+        , CssTest.property
             { functionName = "borderRight3", propertyName = "border-right" }
-            (test3 borderRight3)
+            (CssTest.lineWidthStyleAndColor borderRight3)
         
-        , Test.property1 borderBottom
+        , CssTest.property1 borderBottom
             { functionName = "borderBottom", propertyName = "border-bottom" }
-            Test.length
-        , Test.property
+            CssTest.length
+        , CssTest.property
             { functionName = "borderBottom2", propertyName = "border-bottom" }
-            (test2 borderBottom2)
-        , Test.property
+            (CssTest.lineWidthAndStyle borderBottom2)
+        , CssTest.property
             { functionName = "borderBottom3", propertyName = "border-bottom" }
-            (test3 borderBottom3)
+            (CssTest.lineWidthStyleAndColor borderBottom3)
 
-        , Test.property1 borderLeft
+        , CssTest.property1 borderLeft
             { functionName = "borderLeft", propertyName = "border-left" }
-            Test.length
-        , Test.property
+            CssTest.length
+        , CssTest.property
             { functionName = "borderLeft2", propertyName = "border-left" }
-            (test2 borderLeft2)
-        , Test.property
+            (CssTest.lineWidthAndStyle borderLeft2)
+        , CssTest.property
             { functionName = "borderLeft3", propertyName = "border-left" }
-            (test3 borderLeft3)
+            (CssTest.lineWidthStyleAndColor borderLeft3)
 
 
 
         -- combined in logical direction
         -----------------------------------------------------
-        , Test.property1 borderBlock
+        , CssTest.property1 borderBlock
             { functionName = "borderBlock", propertyName = "border-block" }
-            Test.length
-        , Test.property
+            CssTest.length
+        , CssTest.property
             { functionName = "borderBlock2", propertyName = "border-block" }
-            (test2 borderBlock2)
-        , Test.property
+            (CssTest.lineWidthAndStyle borderBlock2)
+        , CssTest.property
             { functionName = "borderBlock3", propertyName = "border-block" }
-            (test3 borderBlock3)
+            (CssTest.lineWidthStyleAndColor borderBlock3)
         
-        , Test.property1 borderBlockStart
+        , CssTest.property1 borderBlockStart
             { functionName = "borderBlockStart", propertyName = "border-block-start" }
-            Test.length
-        , Test.property
+            CssTest.length
+        , CssTest.property
             { functionName = "borderBlockStart2", propertyName = "border-block-start" }
-            (test2 borderBlockStart2)
-        , Test.property
+            (CssTest.lineWidthAndStyle borderBlockStart2)
+        , CssTest.property
             { functionName = "borderBlockStart3", propertyName = "border-block-start" }
-            (test3 borderBlockStart3)
+            (CssTest.lineWidthStyleAndColor borderBlockStart3)
         
-        , Test.property1 borderBlockEnd
+        , CssTest.property1 borderBlockEnd
             { functionName = "borderBlockEnd", propertyName = "border-block-end" }
-            Test.length
-        , Test.property
+            CssTest.length
+        , CssTest.property
             { functionName = "borderBlockEnd2", propertyName = "border-block-end" }
-            (test2 borderBlockEnd2)
-        , Test.property
+            (CssTest.lineWidthAndStyle borderBlockEnd2)
+        , CssTest.property
             { functionName = "borderBlockEnd3", propertyName = "border-block-end" }
-            (test3 borderBlockEnd3)
+            (CssTest.lineWidthStyleAndColor borderBlockEnd3)
         
-        , Test.property1 borderInline
+        , CssTest.property1 borderInline
             { functionName = "borderInline", propertyName = "border-inline" }
-            Test.length
-        , Test.property
+            CssTest.length
+        , CssTest.property
             { functionName = "borderInline2", propertyName = "border-inline" }
-            (test2 borderInline2)
-        , Test.property
+            (CssTest.lineWidthAndStyle borderInline2)
+        , CssTest.property
             { functionName = "borderInline3", propertyName = "border-inline" }
-            (test3 borderInline3)
+            (CssTest.lineWidthStyleAndColor borderInline3)
 
-        , Test.property1 borderInlineStart
+        , CssTest.property1 borderInlineStart
             { functionName = "borderInlineStart", propertyName = "border-inline-start" }
-            Test.length
-        , Test.property
+            CssTest.length
+        , CssTest.property
             { functionName = "borderInlineStart2", propertyName = "border-inline-start" }
-            (test2 borderInlineStart2)
-        , Test.property
+            (CssTest.lineWidthAndStyle borderInlineStart2)
+        , CssTest.property
             { functionName = "borderInlineStart3", propertyName = "border-inline-start" }
-            (test3 borderInlineStart3)
+            (CssTest.lineWidthStyleAndColor borderInlineStart3)
         
-        , Test.property1 borderInlineEnd
+        , CssTest.property1 borderInlineEnd
             { functionName = "borderInlineEnd", propertyName = "border-inline-end" }
-            Test.length
-        , Test.property
+            CssTest.length
+        , CssTest.property
             { functionName = "borderInlineEnd2", propertyName = "border-inline-end" }
-            (test2 borderInlineEnd2)
-        , Test.property
+            (CssTest.lineWidthAndStyle borderInlineEnd2)
+        , CssTest.property
             { functionName = "borderInlineEnd3", propertyName = "border-inline-end" }
-            (test3 borderInlineEnd3)
+            (CssTest.lineWidthStyleAndColor borderInlineEnd3)
 
 
 
         -- border style
         -----------------------------------------------------
-        , Test.property1 borderStyle
+        , CssTest.property1 borderStyle
             { functionName = "borderStyle", propertyName = "border-style" }
-            Test.lineStyle
+            CssTest.lineStyle
         
-        , Test.property 
+        , CssTest.property 
             { functionName = "borderStyle2", propertyName = "border-style" }
             [ ( borderStyle2 none groove, "none groove" )
             , ( borderStyle2 groove ridge, "groove ridge" )
@@ -156,186 +143,186 @@ all =
             , ( borderStyle2 outset dotted, "outset dotted" )
             ]
         
-        , Test.property 
+        , CssTest.property 
             { functionName = "borderStyle3", propertyName = "border-style" }
             [ ( borderStyle3 none groove solid, "none groove solid" )
             , ( borderStyle3 groove double ridge, "groove double ridge" )
             , ( borderStyle3 inset_ dashed double, "inset dashed double")
             ]
 
-        , Test.property 
+        , CssTest.property 
             { functionName = "borderStyle4", propertyName = "border-style" }
             [ ( borderStyle4 none groove solid ridge, "none groove solid ridge" )
             , ( borderStyle4 groove double ridge dashed, "groove double ridge dashed" )
             ]
 
-        , Test.property1 borderTopStyle
+        , CssTest.property1 borderTopStyle
             { functionName = "borderTopStyle", propertyName = "border-top-style" }
-            Test.lineStyle
+            CssTest.lineStyle
         
-        , Test.property1 borderRightStyle
+        , CssTest.property1 borderRightStyle
             { functionName = "borderRightStyle", propertyName = "border-right-style" }
-            Test.lineStyle
+            CssTest.lineStyle
         
-        , Test.property1 borderBottomStyle
+        , CssTest.property1 borderBottomStyle
             { functionName = "borderBottomStyle", propertyName = "border-bottom-style" }
-            Test.lineStyle
+            CssTest.lineStyle
 
-        , Test.property1 borderLeftStyle
+        , CssTest.property1 borderLeftStyle
             { functionName = "borderLeftStyle", propertyName = "border-left-style" }
-            Test.lineStyle
+            CssTest.lineStyle
 
-        , Test.property1 borderBlockStyle
+        , CssTest.property1 borderBlockStyle
             { functionName = "borderBlockStyle", propertyName = "border-block-style" }
-            Test.lineStyle
+            CssTest.lineStyle
         
-        , Test.property1 borderBlockStartStyle
+        , CssTest.property1 borderBlockStartStyle
             { functionName = "borderBlockStartStyle", propertyName = "border-block-start-style" }
-            Test.lineStyle
+            CssTest.lineStyle
         
-        , Test.property1 borderBlockEndStyle
+        , CssTest.property1 borderBlockEndStyle
             { functionName = "borderBlockEndStyle", propertyName = "border-block-end-style" }
-            Test.lineStyle
+            CssTest.lineStyle
         
-        , Test.property1 borderInlineStyle
+        , CssTest.property1 borderInlineStyle
             { functionName = "borderInlineStyle", propertyName = "border-inline-style" }
-            Test.lineStyle
+            CssTest.lineStyle
         
-        , Test.property1 borderInlineStartStyle
+        , CssTest.property1 borderInlineStartStyle
             { functionName = "borderInlineStartStyle", propertyName = "border-inline-start-style" }
-            Test.lineStyle
+            CssTest.lineStyle
         
-        , Test.property1 borderInlineEndStyle
+        , CssTest.property1 borderInlineEndStyle
             { functionName = "borderInlineEndStyle", propertyName = "border-inline-end-style" }
-            Test.lineStyle
+            CssTest.lineStyle
 
 
 
         -- border width
         -----------------------------------------------------
-        , Test.property1 borderWidth
+        , CssTest.property1 borderWidth
             { functionName = "borderWidth", propertyName = "border-width" }
-            Test.lineWidth
+            CssTest.lineWidth
 
-        , Test.property { functionName = "borderWidth2", propertyName = "border-width" }
+        , CssTest.property { functionName = "borderWidth2", propertyName = "border-width" }
             ([ ( borderWidth2 thin medium, "thin medium" )
              , ( borderWidth2 medium thick, "medium thick" )
              , ( borderWidth2 thick thin, "thick thin" )
              ]
-                ++ Test.length2 borderWidth2
+                ++ CssTest.length2 borderWidth2
             )
-        , Test.property { functionName = "borderWidth3", propertyName = "border-width" }
+        , CssTest.property { functionName = "borderWidth3", propertyName = "border-width" }
             ([ ( borderWidth3 thin medium thick, "thin medium thick" )
              , ( borderWidth3 medium thick thin, "medium thick thin" )
              , ( borderWidth3 thick thin medium, "thick thin medium" )
              ]
-                ++ Test.length3 borderWidth3
+                ++ CssTest.length3 borderWidth3
             )
-        , Test.property { functionName = "borderWidth4", propertyName = "border-width" }
+        , CssTest.property { functionName = "borderWidth4", propertyName = "border-width" }
             ([ ( borderWidth4 thin medium thick thin, "thin medium thick thin" )
              , ( borderWidth4 medium thick thin thick, "medium thick thin thick" )
              , ( borderWidth4 thick thin medium medium, "thick thin medium medium" )
              ]
-                ++ Test.length4 borderWidth4
+                ++ CssTest.length4 borderWidth4
             )
         
-        , Test.property1 borderTopWidth
+        , CssTest.property1 borderTopWidth
             { functionName = "borderTopWidth", propertyName = "border-top-width" }
-            Test.lineWidth
+            CssTest.lineWidth
         
-        , Test.property1 borderRightWidth
+        , CssTest.property1 borderRightWidth
             { functionName = "borderRightWidth", propertyName = "border-right-width" }
-            Test.lineWidth
+            CssTest.lineWidth
         
-        , Test.property1 borderBottomWidth
+        , CssTest.property1 borderBottomWidth
             { functionName = "borderBottomWidth", propertyName = "border-bottom-width" }
-            Test.lineWidth
+            CssTest.lineWidth
 
-        , Test.property1 borderLeftWidth
+        , CssTest.property1 borderLeftWidth
             { functionName = "borderLeftWidth", propertyName = "border-left-width" }
-            Test.lineWidth
+            CssTest.lineWidth
 
-        , Test.property1 borderBlockWidth
+        , CssTest.property1 borderBlockWidth
             { functionName = "borderBlockWidth", propertyName = "border-block-width" }
-            Test.lineWidth
+            CssTest.lineWidth
         
-        , Test.property1 borderBlockStartWidth
+        , CssTest.property1 borderBlockStartWidth
             { functionName = "borderBlockStartWidth", propertyName = "border-block-start-width" }
-            Test.lineWidth
+            CssTest.lineWidth
         
-        , Test.property1 borderBlockEndWidth
+        , CssTest.property1 borderBlockEndWidth
             { functionName = "borderBlockEndWidth", propertyName = "border-block-end-width" }
-            Test.lineWidth
+            CssTest.lineWidth
         
-        , Test.property1 borderInlineWidth
+        , CssTest.property1 borderInlineWidth
             { functionName = "borderInlineWidth", propertyName = "border-inline-width" }
-            Test.lineWidth
+            CssTest.lineWidth
         
-        , Test.property1 borderInlineStartWidth
+        , CssTest.property1 borderInlineStartWidth
             { functionName = "borderInlineStartWidth", propertyName = "border-inline-start-width" }
-            Test.lineWidth
+            CssTest.lineWidth
         
-        , Test.property1 borderInlineEndWidth
+        , CssTest.property1 borderInlineEndWidth
             { functionName = "borderInlineEndWidth", propertyName = "border-inline-end-width" }
-            Test.lineWidth
+            CssTest.lineWidth
 
 
 
         -- border color
         -----------------------------------------------------
-        , Test.property1 borderColor
+        , CssTest.property1 borderColor
             { functionName = "borderColor", propertyName = "border-color" }
-            Test.color
+            CssTest.color
         
-        , Test.property
+        , CssTest.property
             { functionName = "borderColor2", propertyName = "border-color"}
-            (Test.color2 borderColor2)
-        , Test.property
+            (CssTest.color2 borderColor2)
+        , CssTest.property
 
             { functionName = "borderColor3", propertyName = "border-color"}
-            (Test.color3 borderColor3)
-        , Test.property
+            (CssTest.color3 borderColor3)
+        , CssTest.property
 
             { functionName = "borderColor4", propertyName = "border-color"}
-            (Test.color4 borderColor4)
+            (CssTest.color4 borderColor4)
         
-        , Test.property1 borderTopColor
+        , CssTest.property1 borderTopColor
             { functionName = "borderTopColor", propertyName = "border-top-color" }
-            Test.color
+            CssTest.color
         
-        , Test.property1 borderRightColor
+        , CssTest.property1 borderRightColor
             { functionName = "borderRightColor", propertyName = "border-right-color" }
-            Test.color
+            CssTest.color
         
-        , Test.property1 borderBottomColor
+        , CssTest.property1 borderBottomColor
             { functionName = "borderBottomColor", propertyName = "border-bottom-color" }
-            Test.color
+            CssTest.color
 
-        , Test.property1 borderLeftColor
+        , CssTest.property1 borderLeftColor
             { functionName = "borderLeftColor", propertyName = "border-left-color" }
-            Test.color
+            CssTest.color
 
-        , Test.property1 borderBlockColor
+        , CssTest.property1 borderBlockColor
             { functionName = "borderBlockColor", propertyName = "border-block-color" }
-            Test.color
+            CssTest.color
         
-        , Test.property1 borderBlockStartColor
+        , CssTest.property1 borderBlockStartColor
             { functionName = "borderBlockStartColor", propertyName = "border-block-start-color" }
-            Test.color
+            CssTest.color
         
-        , Test.property1 borderBlockEndColor
+        , CssTest.property1 borderBlockEndColor
             { functionName = "borderBlockEndColor", propertyName = "border-block-end-color" }
-            Test.color
+            CssTest.color
         
-        , Test.property1 borderInlineColor
+        , CssTest.property1 borderInlineColor
             { functionName = "borderIncolor", propertyName = "border-inline-color" }
-            Test.color
+            CssTest.color
         
-        , Test.property1 borderInlineStartColor
+        , CssTest.property1 borderInlineStartColor
             { functionName = "borderInlineStartColor", propertyName = "border-inline-start-color" }
-            Test.color
+            CssTest.color
         
-        , Test.property1 borderInlineEndColor
+        , CssTest.property1 borderInlineEndColor
             { functionName = "borderInlineEndColor", propertyName = "border-inline-end-color" }
-            Test.color
+            CssTest.color
         ]

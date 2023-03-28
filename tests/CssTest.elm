@@ -8,6 +8,9 @@ module CssTest exposing
     , lineWidth
     , lineStyleWithoutHidden
     , lineStyle
+    , lineWidthAndStyle
+    , lineWidthStyleAndColor
+    , lineWidthStyleAndColorWithoutHidden
     , color
     , color2
     , color3
@@ -541,6 +544,189 @@ lineStyle :
 lineStyle =
     ( hidden, "hidden" ) :: lineStyleWithoutHidden
 
+
+lineWidthAndStyle :
+    ( Value
+        { value1
+            | ch : Supported
+            , cm : Supported
+            , em : Supported
+            , ex : Supported
+            , inch : Supported
+            , mm : Supported
+            , pc : Supported
+            , pt : Supported
+            , px : Supported
+            , q : Supported
+            , rem : Supported
+            , vh : Supported
+            , vw : Supported
+            , vmax : Supported
+            , vmin : Supported
+            , zero : Supported
+            , calc : Supported
+            , thin : Supported
+            , medium : Supported
+            , thick : Supported
+        }
+     ->
+        Value
+            { value2
+                | none : Supported
+                , solid : Supported
+                , dotted : Supported
+                , dashed : Supported
+                , hidden : Supported
+                , double : Supported
+                , groove : Supported
+                , ridge : Supported
+                , inset_ : Supported
+                , outset : Supported
+            }
+     -> Style
+    )
+    -> List ( Style, String )
+lineWidthAndStyle propertyUnderTest =
+    [ ( propertyUnderTest (px 3) solid, "3px solid" )
+    , ( propertyUnderTest thick dashed, "thick dashed" )
+    , ( propertyUnderTest (rem 2) inset_, "2rem inset" )
+    , ( propertyUnderTest (px 1) solid, "1px solid" )
+    , ( propertyUnderTest (rem 11) dotted, "11rem dotted" )
+    , ( propertyUnderTest (pc 20) dashed, "20pc dashed" )
+    , ( propertyUnderTest (px 1) ridge, "1px ridge" )
+    ]
+
+
+lineWidthStyleAndColor :
+    ( Value
+        { value1
+            | ch : Supported
+            , cm : Supported
+            , em : Supported
+            , ex : Supported
+            , inch : Supported
+            , mm : Supported
+            , pc : Supported
+            , pt : Supported
+            , px : Supported
+            , q : Supported
+            , rem : Supported
+            , vh : Supported
+            , vw : Supported
+            , vmax : Supported
+            , vmin : Supported
+            , zero : Supported
+            , calc : Supported
+            , thin : Supported
+            , medium : Supported
+            , thick : Supported
+        }
+     ->
+        Value
+            { value2
+                | none : Supported
+                , solid : Supported
+                , dotted : Supported
+                , dashed : Supported
+                , hidden : Supported
+                , double : Supported
+                , groove : Supported
+                , ridge : Supported
+                , inset_ : Supported
+                , outset : Supported
+            }
+    -> 
+        Value
+            { value3
+                | hsl : Supported
+                , hsla : Supported
+                , rgb : Supported
+                , rgba : Supported
+                , hex : Supported
+                , currentcolor : Supported
+            }
+     -> Style
+    )
+    -> List ( Style, String )
+lineWidthStyleAndColor propertyUnderTest =
+    ( propertyUnderTest (pt 15.5) hidden (hex "#feda"), "15.5pt hidden #feda" )
+    :: lineWidthStyleAndColorWithoutHidden propertyUnderTest
+    
+lineWidthStyleAndColorWithoutHidden :
+    ( Value
+        { value1
+            | ch : Supported
+            , cm : Supported
+            , em : Supported
+            , ex : Supported
+            , inch : Supported
+            , mm : Supported
+            , pc : Supported
+            , pt : Supported
+            , px : Supported
+            , q : Supported
+            , rem : Supported
+            , vh : Supported
+            , vw : Supported
+            , vmax : Supported
+            , vmin : Supported
+            , zero : Supported
+            , calc : Supported
+            , thin : Supported
+            , medium : Supported
+            , thick : Supported
+        }
+     ->
+        Value
+            { value2
+                | none : Supported
+                , solid : Supported
+                , dotted : Supported
+                , dashed : Supported
+                , double : Supported
+                , groove : Supported
+                , ridge : Supported
+                , inset_ : Supported
+                , outset : Supported
+            }
+    -> 
+        Value
+            { value3
+                | hsl : Supported
+                , hsla : Supported
+                , rgb : Supported
+                , rgba : Supported
+                , hex : Supported
+                , currentcolor : Supported
+            }
+     -> Style
+    )
+    -> List ( Style, String )
+lineWidthStyleAndColorWithoutHidden propertyUnderTest =
+    [ ( propertyUnderTest (px 3) solid (hex "ff0000"), "3px solid #ff0000" )
+    , ( propertyUnderTest thick dashed (hsl 212 0.4 0.8), "thick dashed hsl(212,40%,80%)" )
+    , ( propertyUnderTest (rem 2) inset_ currentcolor, "2rem inset currentcolor" )
+    , ( propertyUnderTest (px 1) solid (hex "#000"), "1px solid #000" )
+    , ( propertyUnderTest (rem 11) dotted (rgb 111 230 122), "11rem dotted rgb(111,230,122)" )
+    , ( propertyUnderTest (pc 20) dashed currentcolor, "20pc dashed currentcolor" )
+    , ( propertyUnderTest (px 1) ridge (hsl 33 0.1 0.5), "1px ridge hsl(33,10%,50%)" )
+    , ( propertyUnderTest (px 10) none (hsl 120 0.5 0.5), "10px none hsl(120,50%,50%)" )
+    , ( propertyUnderTest (cm 3.1) solid (rgb 112 22 75), "3.1cm solid rgb(112,22,75)" )
+    , ( propertyUnderTest (em 0.2) dotted (rgba 112 22 75 0.1), "0.2em dotted rgba(112,22,75,0.1)" )
+    , ( propertyUnderTest (ex 10.5) dashed (hex "fadffe"), "10.5ex dashed #fadffe" )
+    , ( propertyUnderTest (inch 1) solid (hex "eef"), "1in solid #eef" )
+    , ( propertyUnderTest (mm 2.54) double (hex "#ddfead99"), "2.54mm double #ddfead99" )
+    , ( propertyUnderTest (pc 8.7) groove (hex "#356265"), "8.7pc groove #356265" )
+    , ( propertyUnderTest (pt 15.5) ridge (hex "#feda"), "15.5pt ridge #feda" )
+    , ( propertyUnderTest (q 5) ridge currentcolor, "5Q ridge currentcolor" )
+    , ( propertyUnderTest (rem 1.1) inset_ (hex "844c"), "1.1rem inset #844c" )
+    , ( propertyUnderTest (vh 1.2) outset (hex "ef5f7e9f"), "1.2vh outset #ef5f7e9f" )
+    , ( propertyUnderTest (vw 2.1) solid (rgb 112 22 75), "2.1vw solid rgb(112,22,75)" )
+    , ( propertyUnderTest (vmax 3.5) solid (rgb 112 22 75), "3.5vmax solid rgb(112,22,75)" )
+    , ( propertyUnderTest (vmin 4.2) solid (rgb 112 22 75), "4.2vmin solid rgb(112,22,75)" )
+    , ( propertyUnderTest zero solid (rgb 112 22 75), "0 solid rgb(112,22,75)" )
+    , ( propertyUnderTest (calc (rem 3.2) (minus (px 5.5))) solid (rgb 112 22 75), "calc(3.2rem - 5.5px) solid rgb(112,22,75)" )
+    ]
 
 color :
     List

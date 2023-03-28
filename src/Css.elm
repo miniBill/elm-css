@@ -17041,6 +17041,8 @@ upperRoman =
 
     columns (px 300)
 
+    columns (num 2)
+
     columns2 (px 300) (num 2)
 
 -}
@@ -17048,6 +17050,7 @@ columns :
     BaseValue
         (LengthSupported
             { auto : Supported
+            , num : Supported
             }
         )
     -> Style
@@ -17058,6 +17061,8 @@ columns (Value widthVal) =
 {-| Sets [`columns`](https://css-tricks.com/almanac/properties/c/columns/)
 
     columns (px 300)
+
+    columns (num 2)
 
     columns2 (px 300) (num 2)
 
@@ -17182,7 +17187,8 @@ properties.
     columnRule3 thin solid (hex "#000000")
 
 -}
-columnRule : BaseValue LineWidth -> Style
+columnRule :
+    BaseValue LineWidth -> Style
 columnRule (Value widthVal) =
     appendProperty ("column-rule:" ++ widthVal)
 
