@@ -264,7 +264,7 @@ module Css exposing
     , fontVariantLigatures
     , commonLigatures, noCommonLigatures, discretionaryLigatures, noDiscretionaryLigatures, historicalLigatures, noHistoricalLigatures, contextual, noContextual
     , FontVariantNumericSupported, FontVariantNumeric
-    , fontVariantNumeric, fontVariantNumericMany
+    , fontVariantNumeric, fontVariantNumeric4
     , ordinal, slashedZero, liningNums, oldstyleNums, proportionalNums, tabularNums, diagonalFractions, stackedFractions
     , FontVariantEmojiSupported
     , fontVariantEmoji, emoji, unicode
@@ -1083,7 +1083,7 @@ Other values you can use for flex item alignment:
 ### Numerical variants
 
 @docs FontVariantNumericSupported, FontVariantNumeric
-@docs fontVariantNumeric, fontVariantNumericMany
+@docs fontVariantNumeric, fontVariantNumeric4
 @docs ordinal, slashedZero, liningNums, oldstyleNums, proportionalNums, tabularNums, diagonalFractions, stackedFractions
     
 ### Emoji variants
@@ -1705,6 +1705,7 @@ stringListToStringEnquoted separator list =
     else
         Value.unpack unset
 
+
 enquoteString : String -> String
 enquoteString str =
     let
@@ -1726,7 +1727,6 @@ enquoteString str =
                     String.fromChar char
     in
     "\"" ++ String.foldl escapeChars "" str ++ "\""
-
 
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
@@ -13795,6 +13795,7 @@ fontVariant2 (Value val1) (Value val2) =
 type alias FontVariantCapsSupported supported =
     { supported
         | smallCaps : Supported
+        , allSmallCaps : Supported
         , petiteCaps : Supported
         , allPetiteCaps : Supported
         , unicase : Supported
@@ -13957,8 +13958,7 @@ This property controls the use of alternative glyphs for East Asian scripts.
 -}
 fontVariantEastAsian2 :
     Value (FontVariantEastAsian)
-    ->
-        Value (FontVariantEastAsian)
+    -> Value (FontVariantEastAsian)
     -> Style
 fontVariantEastAsian2 (Value val1) (Value val2) =
     appendProperty ("font-variant-east-asian:" ++ val1 ++ " " ++ val2)
@@ -14248,24 +14248,51 @@ fontVariantNumeric (Value str) =
 
 {-| Sets [`font-variant-numeric`](https://css-tricks.com/almanac/properties/f/font-variant-numeric/).
 
-This list-based version lets you add multiple numeric font variant keywords,
-but keep in mind that certain keywords are mutually exclusive with each other.
-
-If you give an empty list, the value will be `unset`. This is to make it impossible for it
-to have no values in the output.
+This one can be tricky to use because many of the options are mutually exclusive.
+For example, `normal` cannot be used with any of the others, so the only way
+to get it from this function is to pass `Nothing` for everything. The other
+arguments are chosen such that you can choose between the mutually exclusive
+values, or leave that value off.
 
     fontVariantNumeric ordinal
 
-    fontVariantNumericMany [ slashedZero liningNums ]
+    fontVariantNumeric4 Nothing Nothing Nothing Nothing -- "normal"
 
-    fontVariantNumericMany [] -- font-variant-numeric: unset;
+    fontVariantNumeric4
+        (Just ordinal)
+        Nothing
+        (Just tabularNums)
+        Nothing
+        -- "ordinal tabular-nums"
 
 -}
-fontVariantNumericMany :
-    List (Value (FontVariantNumeric))
+fontVariantNumeric4 :
+    Maybe (Value { ordinal : Supported, slashedZero : Supported })
+    -> Maybe (Value { liningNums : Supported, oldstyleNums : Supported })
+    -> Maybe (Value { proportionalNums : Supported, tabularNums : Supported })
+    -> Maybe (Value { diagonalFractions : Supported, stackedFractions : Supported })
     -> Style
-fontVariantNumericMany values =
-    appendProperty <| "font-variant-numeric:" ++ valueListToString " " values
+fontVariantNumeric4 val1 val2 val3 val4 =
+    let
+        maybeValToString val =
+            Maybe.map (\ (Value v) -> v ) val
+
+        valueStr =
+            case
+                [ maybeValToString val1
+                , maybeValToString val2
+                , maybeValToString val3
+                , maybeValToString val4
+                ]
+                    |> List.filterMap identity
+            of
+                [] ->
+                    "normal"
+
+                strings ->
+                    String.join " " strings
+    in
+    appendProperty <| "font-variant-numeric:" ++ valueStr
 
 
 {-| The `ordinal` [`font-variant-numeric` value](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-numeric).

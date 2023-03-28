@@ -459,7 +459,7 @@ fonts =
                 font-weight:100;
                 font-variant:small-caps;
                 font-variant:common-ligatures slashed-zero;
-                font-variant-numeric:oldstyle-nums tabular-nums stacked-fractions ordinal slashed-zero;
+                font-variant-numeric:ordinal oldstyle-nums tabular-nums stacked-fractions;
             }
             """
     in

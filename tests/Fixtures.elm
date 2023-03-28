@@ -336,13 +336,11 @@ fontStylesheet =
             , fontWeight (int 100)
             , fontVariant smallCaps
             , fontVariant2 commonLigatures slashedZero
-            , fontVariantNumericMany
-                [ oldstyleNums
-                , tabularNums
-                , stackedFractions
-                , ordinal
-                , slashedZero
-                ]
+            , fontVariantNumeric4
+                (Just ordinal)
+                (Just oldstyleNums)
+                (Just tabularNums)
+                (Just stackedFractions)
             ]
         ]
 
