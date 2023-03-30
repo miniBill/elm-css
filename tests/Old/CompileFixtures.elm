@@ -3,9 +3,9 @@ module Old.CompileFixtures exposing (basicStyle1, basicStyle2, dreamwriter, page
 import Css exposing (..)
 import Css.Global exposing (..)
 import Css.Preprocess exposing (Stylesheet, stylesheet)
-import Css.Value exposing (Value(..))
+import Css.Value exposing (Value(..), Supported)
 
-pageBackground : BaseValue Color
+pageBackground : Value { provides | rgb : Supported }
 pageBackground =
     rgb 100 90 128
 

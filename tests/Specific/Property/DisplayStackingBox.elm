@@ -1,15 +1,17 @@
 module Specific.Property.DisplayStackingBox exposing (..)
 
-
 import Css exposing (..)
 import Css.Value exposing (Value(..))
 import CssTest
 import Test exposing (Test)
 
-all : Test
-all =
+allStuff : Test
+allStuff =
     Test.concat
-        [ CssTest.property1 display
+        [ CssTest.property1 all
+            { functionName = "all", propertyName = "all" }
+            []
+        , CssTest.property1 display
             { functionName = "display", propertyName = "display" }
             [ ( none, "none" )
             , ( contents, "contents" )

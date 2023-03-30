@@ -12154,8 +12154,15 @@ columnGap (Value widthVal) =
 
     backgroundColor (rgba 96 181 204 0.5)
 
+    backgroundColor transparent
+
 -}
-backgroundColor : BaseValue Color -> Style
+backgroundColor :
+    BaseValue
+        ( ColorSupported
+            { transparent : Supported }
+        )
+    -> Style
 backgroundColor (Value val) =
     appendProperty ("background-color:" ++ val)
 
@@ -17496,9 +17503,7 @@ tableLayout (Value str) =
 breakBefore :
     BaseValue
         { auto : Supported
-        , always : Supported
         , avoid : Supported
-        , all_ : Supported
         , avoidPage : Supported
         , page : Supported
         , left_ : Supported
@@ -17518,9 +17523,7 @@ breakBefore (Value val) =
 breakAfter :
     BaseValue
         { auto : Supported
-        , always : Supported
         , avoid : Supported
-        , all_ : Supported
         , avoidPage : Supported
         , page : Supported
         , left_ : Supported
@@ -20999,7 +21002,7 @@ backfaceVisibility :
         }
     -> Style
 backfaceVisibility (Value val) =
-    appendProperty ("backface-visibility" ++ val)
+    appendProperty ("backface-visibility:" ++ val)
 
 
 ------------------------------------------------------------------------

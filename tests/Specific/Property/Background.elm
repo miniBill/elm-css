@@ -75,4 +75,62 @@ all =
             , ( backgroundPosition4 right_ zero bottom_ (em 2), "right 0 bottom 2em" )
             , ( backgroundPosition4 left_ (calc (rem 3) (plus (pct 2))) top_ (calc (vh 10) (dividedBy (num 3))), "left calc(3rem + 2%) top calc(10vh / 3)" )
             ]
+        
+        , CssTest.property1 backgroundOrigin
+            { functionName = "backgroundOrigin", propertyName = "background-origin" }
+            [ ( borderBox, "border-box" )
+            , ( paddingBox, "padding-box" )
+            , ( contentBox, "content-box")
+            ]
+        
+        , CssTest.property1 backgroundRepeat
+            { functionName = "backgroundRepeat", propertyName = "background-repeat" }
+            [ ( repeatX, "repeat-x" )
+            , ( repeat, "repeat" )
+            , ( space, "space" )
+            , ( round_, "round" )
+            , ( noRepeat, "no-repeat" )
+            ]
+        
+        , CssTest.property
+            { functionName = "backgroundRepeat2", propertyName = "background-repeat" }
+            [ ( backgroundRepeat2 repeat repeat, "repeat repeat" )
+            , ( backgroundRepeat2 round_ space, "round space" )
+            , ( backgroundRepeat2 noRepeat round_, "no-repeat round" )
+            , ( backgroundRepeat2 space repeat, "space repeat" )
+            , ( backgroundRepeat2 space noRepeat, "space no-repeat" )
+            ]
+        
+        , CssTest.property1 backgroundSize
+            { functionName = "backgroundSize", propertyName = "background-size" }
+            (   [ ( pct 30, "30%" )
+                , ( auto, "auto" )
+                , ( cover, "cover" )
+                , ( contain_, "contain" )
+                ]
+                ++ CssTest.length
+            )
+        
+        , CssTest.property
+            { functionName = "backgroundSize2", propertyName = "background-size" }
+            (   [ ( backgroundSize2 auto (px 6), "auto 6px" )
+                , ( backgroundSize2 (pct 50) (em 3), "50% 3em")
+                , ( backgroundSize2 auto auto, "auto auto" )
+                , ( backgroundSize2 (pct 50) auto, "50% auto" )
+                ]
+                ++ CssTest.length2 backgroundSize2
+            )
+
+        , CssTest.property1 backgroundColor
+            { functionName = "backgroundColor", propertyName = "background-color" }
+            (   ( transparent, "transparent" )
+                :: CssTest.color
+            )
+        
+        , CssTest.property1 backgroundAttachment
+            { functionName = "backgroundAttachment", propertyName = "background-attachment" }
+            [ ( scroll, "scroll" )
+            , ( fixed, "fixed" )
+            , ( local, "local" )
+            ]
         ]
