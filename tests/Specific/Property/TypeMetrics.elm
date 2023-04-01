@@ -32,6 +32,11 @@ all =
             , ( textIndent2 zero hanging, "0 hanging" )
             , ( textIndent2 (calc (rem 3.2) (minus (px 5.5))) eachLine, "calc(3.2rem - 5.5px) each-line" )
             ]
+        , CssTest.property
+            { functionName = "textIndent3", propertyName = "text-indent" }
+            [ ( textIndent3 (em 20) hanging eachLine, "20em hanging each-line" )
+            , ( textIndent3 (pct 40) hanging eachLine, "40% hanging each-line" )
+            ]
         , CssTest.property1 lineHeight
             { functionName = "lineHeight", propertyName = "line-height" }
             ([ ( normal, "normal" )
@@ -50,4 +55,17 @@ all =
              ]
                 ++ CssTest.length
             )
+        , CssTest.property1 tabSize
+            { functionName = "tabSize", propertyName = "tab-size" }
+            (   [ ( int 4, "4" )
+                , ( int 5, "5" )
+                ]
+                ++ CssTest.length
+            )
+        , CssTest.property1 wordSpacing
+            { functionName = "wordSpacing", propertyName = "word-spacing" }
+            (   ( normal, "normal" )
+                :: CssTest.length
+            )
+            
         ]

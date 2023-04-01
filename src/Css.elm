@@ -301,7 +301,7 @@ module Css exposing
     , textDecorationSkipInk
     , textUnderlinePosition, textUnderlinePosition2
     , textUnderlineOffset
-    , textEmphasis, textEmphasis2
+    , textEmphasis, textEmphasis2, textEmphasis3
     , textEmphasisStyle, textEmphasisStyle2
     , textEmphasisColor
     , textEmphasisPosition, textEmphasisPosition2
@@ -1151,7 +1151,7 @@ Other values you can use for flex item alignment:
 @docs textDecorationSkipInk
 @docs textUnderlinePosition, textUnderlinePosition2
 @docs textUnderlineOffset
-@docs textEmphasis, textEmphasis2
+@docs textEmphasis, textEmphasis2, textEmphasis3
 @docs textEmphasisStyle, textEmphasisStyle2
 @docs textEmphasisColor
 @docs textEmphasisPosition, textEmphasisPosition2
@@ -14664,8 +14664,7 @@ wordSpacing (Value str) =
 tabSize :
     BaseValue
         (LengthSupported
-            { auto : Supported
-            , int : Supported
+            { int : Supported
             }
         )
     -> Style
@@ -14690,6 +14689,8 @@ tabSize (Value val) =
 
 
 {-| Sets [`word-break`](https://css-tricks.com/almanac/properties/w/word-break/)
+
+**Note: `breakWord` has been depreciated.**
 
       wordBreak normal
       wordBreak breakAll
@@ -14917,11 +14918,11 @@ manual =
 
     hangingPunctuation none
 
-    hangingPunctuation first
+    hangingPunctuation first_
 
-    hangingPunctuation2 first forceEnd
+    hangingPunctuation2 first_ forceEnd
 
-    hangingPunctuation3 first allowEnd last
+    hangingPunctuation3 first_ allowEnd last
 
 -}
 hangingPunctuation :
@@ -14939,7 +14940,9 @@ hangingPunctuation (Value val) =
 
 {-| Sets [`hanging-punctuation`](https://css-tricks.com/almanac/properties/h/hanging-punctuation/)
 
-    hangingPunctuation2 first forceEnd
+`first_ first_`, `last first` and `last last` are invalid combinations.
+
+    hangingPunctuation2 first_ forceEnd
 
 -}
 hangingPunctuation2 :
@@ -14961,13 +14964,12 @@ hangingPunctuation2 (Value val1) (Value val2) =
 
 {-| Sets [`hanging-punctuation`](https://css-tricks.com/almanac/properties/h/hanging-punctuation/)
 
-    hangingPunctuation3 first allowEnd last
+    hangingPunctuation3 first_ allowEnd last
 
 -}
 hangingPunctuation3 :
     Value
         { first_ : Supported
-        , last : Supported
         }
     ->
         Value
@@ -14976,8 +14978,7 @@ hangingPunctuation3 :
             }
     ->
         Value
-            { first_ : Supported
-            , last : Supported
+            { last : Supported
             }
     -> Style
 hangingPunctuation3 (Value val1) (Value val2) (Value val3) =
@@ -15390,11 +15391,15 @@ textUnderlineOffset (Value value) =
 This is for drawing attention towards textual elements in a way that is commonly
 used in East Asian languages.
 
+String values should only be one character in length.
+
     textEmphasis (hex "ff0000")
 
     textEmphasis sesame
 
     textEmphasis2 triangle (hex "00ff00")
+
+    textEmphasis3 filled dot (hex "ff0000")
 
 -}
 textEmphasis :
@@ -15418,12 +15423,20 @@ textEmphasis (Value value) =
 
 {-| Sets the [`text-emphasis`](https://css-tricks.com/almanac/properties/t/text-emphasis/) property.
 
-This 2-argument form sets [`text-emphasis-style`](#textEmphasisStyle) and [`textEmphasisColor`](#textEmphasisColor) in a single declaration.
+This 2-argument form sets [`textEmphasisStyle`](#textEmphasisStyle) and [`textEmphasisColor`](#textEmphasisColor) in a single declaration.
 
-    textEmphasis2 filled (hex "ff0000")
+String values should only be one character in length.
+
+    textEmphasis (hex "ff0000")
+
+    textEmphasis sesame
+
+    textEmphasis2 triangle (hex "00ff00")
+
+    textEmphasis3 filled dot (hex "ff0000")
 -}
 textEmphasis2 :
-    BaseValue
+    Value
         { none : Supported
         , filled : Supported
         , open : Supported
@@ -15435,7 +15448,7 @@ textEmphasis2 :
         , string : Supported
         }
     ->
-        BaseValue
+        Value
             (Color)
     -> Style
 textEmphasis2 (Value value1) (Value value2) =
@@ -15446,8 +15459,49 @@ textEmphasis2 (Value value1) (Value value2) =
             ++ value2
         )
 
+{-| Sets the [`text-emphasis`](https://css-tricks.com/almanac/properties/t/text-emphasis/) property.
+
+This 3-argument form sets [`textEmphasisStyle2`](#textEmphasisStyle2) and a [`textEmphasisColor`](#textEmphasisColor) in a single declaration.
+
+    textEmphasis (hex "ff0000")
+
+    textEmphasis sesame
+
+    textEmphasis2 triangle (hex "00ff00")
+
+    textEmphasis3 filled dot (hex "ff0000")
+
+-}
+textEmphasis3 :
+    BaseValue
+        { filled : Supported
+        , open : Supported
+        }
+    -> BaseValue
+        { dot : Supported
+        , circle_ : Supported
+        , doubleCircle : Supported
+        , triangle : Supported
+        , sesame : Supported
+        }
+    ->
+        Value
+            (Color)
+    -> Style
+textEmphasis3 (Value value1) (Value value2) (Value value3) =
+    appendProperty
+        ("text-emphasis:"
+            ++ value1
+            ++ " "
+            ++ value2
+            ++ " "
+            ++ value3
+        )
+
 
 {-| Sets the [`text-emphasis-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/text-emphasis-style) property.
+
+String values should only be one character in length.
 
     textEmphasisStyle none
 
@@ -15479,11 +15533,11 @@ textEmphasisStyle (Value value) =
     textEmphasisStyle open dot
 -}
 textEmphasisStyle2 :
-    BaseValue
+    Value
         { filled : Supported
         , open : Supported
         }
-    -> BaseValue
+    -> Value
         { dot : Supported
         , circle_ : Supported
         , doubleCircle : Supported
@@ -15504,10 +15558,15 @@ textEmphasisStyle2 (Value val1) (Value val2) =
 
     textEmphasisColor currentcolor
 
-    textemphasisColor (hex "0000ff")
+    textEmphasisColor (hex "0000ff")
+
+    textEmphasisColor transparent
 -}
 textEmphasisColor :
-    BaseValue (Color)
+    BaseValue
+        ( ColorSupported
+            { transparent : Supported }
+        )
     -> Style
 textEmphasisColor (Value value) =
     appendProperty ("text-emphasis-color:" ++ value)
