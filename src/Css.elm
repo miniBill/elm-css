@@ -229,7 +229,7 @@ module Css exposing
 
     -- Font size
     , fontSize
-    , xxSmall, xSmall, small, medium, large, xLarge, xxLarge, smaller, larger
+    , xxSmall, xSmall, small, medium, large, xLarge, xxLarge, xxxLarge, smaller, larger
     , fontSizeAdjust
 
     -- @font-face
@@ -237,7 +237,9 @@ module Css exposing
 
     -- Font family
     , fontFamily, fontFamilies
-    , serif, sansSerif, monospace, cursive, fantasy, systemUi
+    , serif, sansSerif, monospace, cursive, fantasy
+    , systemUi, uiSerif, uiSansSerif, uiMonospace, uiRounded
+    , math, fangsong
 
     -- Font color, style, weight + stretch
     , color
@@ -377,11 +379,9 @@ module Css exposing
     , scaleDown
     , objectPosition, objectPosition2, objectPosition4
 
-    -- pointer-events
+    -- pointer and touch
     , pointerEvents
     , visiblePainted, visibleFill, visibleStroke, painted
-
-    -- touch action
     , touchAction
     , panX, panY
     , pinchZoom, manipulation
@@ -1018,7 +1018,7 @@ Other values you can use for flex item alignment:
 ## Sizing
 
 @docs fontSize
-@docs xxSmall, xSmall, small, medium, large, xLarge, xxLarge, smaller, larger
+@docs xxSmall, xSmall, small, medium, large, xLarge, xxLarge, xxxLarge, smaller, larger
 @docs fontSizeAdjust
 
 ## @font-face
@@ -1028,7 +1028,10 @@ Other values you can use for flex item alignment:
 ## Font family
 
 @docs fontFamily, fontFamilies
-@docs serif, sansSerif, monospace, cursive, fantasy, systemUi
+@docs serif, sansSerif, monospace, cursive, fantasy
+@docs systemUi, uiSerif, uiSansSerif, uiMonospace, uiRounded
+@docs math, fangsong
+
 
 ## Font color, style, weight & stretch
 
@@ -1286,16 +1289,14 @@ Other values you can use for flex item alignment:
 ------------------------------------------------------
 
 
-# pointer-events
+# Pointer and touch
+
+## Pointer events
 
 @docs pointerEvents
 @docs visiblePainted, visibleFill, visibleStroke, painted
 
-
-------------------------------------------------------
-
-
-# Touch action
+## Touch action
 
 @docs touchAction
 @docs panX, panY
@@ -12910,6 +12911,7 @@ fontSize :
             , large : Supported
             , xLarge : Supported
             , xxLarge : Supported
+            , xxxLarge : Supported
             , smaller : Supported
             , larger : Supported
             , pct : Supported
@@ -12996,6 +12998,16 @@ xLarge =
 xxLarge : Value { provides | xxLarge : Supported }
 xxLarge =
     Value "xx-large"
+
+
+{-| The `xxx-large` [`font-size` value](https://developer.mozilla.org/en-US/docs/Web/CSS/font-size#Values).
+
+    fontSize xxxLarge
+
+-}
+xxxLarge : Value { provides | xxxLarge : Supported }
+xxxLarge =
+    Value "xxx-large"
 
 
 {-| The `smaller` [`font-size` value](https://developer.mozilla.org/en-US/docs/Web/CSS/font-size#Values).
@@ -13139,6 +13151,13 @@ fontFamily :
         , cursive : Supported
         , fantasy : Supported
         , systemUi : Supported
+        , uiSerif : Supported
+        , uiSansSerif : Supported
+        , uiMonospace : Supported
+        , uiRounded : Supported
+        , emoji : Supported
+        , math : Supported
+        , fangsong : Supported
         }
     -> Style
 fontFamily (Value genericFont) =
@@ -13191,7 +13210,7 @@ monospace =
 
     fontFamily cursive
 
-    fontFamilies [ "Brush Sript Std", "Lucida Calligraphy" ] cursive
+    fontFamilies [ "Brush Script Std", "Lucida Calligraphy" ] cursive
 
 This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
 
@@ -13204,7 +13223,7 @@ cursive =
 {-| The `fantasy` [generic font family name](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family#3Cgeneric-name%3E).
 
     fontFamily fantasy
-    fontFamilies [ "Herculanum", Harrington" ] fantasy
+    fontFamilies [ "Herculanum", "Harrington" ] fantasy
 
 This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
 
@@ -13232,6 +13251,80 @@ systemUi =
     Value "system-ui"
 
 
+{-| The `ui-serif` [generic font family name](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family#values).
+
+    fontFamily uiSerif
+
+    fontFamilies [ "New York" ] uiSerif
+
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+
+-}
+uiSerif : Value { provides | uiSerif : Supported }
+uiSerif =
+    Value "ui-serif"
+
+
+{-| The `ui-sans-serif` [generic font family name](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family#values).
+
+    fontFamily uiSansSerif
+
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+
+-}
+uiSansSerif : Value { provides | uiSansSerif : Supported }
+uiSansSerif =
+    Value "ui-sans-serif"
+
+
+{-| The `ui-monospace` [generic font family name](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family#values).
+
+    fontFamily uiMonospace
+
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+
+-}
+uiMonospace : Value { provides | uiMonospace : Supported }
+uiMonospace =
+    Value "ui-monospace"
+
+
+{-| The `ui-rounded` [generic font family name](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family#values).
+
+    fontFamily uiRounded
+
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+
+-}
+uiRounded : Value { provides | uiRounded : Supported }
+uiRounded =
+    Value "ui-rounded"
+
+
+{-| The `math` [generic font family name](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family#values).
+
+    fontFamily math
+
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+
+-}
+math : Value { provides | math : Supported }
+math =
+    Value "math"
+
+
+{-| The `fangsong` [generic font family name](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family#values).
+
+    fontFamily fangsong
+
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+
+-}
+fangsong : Value { provides | fangsong : Supported }
+fangsong =
+    Value "fangsong"
+
+
 {-| Define multiple [font families](https://css-tricks.com/almanac/properties/f/font-family/).
 
 Per the CSS spec, a [generic name](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family#%3Cgeneric-name%3E) must always be at the end of this list. (The generic names are [`serif`](#serif), [`sansSerif`](#sansSerif), [`monospace`](#monospace), [`cursive`](#cursive) or [`fantasy`](#fantasy).)
@@ -13251,6 +13344,13 @@ fontFamilies :
             , cursive : Supported
             , fantasy : Supported
             , systemUi : Supported
+            , uiSerif : Supported
+            , uiSansSerif : Supported
+            , uiMonospace : Supported
+            , uiRounded : Supported
+            , emoji : Supported
+            , math : Supported
+            , fangsong : Supported
             }
     -> Style
 fontFamilies list (Value genericFont) =
@@ -13391,6 +13491,8 @@ bolder =
 
     fontStretch ultraExpanded
 
+    fontStretch (pct 100)
+
 -}
 fontStretch :
     BaseValue
@@ -13403,6 +13505,7 @@ fontStretch :
         , expanded : Supported
         , extraExpanded : Supported
         , ultraExpanded : Supported
+        , pct : Supported
         }
     -> Style
 fontStretch (Value val) =
@@ -13548,20 +13651,14 @@ all three different font properties to be synthesised by the browser.
 fontSynthesis3 :
     Value
         { weight : Supported
-        , style : Supported
-        , smallCaps : Supported
         }
     ->
         Value
-            { weight : Supported
-            , style : Supported
-            , smallCaps : Supported
+            { style : Supported
             }
     ->
         Value
-            { weight : Supported
-            , style : Supported
-            , smallCaps : Supported
+            { smallCaps : Supported
             }
     -> Style
 fontSynthesis3 (Value val1) (Value val2) (Value val3) =
@@ -14397,9 +14494,9 @@ property.
 
     fontVariantEmoji unset
 
-    fontVariantemoji emoji
+    fontVariantEmoji emoji
 
-    fontVariantemoji normal
+    fontVariantEmoji normal
 -}
 fontVariantEmoji :
     BaseValue
@@ -14412,9 +14509,11 @@ fontVariantEmoji (Value val) =
     appendProperty <| "font-variant-emoji:" ++ val
 
 
-{-| The `emoji` value used with [`fontVariantEmoji`](#fontVariantEmoji).
+{-| The `emoji` value used with [`fontFamily`](#fontFamily), [`fontFamilies`](#fontFamilies) and [`fontVariantEmoji`](#fontVariantEmoji).
 
-    fontVariantemoji emoji
+    fontFamily emoji
+
+    fontVariantEmoji emoji
 -}
 emoji : Value { provides | emoji : Supported }
 emoji =
@@ -14423,7 +14522,7 @@ emoji =
 
 {-| The `unicode` value used with [`fontVariantEmoji`](#fontVariantEmoji).
 
-    fontVariantemoji unicode
+    fontVariantEmoji unicode
 -}
 unicode : Value { provides | unicode : Supported }
 unicode =
@@ -19682,6 +19781,7 @@ caretColor :
     BaseValue
         (ColorSupported
             { auto : Supported
+            , transparent : Supported
             }
         )
     -> Style

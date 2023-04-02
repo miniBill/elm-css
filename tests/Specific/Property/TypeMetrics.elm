@@ -67,5 +67,10 @@ all =
             (   ( normal, "normal" )
                 :: CssTest.length
             )
+        , CssTest.property1 letterSpacing
+            { functionName = "letterSpacing", propertyName = "letter-spacing" }
+            (   ( normal, "normal" )
+                :: CssTest.length
+            )
             
         ]

@@ -22,4 +22,13 @@ all =
             , ( stroke, "stroke" )
             , ( all_, "all" )
             ]
+        , CssTest.property1 touchAction
+            { functionName = "touchAction", propertyName = "touch-action" }
+            [ ( auto, "auto" )
+            , ( none, "none" )
+            , ( panX, "pan-x" )
+            , ( panY, "pan-y" )
+            , ( pinchZoom, "pinch-zoom" )
+            , ( manipulation, "manipulation" )
+            ]
         ]

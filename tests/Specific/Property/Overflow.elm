@@ -63,4 +63,13 @@ all =
             , ( anywhere, "anywhere" )
             , ( breakWord, "break-word" )
             ]
+        , CssTest.property1 resize
+            { functionName = "resize", propertyName = "resize" }
+            [ ( none, "none" )
+            , ( both, "both" )
+            , ( horizontal, "horizontal" )
+            , ( vertical, "vertical" )
+            , ( block, "block" )
+            , ( inline, "inline" )
+            ]
         ]

@@ -1,4 +1,4 @@
-module Specific.Property.TypeRendering exposing (..)
+module Specific.Property.TypeRenderingSelect exposing (..)
 
 import Css exposing (..)
 import Css.Value exposing (Value(..))
@@ -14,5 +14,13 @@ all =
             , ( optimizeSpeed, "optimizeSpeed" )
             , ( optimizeLegibility, "optimizeLegibility" )
             , ( geometricPrecision, "geometricPrecision" )
+            ]
+        , CssTest.property1 userSelect
+            { functionName = "userSelect", propertyName = "user-select" }
+            [ ( none, "none" )
+            , ( auto, "auto" )
+            , ( text, "text" )
+            , ( contain_, "contain" )
+            , ( all_, "all" )
             ]
         ]
