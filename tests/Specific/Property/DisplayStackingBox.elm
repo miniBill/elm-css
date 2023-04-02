@@ -77,4 +77,13 @@ allStuff =
             [ ( auto, "auto" )
             , ( isolate, "isolate" )
             ]
+        
+        , CssTest.property1 position
+            { functionName = "position", propertyName = "position" }
+            [ ( static, "static" )
+            , ( relative, "relative" )
+            , ( absolute, "absolute" )
+            , ( fixed, "fixed" )
+            , ( sticky, "sticky" )
+            ]
         ]

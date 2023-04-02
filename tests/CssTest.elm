@@ -19,6 +19,7 @@ module CssTest exposing
     , listStyleType
     , time
     , blendMode
+    , basicShape
     )
 
 {-| Module for creating large-scale, fully comprehensive CSS function/value tests.
@@ -1085,4 +1086,50 @@ blendMode =
     , ( saturation, "saturation" )
     , ( color_, "color" )
     , ( luminosity, "luminosity")
+    ]
+
+
+basicShape :
+    List
+        ( Value
+            { supported
+                | insetRect : Supported
+                , insetRect2 : Supported
+                , insetRect3 : Supported
+                , insetRect4 : Supported
+                , circle : Supported
+                , circleAt : Supported
+                , circleAt2 : Supported
+                , ellipse : Supported
+                , ellipseAt : Supported
+                , ellipseAt2 : Supported
+                , polygon : Supported
+                , path : Supported
+            }
+        , String
+        )
+basicShape =
+    [ ( insetRect (px 20) Nothing, "inset(20px)" )
+    , ( insetRect (px 20) (Just <| insetRound (px 2)), "inset(20px round 2px)" )
+    , ( insetRect2 (pct 40) (pct 20) (Just <| insetRound4 (px 1) (px 2) (px 3) (px 1)), "inset(40% 20% round 1px 2px 3px 1px)" )
+    , ( insetRect3 (px 20) (px 10) (pct 10) (Just <| insetRound (px 4)), "inset(20px 10px 10% round 4px)" )
+    , ( insetRect3 (em 4) (em 1) (px 2) Nothing, "inset(4em 1em 2px)" )
+    , ( insetRect4 (cm 4) (cm 5) (cm 2) (cm 1) (Just <| insetRound3 (mm 12) (mm 3) (mm 8)), "inset(4cm 5cm 2cm 1cm round 12mm 3mm 8mm)" ) 
+    , ( insetRect4 (pt 20) (pt 10) (pt 30) (pt 40) (Just <| insetRound2 (pt 2) (pt 5)), "inset(20pt 10pt 30pt 40pt round 2pt 5pt)"  )
+    , ( circle (pct 10), "circle(10%)" )
+    , ( circle closestSide, "circle(closest-side)")
+    , ( circleAt (pct 10) left_, "circle(10% at left)" )
+    , ( circleAt closestSide (rem 5), "circle(closest-side at 5rem)" )
+    , ( circleAt2 closestSide (rem 5) (rem 1), "circle(closest-side at 5rem 1rem)")
+    , ( circleAt2 (pct 10) left_ top_, "circle(10% at left top)" )
+    , ( ellipse (px 20) (px 10), "ellipse(20px 10px)")
+    , ( ellipse closestSide farthestSide, "ellipse(closest-side farthest-side)" )
+    , ( ellipseAt closestSide (pct 10) left_, "ellipse(closest-side 10% at left)" )
+    , ( ellipseAt (pct 20) (pct 10) (rem 5), "ellipse(20% 10% at 5rem)" )
+    , ( ellipseAt2 (rem 5) closestSide (rem 5) (rem 1), "ellipse(5rem closest-side at 5rem 1rem)" )
+    , ( ellipseAt2 farthestSide (pct 10) left_ top_, "ellipse(farthest-side 10% at left top)")
+    , ( polygon [ (20, 30), (40, 80.3), (14, 50) ], "polygon(20% 30%, 40% 80.3%, 14% 50%)")
+    , ( path "M161.693,39.249C94.047,39.249 39.127,94.169 39.127,161.816C39.127,229.462 94.047,284.382 161.693,284.382C229.34,284.382 284.26,229.462 284.26,161.816C284.26,94.169 229.34,39.249 161.693,39.249ZM161.693,71.382C211.605,71.382 211.605,252.249 161.693,252.249C111.782,252.249 71.26,211.727 71.26,161.816C71.26,111.904 111.782,71.382 161.693,71.382Z"
+        , "path(\"M161.693,39.249C94.047,39.249 39.127,94.169 39.127,161.816C39.127,229.462 94.047,284.382 161.693,284.382C229.34,284.382 284.26,229.462 284.26,161.816C284.26,94.169 229.34,39.249 161.693,39.249ZM161.693,71.382C211.605,71.382 211.605,252.249 161.693,252.249C111.782,252.249 71.26,211.727 71.26,161.816C71.26,111.904 111.782,71.382 161.693,71.382Z\")"
+        )
     ]

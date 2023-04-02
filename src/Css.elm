@@ -28,6 +28,7 @@ module Css exposing
     , ImageSupported, Image
     , Angle, AngleSupported, Width, WidthSupported
     , BasicShape, BasicShapeSupported
+    , BlendMode, BlendModeSupported
     , Length, LengthSupported
     , Color, ColorSupported
     , LineStyle, LineStyleSupported
@@ -46,7 +47,11 @@ module Css exposing
     , num, int 
     , rgb, rgba, hsl, hsla, hex, currentcolor
     , string, customIdent, url
-    , circle, circleAt, circleAt2, ellipse, ellipseAt, ellipseAt2, closestSide, farthestSide, polygon, path
+    , insetRect, insetRect2, insetRect3, insetRect4
+    , insetRound, insetRound2, insetRound3, insetRound4
+    , circle, circleAt, circleAt2
+    , ellipse, ellipseAt, ellipseAt2
+    , closestSide, farthestSide, polygon, path
 
     -- common/shared/grouped keyword values
     , unset, initial, inherit, revert
@@ -597,7 +602,17 @@ functions let you define custom properties and selectors, respectively.
 
 @docs Image, ImageSupported
 @docs BasicShape, BasicShapeSupported
-@docs circle, circleAt, circleAt2, ellipse, ellipseAt, ellipseAt2, closestSide, farthestSide, polygon, path
+
+@docs insetRect, insetRect2, insetRect3, insetRect4
+@docs insetRound, insetRound2, insetRound3, insetRound4
+@docs circle, circleAt, circleAt2
+@docs ellipse, ellipseAt, ellipseAt2
+@docs closestSide, farthestSide, polygon, path
+
+
+## Blend Modes
+
+@docs BlendMode, BlendModeSupported
 
 ## Lines
 @docs LineStyle, LineStyleSupported
@@ -2682,7 +2697,10 @@ among other values.
 -}
 type alias BasicShapeSupported supported =
     { supported
-        | inset_ : Supported
+        | insetRect : Supported
+        , insetRect2 : Supported
+        , insetRect3 : Supported
+        , insetRect4 : Supported
         , circle : Supported
         , circleAt : Supported
         , circleAt2 : Supported
@@ -2699,6 +2717,34 @@ type alias BasicShapeSupported supported =
 type alias BasicShape =
     BasicShapeSupported {}
 
+
+{-| A type alias used to accept a [blend mode](https://developer.mozilla.org/en-US/docs/Web/CSS/blend-mode)
+among other values.
+-}
+type alias BlendModeSupported supported =
+    { supported
+    | normal : Supported
+    , multiply : Supported
+    , screen : Supported
+    , overlay : Supported
+    , darken : Supported
+    , lighten : Supported
+    , colorDodge : Supported
+    , colorBurn : Supported
+    , hardLight : Supported
+    , softLight : Supported
+    , difference : Supported
+    , exclusion : Supported
+    , hue : Supported
+    , saturation : Supported
+    , color_ : Supported
+    , luminosity : Supported
+    }
+
+{-| A type alias used to accept a [blend mode](https://developer.mozilla.org/en-US/docs/Web/CSS/blend-mode).
+-}
+type alias BlendMode =
+    BlendModeSupported {}
 
 {-| A type alias used to accept an [time](https://developer.mozilla.org/en-US/docs/Web/CSS/time)
 among other values.
@@ -3473,6 +3519,337 @@ url str =
 ------------------------------------------------------------------------
 
 
+{-| Provides a one-argument `inset()` value. (Which creates an
+inset rectangle shape.)
+
+    clipPath <| insetRect (px 20) Nothing, "inset(20px)" )
+
+    clipPath <| insetRect (px 20) (Just <| insetRound (px 2))
+
+    clipPath <| insetRect2 (pct 40) (pct 20) (Just <| insetRound4 (px 1) (px 2) (px 3) (px 1))
+
+    clipPath <| insetRect3 (px 20) (px 10) (pct 10) (Just <| insetRound (px 4))
+
+    clipPath <| insetRect3 (em 4) (em 1) (px 2) Nothing
+
+    clipPath <| insetRect4 (cm 4) (cm 5) (cm 2) (cm 1) (Just <| insetRound3 (mm 12) (mm 3) (mm 8))
+
+    clipPath <| insetRect4 (pt 20) (pt 10) (pt 30) (pt 40) (Just <| insetRound2 (pt 2) (pt 5))
+
+Note: This is called `insetRect` instead of `inset` because [`inset`](#inset) and [`inset_`](#inset_)
+are already property and value functions handling other areas of CSS.
+-}
+insetRect :
+    Value (
+        LengthSupported
+            { pct : Supported }
+    )
+    -> Maybe
+        ( Value
+            { insetRound : Supported
+            , insetRound2 : Supported
+            , insetRound3 : Supported
+            , insetRound4 : Supported
+            }
+        )
+    -> Value { provides | insetRect : Supported }
+insetRect (Value val) maybeRounding =
+    Value <| "inset("
+        ++ val
+        ++ ( case maybeRounding of
+                Just ( Value r )  -> " " ++ r
+                Nothing -> "" 
+            )
+        ++ ")"
+
+
+{-| Provides a 2-argument `inset()` value. (Which creates an
+inset rectangle shape.)
+
+    clipPath <| insetRect (px 20) Nothing, "inset(20px)" )
+
+    clipPath <| insetRect (px 20) (Just <| insetRound (px 2))
+
+    clipPath <| insetRect2 (pct 40) (pct 20) (Just <| insetRound4 (px 1) (px 2) (px 3) (px 1))
+
+    clipPath <| insetRect3 (px 20) (px 10) (pct 10) (Just <| insetRound (px 4))
+
+    clipPath <| insetRect3 (em 4) (em 1) (px 2) Nothing
+
+    clipPath <| insetRect4 (cm 4) (cm 5) (cm 2) (cm 1) (Just <| insetRound3 (mm 12) (mm 3) (mm 8))
+    
+    clipPath <| insetRect4 (pt 20) (pt 10) (pt 30) (pt 40) (Just <| insetRound2 (pt 2) (pt 5))
+
+Note: This is called `insetRect2` instead of `inset2` because [`inset`](#inset) and [`inset_`](#inset_)
+are already property and value functions handling other areas of CSS.
+-}
+insetRect2 :
+    Value (
+        LengthSupported
+            { pct : Supported }
+    )
+    -> Value (
+        LengthSupported
+            { pct : Supported }
+    )
+    -> Maybe
+        ( Value
+            { insetRound : Supported
+            , insetRound2 : Supported
+            , insetRound3 : Supported
+            , insetRound4 : Supported
+            }
+        )
+    -> Value { provides | insetRect : Supported }
+insetRect2 (Value val1) (Value val2) maybeRounding =
+    Value <| "inset("
+        ++ val1
+        ++ " "
+        ++ val2
+        ++ ( case maybeRounding of
+                Just ( Value r )  -> " " ++ r
+                Nothing -> "" 
+            )
+        ++ ")"
+
+{-| Provides a 2-argument `inset()` value. (Which creates an
+inset rectangle shape.)
+
+    clipPath <| insetRect (px 20) Nothing, "inset(20px)" )
+
+    clipPath <| insetRect (px 20) (Just <| insetRound (px 2))
+
+    clipPath <| insetRect2 (pct 40) (pct 20) (Just <| insetRound4 (px 1) (px 2) (px 3) (px 1))
+
+    clipPath <| insetRect3 (px 20) (px 10) (pct 10) (Just <| insetRound (px 4))
+
+    clipPath <| insetRect3 (em 4) (em 1) (px 2) Nothing
+
+    clipPath <| insetRect4 (cm 4) (cm 5) (cm 2) (cm 1) (Just <| insetRound3 (mm 12) (mm 3) (mm 8))
+    
+    clipPath <| insetRect4 (pt 20) (pt 10) (pt 30) (pt 40) (Just <| insetRound2 (pt 2) (pt 5))
+
+Note: This is called `insetRect3` instead of `inset3` because [`inset`](#inset) and [`inset_`](#inset_)
+are already property and value functions handling other areas of CSS.
+-}
+insetRect3 :
+    Value (
+        LengthSupported
+            { pct : Supported }
+    )
+    -> Value (
+        LengthSupported
+            { pct : Supported }
+    )
+    -> Value (
+        LengthSupported
+            { pct : Supported }
+    )
+    -> Maybe
+        ( Value
+            { insetRound : Supported
+            , insetRound2 : Supported
+            , insetRound3 : Supported
+            , insetRound4 : Supported
+            }
+        )
+    -> Value { provides | insetRect : Supported }
+insetRect3 (Value val1) (Value val2) (Value val3) maybeRounding =
+    Value <| "inset("
+        ++ val1
+        ++ " "
+        ++ val2
+        ++ " "
+        ++ val3
+        ++ ( case maybeRounding of
+                Just ( Value r )  -> " " ++ r
+                Nothing -> "" 
+            )
+        ++ ")"
+
+
+{-| Provides a 2-argument `inset()` value. (Which creates an
+inset rectangle shape.)
+
+    clipPath <| insetRect (px 20) Nothing, "inset(20px)" )
+
+    clipPath <| insetRect (px 20) (Just <| insetRound (px 2))
+
+    clipPath <| insetRect2 (pct 40) (pct 20) (Just <| insetRound4 (px 1) (px 2) (px 3) (px 1))
+
+    clipPath <| insetRect3 (px 20) (px 10) (pct 10) (Just <| insetRound (px 4))
+
+    clipPath <| insetRect3 (em 4) (em 1) (px 2) Nothing
+
+    clipPath <| insetRect4 (cm 4) (cm 5) (cm 2) (cm 1) (Just <| insetRound3 (mm 12) (mm 3) (mm 8))
+    
+    clipPath <| insetRect4 (pt 20) (pt 10) (pt 30) (pt 40) (Just <| insetRound2 (pt 2) (pt 5))
+
+Note: This is called `insetRect4` instead of `inset4` because [`inset`](#inset) and [`inset_`](#inset_)
+are already property and value functions handling other areas of CSS.
+-}
+insetRect4 :
+    Value (
+        LengthSupported
+            { pct : Supported }
+    )
+    -> Value (
+        LengthSupported
+            { pct : Supported }
+    )
+    -> Value (
+        LengthSupported
+            { pct : Supported }
+    )
+    -> Value (
+        LengthSupported
+            { pct : Supported }
+    )
+    -> Maybe
+        ( Value
+            { insetRound : Supported
+            , insetRound2 : Supported
+            , insetRound3 : Supported
+            , insetRound4 : Supported
+            }
+        )
+    -> Value { provides | insetRect : Supported }
+insetRect4 (Value val1) (Value val2) (Value val3) (Value val4) maybeRounding =
+    Value <| "inset("
+        ++ val1
+        ++ " "
+        ++ val2
+        ++ " "
+        ++ val3
+        ++ " "
+        ++ val4
+        ++ ( case maybeRounding of
+                Just ( Value r )  -> " " ++ r
+                Nothing -> "" 
+            )
+        ++ ")"
+
+
+{-| Provides a 1-value border radius for use with `insetRect`(#insetRect) (`inset()`).
+
+    insetRect (px 40) (Just <| insetRound (px 2))
+
+    insetRect (px 40) (Just <| insetRound2 (px 2) (px 5))
+
+    insetRect (px 40) (Just <| insetRound3 (px 2) (px 3) (px 4))
+
+    insetRect (px 40) (Just <| insetRound4 (px 2) (px 5) (px 1) (px 3))
+-}
+insetRound :
+    Value
+        ( LengthSupported { pct : Supported } )
+    -> Value
+        { provides | insetRound : Supported }
+insetRound (Value val) =
+    Value <| "round " ++ val
+
+
+{-| Provides a 2-value border radius for use with `insetRect`(#insetRect) (`inset()`).
+
+    insetRect (px 40) (Just <| insetRound (px 2))
+
+    insetRect (px 40) (Just <| insetRound2 (px 2) (px 5))
+
+    insetRect (px 40) (Just <| insetRound3 (px 2) (px 3) (px 4))
+
+    insetRect (px 40) (Just <| insetRound4 (px 2) (px 5) (px 1) (px 3))
+-}
+insetRound2 :
+    Value
+        ( LengthSupported
+            { pct : Supported }
+        )
+    -> Value
+        ( LengthSupported
+            { pct : Supported }
+        )
+    -> Value
+        { provides | insetRound2 : Supported }
+insetRound2 (Value val1) (Value val2) =
+    Value <| "round " ++ val1 ++ " " ++ val2
+
+
+{-| Provides a 3-value border radius for use with `insetRect`(#insetRect) (`inset()`).
+
+    insetRect (px 40) (Just <| insetRound (px 2))
+
+    insetRect (px 40) (Just <| insetRound2 (px 2) (px 5))
+
+    insetRect (px 40) (Just <| insetRound3 (px 2) (px 3) (px 4))
+
+    insetRect (px 40) (Just <| insetRound4 (px 2) (px 5) (px 1) (px 3))
+-}
+insetRound3 :
+    Value
+        ( LengthSupported
+            { pct : Supported }
+        )
+    -> Value
+        ( LengthSupported
+            { pct : Supported }
+        )
+    -> Value
+        ( LengthSupported
+            { pct : Supported }
+        )
+    -> Value
+        { provides | insetRound3 : Supported }
+insetRound3 (Value val1) (Value val2) (Value val3) =
+    Value <|
+        "round "
+        ++ val1
+        ++ " "
+        ++ val2
+        ++ " "
+        ++ val3
+
+
+{-| Provides a 4-value border radius for use with `insetRect`(#insetRect) (`inset()`).
+
+    insetRect (px 40) (Just <| insetRound (px 2))
+
+    insetRect (px 40) (Just <| insetRound2 (px 2) (px 5))
+
+    insetRect (px 40) (Just <| insetRound3 (px 2) (px 3) (px 4))
+
+    insetRect (px 40) (Just <| insetRound4 (px 2) (px 5) (px 1) (px 3))
+-}
+insetRound4 :
+    Value
+        ( LengthSupported
+            { pct : Supported }
+        )
+    -> Value
+        ( LengthSupported
+            { pct : Supported }
+        )
+    -> Value
+        ( LengthSupported
+            { pct : Supported }
+        )
+    -> Value
+        ( LengthSupported
+            { pct : Supported }
+        )
+    -> Value
+        { provides | insetRound3 : Supported }
+insetRound4 (Value val1) (Value val2) (Value val3) (Value val4) =
+    Value <|
+        "round "
+        ++ val1
+        ++ " "
+        ++ val2
+        ++ " "
+        ++ val3
+        ++ " "
+        ++ val4
+
+
 {-| Provides a one-argument `circle()` value.
 
     clipPath (circle (pct 10))
@@ -3504,7 +3881,7 @@ circle (Value val) =
 
 {-| Provides a 2-argument `circle(<rad> at <pos>)` value.
 
-    clipPath (circleAt (pct 10) left)
+    clipPath (circleAt (pct 10) left_)
 
     clipPath (circleAt closestSide (rem 5))
 
@@ -3521,10 +3898,10 @@ circleAt :
     -> Value (
         LengthSupported
             { pct : Supported
-            , top : Supported
-            , bottom : Supported
-            , left : Supported
-            , right : Supported
+            , top_ : Supported
+            , bottom_ : Supported
+            , left_ : Supported
+            , right_ : Supported
             , center : Supported
             }
     )
@@ -3542,7 +3919,7 @@ circleAt (Value val1) (Value val2) =
 
     clipPath (circleAt2 closestSide (rem 5) (rem 1))
 
-    clipPath (circleAt2 (pct 10) top left)
+    clipPath (circleAt2 (pct 10) top_ left_)
 -}
 circleAt2 :
     Value (
@@ -3555,16 +3932,16 @@ circleAt2 :
     -> Value (
         LengthSupported
             { pct : Supported
-            , left : Supported
-            , right : Supported
+            , left_ : Supported
+            , right_ : Supported
             , center : Supported
             }
     )
     -> Value (
         LengthSupported
             { pct : Supported
-            , top : Supported
-            , bottom : Supported
+            , top_ : Supported
+            , bottom_ : Supported
             , center : Supported
             }
     )
@@ -3586,7 +3963,7 @@ circleAt2 (Value radius) (Value posX) (Value posY)=
 
     clipPath (ellipse closestSide farthestSide)
 
-    clipPath (ellipseAt closestSide (pct 10) left)
+    clipPath (ellipseAt closestSide (pct 10) left_)
 
     clipPath (ellipseAt (pct 20) (pct 10) (rem 5))
 
@@ -3620,7 +3997,7 @@ ellipse (Value radx) (Value rady) =
 
 {-| Provides a 3-argument `ellipse(<radiusX> <radiusY> at <pos>)` value.
 
-    clipPath (ellipseAt (pct 50) (pct 10) left)
+    clipPath (ellipseAt (pct 50) (pct 10) left_)
 
     clipPath (ellipseAt (rem 5) closestSide (rem 5))
 -}
@@ -3642,10 +4019,10 @@ ellipseAt :
     -> Value (
         LengthSupported
             { pct : Supported
-            , top : Supported
-            , bottom : Supported
-            , left : Supported
-            , right : Supported
+            , top_ : Supported
+            , bottom_ : Supported
+            , left_ : Supported
+            , right_ : Supported
             , center : Supported
             }
     )
@@ -3665,7 +4042,7 @@ ellipseAt (Value radx) (Value rady) (Value pos) =
 
     clipPath (ellipseAt2 (rem 6) closestSide (rem 5) (rem 1))
 
-    clipPath (ellipseAt2 farthestSide (pct 10) top left)
+    clipPath (ellipseAt2 farthestSide (pct 10) left_ top_)
 -}
 ellipseAt2 :
     Value (
@@ -3685,16 +4062,16 @@ ellipseAt2 :
     -> Value (
         LengthSupported
             { pct : Supported
-            , left : Supported
-            , right : Supported
+            , left_ : Supported
+            , right_ : Supported
             , center : Supported
             }
     )
     -> Value (
         LengthSupported
             { pct : Supported
-            , top : Supported
-            , bottom : Supported
+            , top_ : Supported
+            , bottom_ : Supported
             , center : Supported
             }
     )
@@ -3770,7 +4147,7 @@ The input string needs to be a valid SVG path string.
 -}
 path : String -> Value { provides | path : Supported }
 path svgPathDef =
-    Value <| "path('" ++ svgPathDef ++ "')"
+    Value <| "path(\"" ++ svgPathDef ++ "\")"
 
 
 ------------------------------------------------------------------------
@@ -12244,24 +12621,7 @@ Note that this takes an argument of [`color_`](#color_), not [`color`](#color)!
 
 -}
 backgroundBlendMode :
-    BaseValue
-        { normal : Supported
-        , multiply : Supported
-        , screen : Supported
-        , overlay : Supported
-        , darken : Supported
-        , lighten : Supported
-        , colorDodge : Supported
-        , colorBurn : Supported
-        , hardLight : Supported
-        , softLight : Supported
-        , difference : Supported
-        , exclusion : Supported
-        , hue : Supported
-        , saturation : Supported
-        , color_ : Supported
-        , luminosity : Supported
-        }
+    BaseValue BlendMode
     -> Style
 backgroundBlendMode (Value str) =
     appendProperty ("background-blend-mode:" ++ str)
@@ -12287,25 +12647,7 @@ to have no values in the output.
 
 -}
 backgroundBlendModeMany :
-    List (Value
-            { normal : Supported
-            , multiply : Supported
-            , screen : Supported
-            , overlay : Supported
-            , darken : Supported
-            , lighten : Supported
-            , colorDodge : Supported
-            , colorBurn : Supported
-            , hardLight : Supported
-            , softLight : Supported
-            , difference : Supported
-            , exclusion : Supported
-            , hue : Supported
-            , saturation : Supported
-            , color_ : Supported
-            , luminosity : Supported
-            }
-        )
+    List ( Value BlendMode )
     -> Style
 backgroundBlendModeMany values =
     appendProperty ("background-blend-mode:" ++ valueListToString "," values )
@@ -18100,8 +18442,9 @@ objectPosition :
         (LengthSupported
             { left_ : Supported
             , right_ : Supported
+            , top_ : Supported
+            , bottom_ : Supported
             , center : Supported
-            , pct : Supported
             }
         )
     -> Style
@@ -21780,24 +22123,7 @@ visibility (Value str) =
 
 -}
 mixBlendMode :
-    BaseValue
-        { normal : Supported
-        , multiply : Supported
-        , screen : Supported
-        , overlay : Supported
-        , darken : Supported
-        , lighten : Supported
-        , colorDodge : Supported
-        , colorBurn : Supported
-        , hardLight : Supported
-        , softLight : Supported
-        , difference : Supported
-        , exclusion : Supported
-        , hue : Supported
-        , saturation : Supported
-        , color_ : Supported
-        , luminosity : Supported
-        }
+    BaseValue BlendMode
     -> Style
 mixBlendMode (Value val) =
     appendProperty ("mix-blend-mode:" ++ val)
@@ -21852,12 +22178,17 @@ crispEdges =
 
     clipPath (circle (pct 2))
 
+    clipPath (url "test-img.svg")
+
     clipPath2 marginBox (circleAt2 farthestSide left top)
+    
 -}
 clipPath :
     BaseValue
         (BasicShapeSupported
-            { marginBox : Supported
+            { none : Supported
+            , url : Supported
+            , marginBox : Supported
             , borderBox : Supported
             , paddingBox : Supported
             , contentBox : Supported
@@ -21886,7 +22217,7 @@ clipPath2 :
         , strokeBox : Supported
         , viewBox : Supported
         }
-    -> Value (BasicShapeSupported a)
+    -> Value (BasicShape)
     -> Style
 clipPath2 (Value val1) (Value val2) =
     appendProperty ("clip-path:" ++ val1 ++ " " ++ val2)
