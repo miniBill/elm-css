@@ -325,4 +325,79 @@ all =
         , CssTest.property1 borderInlineEndColor
             { functionName = "borderInlineEndColor", propertyName = "border-inline-end-color" }
             CssTest.color
+
+        -----------------------------------------------------------------
+        
+        , CssTest.property1 borderImageOutset
+            { functionName = "borderImageOutset", propertyName = "border-image-outset" }
+            (   ( num 1.5, "1.5" )
+                :: CssTest.length
+            )
+        
+        , CssTest.property
+            { functionName = "borderImageOutset2", propertyName = "border-image-outset" }
+            (   [ ( borderImageOutset2 (num 1.5) (num 3), "1.5 3" )
+                , ( borderImageOutset2 (px 15) (num 3), "15px 3" )
+                ]
+                ++ CssTest.length2 borderImageOutset2
+            )
+
+        , CssTest.property
+            { functionName = "borderImageOutset3", propertyName = "border-image-outset" }
+            (   [ ( borderImageOutset3 (num 1.5) (num 3) (px 4), "1.5 3 4px" )
+                , ( borderImageOutset3 (em 3) (num 4) (rem 5), "3em 4 5rem" )
+                , ( borderImageOutset3 (num 3) (num 4) (num 5), "3 4 5" )
+                ]
+                ++ CssTest.length3 borderImageOutset3
+            )
+
+        , CssTest.property
+            { functionName = "borderImageOutset4", propertyName = "border-image-outset" }
+            (   [ ( borderImageOutset4 (px 20) (num 1.5) (num 3) (px 4), "20px 1.5 3 4px" )
+                , ( borderImageOutset4 (num 10) (em 3) (num 4) (rem 5), "10 3em 4 5rem" )
+                , ( borderImageOutset4 (num 12) (num 3) (num 4) (num 5), "12 3 4 5" )
+                ]
+                ++ CssTest.length4 borderImageOutset4
+            )
+
+        , CssTest.property1 borderImageWidth
+            { functionName = "borderImageWidth", propertyName = "border-image-width" }
+            (   [ ( num 1.5, "1.5" )
+                , ( auto, "auto" )
+                , ( pct 5, "5%" )
+                ]
+                ++ CssTest.length
+            )
+        
+        , CssTest.property
+            { functionName = "borderImageWidth2", propertyName = "border-image-width" }
+            (   [ ( borderImageWidth2 (num 1.5) (num 3), "1.5 3" )
+                , ( borderImageWidth2 (px 15) (num 3), "15px 3" )
+                , ( borderImageWidth2 (pct 50) (num 1), "50% 1" )
+                , ( borderImageWidth2 auto (pct 40), "auto 40%" )
+                ]
+                ++ CssTest.length2 borderImageWidth2
+            )
+
+        , CssTest.property
+            { functionName = "borderImageWidth3", propertyName = "border-image-width" }
+            (   [ ( borderImageWidth3 (num 1.5) (num 3) (px 4), "1.5 3 4px" )
+                , ( borderImageWidth3 (em 3) (num 4) (rem 5), "3em 4 5rem" )
+                , ( borderImageWidth3 (num 3) (num 4) (num 5), "3 4 5" )
+                , ( borderImageWidth3 auto (pct 15) (num 5), "auto 15% 5" )
+                ]
+                ++ CssTest.length3 borderImageWidth3
+            )
+
+        , CssTest.property
+            { functionName = "borderImageWidth4", propertyName = "border-image-width" }
+            (   [ ( borderImageWidth4 (px 20) (num 1.5) (num 3) (px 4), "20px 1.5 3 4px" )
+                , ( borderImageWidth4 (num 10) (em 3) (num 4) (rem 5), "10 3em 4 5rem" )
+                , ( borderImageWidth4 (num 12) (num 3) (num 4) (num 5), "12 3 4 5" )
+                , ( borderImageWidth4 (num 10) (em 3) (pct 4) (rem 5), "10 3em 4% 5rem" )
+                , ( borderImageWidth4 (pct 80) (num 3) auto (num 5), "80% 3 auto 5" )
+                ]
+                ++ CssTest.length4 borderImageWidth4
+            )
+
         ]

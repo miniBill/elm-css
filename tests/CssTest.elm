@@ -18,6 +18,7 @@ module CssTest exposing
     , image
     , listStyleType
     , time
+    , blendMode
     )
 
 {-| Module for creating large-scale, fully comprehensive CSS function/value tests.
@@ -1041,4 +1042,47 @@ time :
 time =
     [ ( s 1.2, "1.2s" )
     , ( ms 300, "300ms" )
+    ]
+
+
+blendMode :
+    List
+        ( Value
+            { supported
+                | normal : Supported
+                , multiply : Supported
+                , screen : Supported
+                , overlay : Supported
+                , darken : Supported
+                , lighten : Supported
+                , colorDodge : Supported
+                , colorBurn : Supported
+                , hardLight : Supported
+                , softLight : Supported
+                , difference : Supported
+                , exclusion : Supported
+                , hue : Supported
+                , saturation : Supported
+                , color_ : Supported
+                , luminosity : Supported
+            }
+        , String
+        )
+blendMode =
+    [ ( normal, "normal" )
+    , ( multiply, "multiply" )
+    , ( screen, "screen" )
+    , ( overlay, "overlay" )
+    , ( darken, "darken" )
+    , ( lighten, "lighten" )
+    , ( colorDodge, "color-dodge" )
+    , ( colorBurn, "color-burn" )
+    , ( hardLight, "hard-light" )
+    , ( softLight, "soft-light" )
+    , ( difference, "difference" )
+    , ( exclusion, "exclusion" )
+    , ( hue, "hue" )
+    , ( saturation, "saturation" )
+    , ( color_, "color" )
+    , ( luminosity, "luminosity")
     ]

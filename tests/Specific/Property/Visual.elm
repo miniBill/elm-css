@@ -14,10 +14,16 @@ all =
             , ( hidden, "hidden" )
             , ( collapse, "collapse" )
             ]
-        ,  CssTest.property1 opacity
+        , CssTest.property1 opacity
             { functionName = "opacity", propertyName = "opacity" }
             [ ( num 0.2, "0.2" )
             , ( zero, "0" )
             , ( pct 23.4, "23.4%" )
+            ]
+        , CssTest.property1 imageRendering
+            { functionName = "imageRendering", propertyName = "image-rendering" }
+            [ ( auto, "auto" )
+            , ( crispEdges, "crisp-edges" )
+            , ( pixelated, "pixelated" )
             ]
         ]

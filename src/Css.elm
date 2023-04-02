@@ -9397,6 +9397,7 @@ borderImageWidth3 :
         (LengthSupported
             { pct : Supported
             , num : Supported
+            , auto : Supported
             }
         )
     ->
@@ -13715,15 +13716,16 @@ fontVariationSettingsMany :
         )
     -> Style
 fontVariationSettingsMany list =
-    appendProperty <|
-        "font-variation-settings:"
-        ++
-        ( list
-        |> List.map
-            (\(tagVal, numberVal) -> (enquoteString tagVal) ++ " " ++ (String.fromFloat numberVal)
+    appendProperty <| "font-variation-settings:" ++
+        if List.length list == 0 then
+            Value.unpack unset
+        else
+            ( list
+            |> List.map
+                (\(tagVal, numberVal) -> (enquoteString tagVal) ++ " " ++ (String.fromFloat numberVal)
+                )
+            |> String.join ", "
             )
-        |> String.join ", "
-        )
 
 
 ------------------------------------------------------------------------

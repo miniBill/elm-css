@@ -93,4 +93,16 @@ all =
             [ ( fontSynthesis3 weight style smallCaps, "weight style small-caps" )
             ]
 
+        , CssTest.property1 fontVariationSettings
+            { functionName = "fontVariationSettings", propertyName = "font-variation-settings" }
+            [ ( normal, "normal")
+            ]
+        
+        , CssTest.property
+            { functionName = "fontVariationSettingsMany", propertyName = "font-variation-settings" }
+            [ ( fontVariationSettingsMany [], "unset" )
+            , ( fontVariationSettingsMany [ ("XHGT", 0.7) ], "\"XHGT\" 0.7" )
+            , ( fontVariationSettingsMany [ ("wdth", 0.3), ("wght", 800) ], "\"wdth\" 0.3, \"wght\" 800" )
+            ]
+        
         ]

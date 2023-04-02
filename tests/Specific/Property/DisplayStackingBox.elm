@@ -72,4 +72,9 @@ allStuff =
             [ ( contentBox, "content-box" )
             , ( borderBox, "border-box" )
             ]
+        , CssTest.property1 isolation
+            { functionName = "isolation", propertyName = "isolation" }
+            [ ( auto, "auto" )
+            , ( isolate, "isolate" )
+            ]
         ]

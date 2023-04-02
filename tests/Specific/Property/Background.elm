@@ -13,15 +13,45 @@ all =
             (( none, "none" )
                 :: CssTest.image
             )
+
+        , CssTest.property1 backgroundClip
+            { functionName = "backgroundClip", propertyName = "background-clip" }
+            [ ( borderBox, "border-box" )
+            , ( paddingBox, "padding-box" )
+            , ( contentBox, "content-box" )
+            , ( text, "text" )
+            ]
+        
+        , CssTest.property
+            { functionName = "backgroundClipMany", propertyName = "background-clip" }
+            [ ( backgroundClipMany [], "unset" )
+            , ( backgroundClipMany [ borderBox, text, paddingBox ], "border-box,text,padding-box" )
+            , ( backgroundClipMany [ text, paddingBox, contentBox ], "text,padding-box,content-box" )
+            ]
+
+        , CssTest.property1 backgroundBlendMode
+            { functionName = "backgroundBlendMode", propertyName = "background-blend-mode" }
+            CssTest.blendMode
+        
+        , CssTest.property
+            { functionName = "backgroundBlendModeMany", propertyName = "background-blend-mode" }
+            [ ( backgroundBlendModeMany [], "unset" )
+            , ( backgroundBlendModeMany [ darken, luminosity ], "darken,luminosity" )
+            , ( backgroundBlendModeMany [ multiply, colorDodge, softLight ], "multiply,color-dodge,soft-light" )
+            , ( backgroundBlendModeMany [ screen, overlay, colorBurn ], "screen,overlay,color-burn" )
+            , ( backgroundBlendModeMany [ hardLight, difference, exclusion, hue ], "hard-light,difference,exclusion,hue" )
+            , ( backgroundBlendModeMany [ saturation, color_, luminosity ], "saturation,color,luminosity" )
+            ]
+
         , CssTest.property1 backgroundPosition
             { functionName = "backgroundPosition", propertyName = "background-position" }
-            ([ ( left_, "left" )
-             , ( right_, "right" )
-             , ( top_, "top" )
-             , ( bottom_, "bottom" )
-             , ( center, "center" )
-             , ( pct 23, "23%" )
-             ]
+            (   [ ( left_, "left" )
+                , ( right_, "right" )
+                , ( top_, "top" )
+                , ( bottom_, "bottom" )
+                , ( center, "center" )
+                , ( pct 23, "23%" )
+                ]
                 ++ CssTest.length
             )
         , CssTest.property { functionName = "backgroundPosition2", propertyName = "background-position" }
