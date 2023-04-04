@@ -438,12 +438,12 @@ module Css exposing
     -- transformations and perspective
     , TransformFunction, TransformFunctionSupported
     , transform, transformMany
-    , transformOrigin, transformOrigin2
+    , transformOrigin, transformOrigin2, transformOrigin3
     , transformBox, transformStyle
     , flat, preserve3d
     , matrix, matrix3d
     , scale, scale2, scale3, scale_, scale2_, scaleX, scaleY, scaleZ, scale3d
-    , rotate, rotate2, rotate_, rotateX, rotateY, rotateZ, rotate3d, vec3
+    , rotate, rotate2, rotate4, rotate_, rotateX, rotateY, rotateZ, rotate3d
     , skew, skew2, skewX, skewY
     , translate, translate2, translateX, translateY, translateZ, translate3d
     , perspective, perspectiveOrigin, perspectiveOrigin2
@@ -1413,7 +1413,7 @@ Other values you can use for flex item alignment:
 
 @docs TransformFunction, TransformFunctionSupported
 @docs transform, transformMany
-@docs transformOrigin, transformOrigin2
+@docs transformOrigin, transformOrigin2, transformOrigin3
 @docs transformBox, transformStyle
 @docs flat, preserve3d
 
@@ -1427,7 +1427,7 @@ Other values you can use for flex item alignment:
 
 ## Rotation
 
-@docs rotate, rotate2, rotate_, rotateX, rotateY, rotateZ, rotate3d, vec3
+@docs rotate, rotate2, rotate4, rotate_, rotateX, rotateY, rotateZ, rotate3d
 
 ## Skewing (distortion)
 
@@ -20703,31 +20703,30 @@ type alias TransformFunctionSupported supported =
 
 {-| The [`transform`](https://css-tricks.com/almanac/properties/t/transform/) property.
 
-    transform none
-    transform (matrix 1.0 2.0 3.0 4.0 5.0 6.0)
-    transform (matrix3d 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1)
-    transform (translate (px 12))
-    transform (translate2 (px 12) (pct 50))
-    transform (translateX (em 2))
-    transform (translateY (in 3))
-    transform (translateZ (px 2))
-    transform (translate3d (px 12) (pct 50) (em 3))
-    transform (scale_ 2)
-    transform (scale2_ 2, 0.5)
-    transform (scaleX 2)
-    transform (scaleY 0.5)
-    transform (scaleZ 0.3)
-    transform (scale3d 2.5 1.2 0.3)
-    transform (skew (deg 20))
-    transform (skew2 (deg 30) (deg 20))
-    transform (skewX (deg 30))
-    transform (skewY (rad 1.07))
-    transform (rotate_ (turn 0.5))
-    transform (rotateX (deg 10))
-    transform (rotateY (deg 10))
-    transform (rotateZ (deg 10))
-    transform (rotate3d 1 2.0 3.0 (deg 10))
-    transform (perspective_ (px 17))
+    transform <| matrix 1.0 2.0 3.0 4.0 5.0 6.0
+    transform <| matrix3d 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+    transform <| translate (px 12)
+    transform <| translate2 (px 12) (pct 50)
+    transform <| translateX (em 2)
+    transform <| translateY (inch 3)
+    transform <| translateZ (px 2)
+    transform <| translate3d (px 12) (pct 50) (em 3)
+    transform <| scale_ 2
+    transform <| scale2_ 2 0.5
+    transform <| scaleX 2
+    transform <| scaleY 0.5
+    transform <| scaleZ 0.3
+    transform <| scale3d 2.5 1.2 0.3
+    transform <| skew (deg 20)
+    transform <| skew2 (deg 30)
+    transform <| skewX (deg 30)
+    transform <| skewY (rad 1.07)
+    transform <| rotate_ (turn 0.5)
+    transform <| rotateX (deg 10)
+    transform <| rotateY (deg 10)
+    transform <| rotateZ (deg 10)
+    transform <| rotate3d 1 2.0 3.0 (deg 10)
+    transform <| perspective_ (px 17)
 
 -}
 transform : BaseValue (TransformFunctionSupported { none : Supported }) -> Style
@@ -20755,23 +20754,45 @@ transformMany values =
 
 {-| Sets [`transform-origin`](https://css-tricks.com/almanac/properties/t/transform-origin/).
 
+This is the 1-argument variant, which lets you set certain
+keywords and single lengths or percentages.
+
     transformOrigin top_
 
     transformOrigin center
 
     transformOrigin bottom
 
+    transformOrigin (px 30)
+
     transformOrigin (pct 50)
+
+    transformOrigin2 left_ top_
+
+    transformOrigin2 right_ center 
+
+    transformOrigin2 right_ bottom_
+
+    transformOrigin2 (pct 50) (pct 50)
+
+    transformOrigin3 (pct 10) (px 2) (px 10)
+
+    transformOrigin3 left_ (px 5) (px -4)
+
+    transformOrigin3 right_ bottom_ (rem 2)
 
 -}
 transformOrigin :
     BaseValue
-        { top_ : Supported
-        , center : Supported
-        , bottom_ : Supported
-        , pct : Supported
-        , calc : Supported
-        }
+        ( LengthSupported 
+            { top_ : Supported
+            , center : Supported
+            , bottom_ : Supported
+            , left_ : Supported
+            , right_ : Supported
+            , pct : Supported
+            }
+        )
     -> Style
 transformOrigin (Value vert) =
     appendProperty ("transform-origin:" ++ vert)
@@ -20779,34 +20800,71 @@ transformOrigin (Value vert) =
 
 {-| Sets [`transform-origin`](https://css-tricks.com/almanac/properties/t/transform-origin/).
 
-    transformOrigin2 top_ left
+This 2-argument variant lets you set x and y offsets in a single declaration.
 
-    transformOrigin2 center right_
 
-    transformOrigin2 bottom_ right_
+    transformOrigin2 left_ top_
+
+    transformOrigin2 right_ center 
+
+    transformOrigin2 right_ bottom_
 
     transformOrigin2 (pct 50) (pct 50)
 
 -}
 transformOrigin2 :
-    Value
-        { top_ : Supported
-        , center : Supported
-        , bottom_ : Supported
-        , pct : Supported
-        , calc : Supported
-        }
-    ->
-        Value
+    Value ( LengthSupported
             { left_ : Supported
-            , center : Supported
             , right_ : Supported
+            , center : Supported
             , pct : Supported
-            , calc : Supported
             }
+        )
+    ->
+        Value ( LengthSupported
+                { top_ : Supported
+                , bottom_ : Supported
+                , center : Supported
+                , pct : Supported
+                }
+            )
     -> Style
-transformOrigin2 (Value vert) (Value horiz) =
-    appendProperty ("transform-origin:" ++ vert ++ " " ++ horiz)
+transformOrigin2 (Value horiz) (Value vert) =
+    appendProperty ("transform-origin:" ++ horiz ++ " " ++ vert)
+
+
+{-| Sets [`transform-origin`](https://css-tricks.com/almanac/properties/t/transform-origin/).
+
+This 3-argument variant lets you set x, y and z offsets in a single declaration.
+
+    transformOrigin3 (pct 10) (px 2) (px 10)
+
+    transformOrigin3 left_ (px 5) (px -4)
+
+    transformOrigin3 right_ bottom_ (rem 2)
+
+
+-}
+transformOrigin3 :
+    Value ( LengthSupported
+            { left_ : Supported
+            , right_ : Supported
+            , center : Supported
+            , pct : Supported
+            }
+        )
+    ->
+        Value ( LengthSupported
+                { top_ : Supported
+                , bottom_ : Supported
+                , center : Supported
+                , pct : Supported
+                }
+            )
+    -> Value ( Length )
+    -> Style
+transformOrigin3 (Value xVal) (Value yVal) (Value zVal ) =
+    appendProperty ("transform-origin:" ++ xVal ++ " " ++ yVal ++ " " ++ zVal)
 
 
 {-| Sets the [`transform-box`](https://developer.mozilla.org/en-US/docs/Web/CSS/transform-box) property.
@@ -20970,7 +21028,7 @@ matrix3d a1 b1 c1 d1 a2 b2 c2 d2 a3 b3 c3 d3 a4 b4 c4 d4 =
 
 -}
 translate :
-    Value Length
+    Value ( LengthSupported { pct : Supported } )
     -> Value { provides | translate : Supported }
 translate (Value valX) =
     Value ("translate(" ++ valX ++ ")")
@@ -20982,8 +21040,8 @@ translate (Value valX) =
 
 -}
 translate2 :
-    Value Length
-    -> Value Length
+    Value ( LengthSupported { pct : Supported } )
+    -> Value ( LengthSupported { pct : Supported } )
     -> Value { provides | translate2 : Supported }
 translate2 (Value valX) (Value valY) =
     Value ("translate(" ++ valX ++ "," ++ valY ++ ")")
@@ -20995,7 +21053,7 @@ translate2 (Value valX) (Value valY) =
 
 -}
 translateX :
-    Value Length
+    Value ( LengthSupported { pct : Supported } )
     -> Value { provides | translateX : Supported }
 translateX (Value valX) =
     Value ("translateX(" ++ valX ++ ")")
@@ -21007,7 +21065,7 @@ translateX (Value valX) =
 
 -}
 translateY :
-    Value Length
+    Value ( LengthSupported { pct : Supported } )
     -> Value { provides | translateY : Supported }
 translateY (Value valY) =
     Value ("translateY(" ++ valY ++ ")")
@@ -21208,7 +21266,7 @@ This one-argument version lets you set a global variable, `none`, or angle.
 
     rotate2 y (deg 100)
 
-    rotate2 (vec3 1 2 10) (deg 100)
+    rotate4 1 1 1 (deg 90)
 
 -}
 rotate :
@@ -21224,13 +21282,12 @@ rotate (Value value) =
 
 {-| The [`rotate`](https://css-tricks.com/almanac/properties/r/rotate/) property.
 
-This two-argument version lets you set an axis or a vector, then an angle value.
+This 2-argument version lets you set an axis, then an angle value.
 
     rotate2 x (deg 50)
 
     rotate2 y (deg 100)
 
-    rotate2 (vec3 1 2 10) (deg 100)
 
 -}
 rotate2 :
@@ -21238,13 +21295,34 @@ rotate2 :
         { x : Supported
         , y : Supported
         , z : Supported
-        , vec3 : Supported
         }
     -> Value Angle
     -> Style
-rotate2 (Value axisOrVecVal) (Value angleVal) =
-    appendProperty ("rotate:" ++ axisOrVecVal ++ " " ++ angleVal)
+rotate2 (Value axisVal) (Value angleVal) =
+    appendProperty ("rotate:" ++ axisVal ++ " " ++ angleVal)
 
+
+{-| The [`rotate`](https://css-tricks.com/almanac/properties/r/rotate/) property.
+
+This 4-argument version lets you set a 3D vector, than an angle value.
+
+    rotate4 1 1 1 (deg 90)
+-}
+rotate4 :
+    Float
+    -> Float
+    -> Float
+    -> Value Angle
+    -> Style
+rotate4 xVec yVec zVec (Value angleVal) =
+    appendProperty<| "rotate:"
+        ++ String.fromFloat xVec
+        ++ " "
+        ++ String.fromFloat yVec
+        ++ " "
+        ++ String.fromFloat zVec
+        ++ " "
+        ++ angleVal
 
 {-| Sets `rotate` value for usage with [`transform`](#transform).
 
@@ -21318,24 +21396,6 @@ rotate3d valX valY valZ (Value angle) =
             ++ ","
             ++ angle
             ++ ")"
-        )
-
-
-{-| A vector consisting of three values.
-
-Sets the vector values in [`rotate2`](#rotate2).
-
-    rotate2 (vec3 1 2 3) (deg 100)
-
--}
-vec3 : Float -> Float -> Float -> Value { provides | vec3 : Supported }
-vec3 vec1Val vec2Val vec3Val =
-    Value
-        (String.fromFloat vec1Val
-            ++ " "
-            ++ String.fromFloat vec2Val
-            ++ " "
-            ++ String.fromFloat vec3Val
         )
 
 
@@ -21438,6 +21498,8 @@ perspectiveOrigin :
             , left_ : Supported
             , center : Supported
             , right_ : Supported
+            , top_ : Supported
+            , bottom_ : Supported
             }
         )
     -> Style

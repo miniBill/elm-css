@@ -20,6 +20,12 @@ module CssTest exposing
     , time
     , blendMode
     , basicShape
+    , offsetKeyword
+    , offsetKeyword2
+    , offsetKeywordLength
+    , offsetKeywordPercent
+    , offsetKeywordLengthPercentPair
+    , angle
     )
 
 {-| Module for creating large-scale, fully comprehensive CSS function/value tests.
@@ -1132,4 +1138,175 @@ basicShape =
     , ( path "M161.693,39.249C94.047,39.249 39.127,94.169 39.127,161.816C39.127,229.462 94.047,284.382 161.693,284.382C229.34,284.382 284.26,229.462 284.26,161.816C284.26,94.169 229.34,39.249 161.693,39.249ZM161.693,71.382C211.605,71.382 211.605,252.249 161.693,252.249C111.782,252.249 71.26,211.727 71.26,161.816C71.26,111.904 111.782,71.382 161.693,71.382Z"
         , "path(\"M161.693,39.249C94.047,39.249 39.127,94.169 39.127,161.816C39.127,229.462 94.047,284.382 161.693,284.382C229.34,284.382 284.26,229.462 284.26,161.816C284.26,94.169 229.34,39.249 161.693,39.249ZM161.693,71.382C211.605,71.382 211.605,252.249 161.693,252.249C111.782,252.249 71.26,211.727 71.26,161.816C71.26,111.904 111.782,71.382 161.693,71.382Z\")"
         )
+    ]
+
+offsetKeyword :
+    List
+        ( Value
+            { supported
+                | left_ : Supported
+                , right_ : Supported
+                , top_ : Supported
+                , bottom_ : Supported
+                , center : Supported
+            }
+        , String
+        )
+offsetKeyword =
+    [ ( left_, "left" )
+    , ( right_, "right" )
+    , ( top_, "top" )
+    , ( bottom_, "bottom" )
+    , ( center, "center" )
+    ]
+
+
+
+offsetKeyword2 :
+    ( Value
+        { value1
+            | left_ : Supported
+            , right_ : Supported
+            , center : Supported
+        }
+     ->
+        Value
+            { value2
+                | top_ : Supported
+                , bottom_ : Supported
+                , center : Supported
+            }
+     -> Style
+    )
+    -> List ( Style, String )
+offsetKeyword2 propertyUnderTest =
+    [ ( propertyUnderTest left_ top_, "left top" )
+    , ( propertyUnderTest right_ top_, "right top" )
+    , ( propertyUnderTest left_ bottom_, "left bottom" )
+    , ( propertyUnderTest right_ bottom_, "right bottom" )
+    , ( propertyUnderTest left_ center, "left center" )
+    , ( propertyUnderTest right_ center, "right center" )
+    , ( propertyUnderTest center center, "center center" )
+    ]
+
+
+offsetKeywordLength :
+    ( Value
+        ( LengthSupported
+            { value1
+                | left_ : Supported
+                , right_ : Supported
+                , center : Supported
+            }
+        )
+     ->
+        Value
+            ( LengthSupported
+                { value2
+                    | top_ : Supported
+                    , bottom_ : Supported
+                    , center : Supported
+                }
+            )
+     -> Style
+    )
+    -> List ( Style, String )
+offsetKeywordLength propertyUnderTest =
+    [ ( propertyUnderTest left_ (px 10), "left 10px" )
+    , ( propertyUnderTest right_ (px 10), "right 10px" )
+    , ( propertyUnderTest (px 10) top_, "10px top" )
+    , ( propertyUnderTest (px 10) bottom_, "10px bottom" )
+    ]
+
+
+offsetKeywordPercent :
+    ( Value
+        { value1
+            | left_ : Supported
+            , right_ : Supported
+            , center : Supported
+            , pct : Supported
+        }
+     ->
+        Value
+            { value2
+                | top_ : Supported
+                , bottom_ : Supported
+                , center : Supported
+                , pct : Supported
+            }
+     -> Style
+    )
+    -> List ( Style, String )
+offsetKeywordPercent propertyUnderTest =
+    [ ( propertyUnderTest left_ (pct 5), "left 5%" )
+    , ( propertyUnderTest right_ (pct 5), "right 5%" )
+    , ( propertyUnderTest center (pct 5), "center 5%" )
+    , ( propertyUnderTest (pct 10) top_, "10% top" )
+    , ( propertyUnderTest (pct 10) bottom_, "10% bottom" )
+    , ( propertyUnderTest (pct 10) center, "10% center" )
+    ]
+
+offsetKeywordLengthPercentPair :
+    ( Value
+        { value1
+            | left_ : Supported
+            , right_ : Supported
+        }
+    -> Value ( LengthSupported { value2 | pct : Supported } )
+    ->
+        Value
+            { value3
+                | top_ : Supported
+                , bottom_ : Supported
+            }
+    -> Value ( LengthSupported { value4 | pct : Supported } )
+    -> Style
+    )
+    -> List ( Style, String )
+offsetKeywordLengthPercentPair propertyUnderTest =
+    [ ( propertyUnderTest left_ (ch 1) top_ (ch 2), "left 1ch top 2ch" )
+    , ( propertyUnderTest right_ (cm 1) top_ (cm 2), "right 1cm top 2cm" )
+    , ( propertyUnderTest left_ (em 1) bottom_ (em 2), "left 1em bottom 2em" )
+    , ( propertyUnderTest right_ (ex 1) bottom_ (ex 2), "right 1ex bottom 2ex" )
+    , ( propertyUnderTest left_ (inch 1) top_ (inch 2), "left 1in top 2in" )
+    , ( propertyUnderTest right_ (mm 1) top_ (mm 2), "right 1mm top 2mm" )
+    , ( propertyUnderTest left_ (pc 1) bottom_ (pc 2), "left 1pc bottom 2pc" )
+    , ( propertyUnderTest right_ (pt 1) bottom_ (pt 2), "right 1pt bottom 2pt" )
+    , ( propertyUnderTest left_ (px 1) top_ (px 2), "left 1px top 2px" )
+    , ( propertyUnderTest right_ (q 1) top_ (q 2), "right 1Q top 2Q" )
+    , ( propertyUnderTest left_ (rem 1) bottom_ (rem 2), "left 1rem bottom 2rem" )
+    , ( propertyUnderTest right_ (vh 1) bottom_ (vh 2), "right 1vh bottom 2vh" )
+    , ( propertyUnderTest left_ (vw 1) top_ (vw 2), "left 1vw top 2vw" )
+    , ( propertyUnderTest right_ (vmax 1) top_ (vmax 2), "right 1vmax top 2vmax" )
+    , ( propertyUnderTest left_ (vmin 1) bottom_ (vmin 2), "left 1vmin bottom 2vmin" )
+    , ( propertyUnderTest right_ (ex 1) bottom_ zero, "right 1ex bottom 0" )
+    , ( propertyUnderTest right_ zero bottom_ (em 2), "right 0 bottom 2em" )
+    , ( propertyUnderTest left_ (calc (rem 3) (plus (pct 2))) top_ (calc (vh 10) (dividedBy (num 3))), "left calc(3rem + 2%) top calc(10vh / 3)" )
+    
+    , ( propertyUnderTest left_ (pct 10) top_ (pct 20), "left 10% top 20%" )
+    , ( propertyUnderTest left_ (pct 10) bottom_ (pct 20), "left 10% bottom 20%" )
+    , ( propertyUnderTest right_ (pct 10) top_ (pct 20), "right 10% top 20%" )
+    , ( propertyUnderTest right_ (pct 10) bottom_ (pct 20), "right 10% bottom 20%" )
+    ]
+
+angle :
+    List
+        ( Value
+            { provides
+                | deg : Supported
+                , grad : Supported
+                , rad : Supported
+                , turn : Supported
+                , zero : Supported
+                , calc : Supported
+            }
+        , String
+        )
+angle =
+    [ ( deg 20, "20deg" )
+    , ( grad 200, "200grad" )
+    , ( rad 1.5, "1.5rad" )
+    , ( turn 3, "3turn" )
+    , ( zero, "0" )
     ]
