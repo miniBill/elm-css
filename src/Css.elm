@@ -2506,7 +2506,7 @@ selection =
 -}
 slotted : String -> List Style -> Style
 slotted selector =
-    pseudoElement <| "selection(" ++ selector ++ ")"
+    pseudoElement <| "slotted(" ++ selector ++ ")"
 
 
 ------------------------------------------------------------------------

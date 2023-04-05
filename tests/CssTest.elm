@@ -1,6 +1,7 @@
 module CssTest exposing
     ( property1
     , property
+    , stylesheet
     , length
     , length2
     , length3
@@ -46,10 +47,11 @@ module CssTest exposing
 -}
 
 import Css exposing (..)
-import Css.Preprocess exposing (toPropertyStrings)
+import Css.Preprocess exposing (Stylesheet, toPropertyStrings)
 import Css.Value exposing (Value(..), Supported)
 import Expect
 import Test exposing (Test)
+import TestUtil
 
 
 {-| Type encapsulating some extra information for testing.
@@ -134,6 +136,39 @@ testBaseValues propertyUnderTest =
     , ( propertyUnderTest unset, "unset" )
     , ( propertyUnderTest revert, "revert")
     ]
+
+
+stylesheet :
+    String
+    -> List ( Stylesheet, String )
+    -> Test
+stylesheet functionName pairs =
+    Test.describe functionName
+         (List.map ( expectStylesheetWorks functionName ) pairs)
+
+
+{-| Helper function that tests a single property/value pair.
+-}
+expectStylesheetWorks : String -> ( Stylesheet, String ) -> Test
+expectStylesheetWorks functionName ( sheet, expectedStr ) =
+    Test.describe (functionName ++ ": " ++ expectedStr)
+        [ Test.test "emitted as expected" <|
+            \() ->
+                TestUtil.prettyPrint sheet
+                    |> Expect.equal expectedStr
+        ]
+
+
+        -- [ Test.describe expectedStr
+        --     [ Test.test "emotted as expected" <|
+        --         ( \_ ->
+        --             outdented (prettyPrint sheet)
+        --                 |> Expect.equal (outdented expectedStr)
+        --         )
+        --     ]
+        -- ]
+
+
 
 
 {-| Adds full testing sets for Length types to a CSS property that
