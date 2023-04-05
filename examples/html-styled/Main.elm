@@ -59,7 +59,7 @@ like mixins in CSS preprocessors.
 paragraphFont : Style
 paragraphFont =
     Css.batch
-        [ fontFamilies [ "Palatino Linotype", "Georgia", "serif" ]
+        [ fontFamilyMany [ "Palatino Linotype", "Georgia", "serif" ]
         , fontSize (px 16)
         , fontWeight normal
         ]

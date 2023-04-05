@@ -25,19 +25,19 @@ all =
             , ( fangsong, "fangsong" )
             ]
         , CssTest.property
-            { functionName = "fontFamilies", propertyName = "font-family" }
-            [ ( fontFamilies [ "Gill Sans", "Helvetica" ] serif, "\"Gill Sans\",\"Helvetica\",serif" )
-            , ( fontFamilies [ "Georgia", "Times" ] sansSerif, "\"Georgia\",\"Times\",sans-serif" )
-            , ( fontFamilies [ "Source Code Pro", "Lucida Console" ] monospace, "\"Source Code Pro\",\"Lucida Console\",monospace" )
-            , ( fontFamilies [ "Brush Script Std", "Lucida Calligraphy" ] cursive, "\"Brush Script Std\",\"Lucida Calligraphy\",cursive")
-            , ( fontFamilies [ "Herculanum", "Harrington" ] fantasy, "\"Herculanum\",\"Harrington\",fantasy")
-            , ( fontFamilies [ "San Francisco", "Segoe UI" ] systemUi, "\"San Francisco\",\"Segoe UI\",system-ui" )
-            , ( fontFamilies [ "Georgia", "Times" ] uiSerif, "\"Georgia\",\"Times\",ui-serif" )
-            , ( fontFamilies [ "San Francisco", "Segoe UI" ] uiSansSerif, "\"San Francisco\",\"Segoe UI\",ui-sans-serif" )
-            , ( fontFamilies [ "San Francisco", "Segoe UI" ] uiMonospace, "\"San Francisco\",\"Segoe UI\",ui-monospace" )
-            , ( fontFamilies [ "Gill Sans", "Helvetica" ] uiRounded, "\"Gill Sans\",\"Helvetica\",ui-rounded" )
-            , ( fontFamilies [ "Apple Color Emoji" ] emoji, "\"Apple Color Emoji\",emoji" )
-            , ( fontFamilies [ "Georgia", "Times" ] math, "\"Georgia\",\"Times\",math" )
-            , ( fontFamilies [ "Georgia", "Times" ] fangsong, "\"Georgia\",\"Times\",fangsong" )
+            { functionName = "fontFamilyMany", propertyName = "font-family" }
+            [ ( fontFamilyMany [ "Gill Sans", "Helvetica" ] serif, "\"Gill Sans\",\"Helvetica\",serif" )
+            , ( fontFamilyMany [ "Georgia", "Times" ] sansSerif, "\"Georgia\",\"Times\",sans-serif" )
+            , ( fontFamilyMany [ "Source Code Pro", "Lucida Console" ] monospace, "\"Source Code Pro\",\"Lucida Console\",monospace" )
+            , ( fontFamilyMany [ "Brush Script Std", "Lucida Calligraphy" ] cursive, "\"Brush Script Std\",\"Lucida Calligraphy\",cursive")
+            , ( fontFamilyMany [ "Herculanum", "Harrington" ] fantasy, "\"Herculanum\",\"Harrington\",fantasy")
+            , ( fontFamilyMany [ "San Francisco", "Segoe UI" ] systemUi, "\"San Francisco\",\"Segoe UI\",system-ui" )
+            , ( fontFamilyMany [ "Georgia", "Times" ] uiSerif, "\"Georgia\",\"Times\",ui-serif" )
+            , ( fontFamilyMany [ "San Francisco", "Segoe UI" ] uiSansSerif, "\"San Francisco\",\"Segoe UI\",ui-sans-serif" )
+            , ( fontFamilyMany [ "San Francisco", "Segoe UI" ] uiMonospace, "\"San Francisco\",\"Segoe UI\",ui-monospace" )
+            , ( fontFamilyMany [ "Gill Sans", "Helvetica" ] uiRounded, "\"Gill Sans\",\"Helvetica\",ui-rounded" )
+            , ( fontFamilyMany [ "Apple Color Emoji" ] emoji, "\"Apple Color Emoji\",emoji" )
+            , ( fontFamilyMany [ "Georgia", "Times" ] math, "\"Georgia\",\"Times\",math" )
+            , ( fontFamilyMany [ "Georgia", "Times" ] fangsong, "\"Georgia\",\"Times\",fangsong" )
             ]
         ]

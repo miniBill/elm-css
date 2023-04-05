@@ -241,7 +241,7 @@ module Css exposing
     , fontDisplay, fallback, swap, optional
 
     -- Font family
-    , fontFamily, fontFamilies
+    , fontFamily, fontFamilyMany
     , serif, sansSerif, monospace, cursive, fantasy
     , systemUi, uiSerif, uiSansSerif, uiMonospace, uiRounded
     , math, fangsong
@@ -1042,7 +1042,7 @@ Other values you can use for flex item alignment:
 
 ## Font family
 
-@docs fontFamily, fontFamilies
+@docs fontFamily, fontFamilyMany
 @docs serif, sansSerif, monospace, cursive, fantasy
 @docs systemUi, uiSerif, uiSansSerif, uiMonospace, uiRounded
 @docs math, fangsong
@@ -13483,7 +13483,7 @@ optional =
 
 {-| For when your font is one of the six [generic font family names](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family#%3Cgeneric-name%3E) - [`serif`](#serif), [`sansSerif`](#sansSerif), [`monospace`](#monospace), [`cursive`](#cursive), [`fantasy`](#fantasy), or [`systemUi`](#systemUi).
 
-If you want to refer to a font by its name (like Helvetica or Arial), use [`fontFamilies`](#fontFamilies) instead.
+If you want to refer to a font by its name (like Helvetica or Arial), use [`fontFamilyMany`](#fontFamilyMany) instead.
 
 -}
 fontFamily :
@@ -13511,9 +13511,9 @@ fontFamily (Value genericFont) =
 
     fontFamily serif
 
-    fontFamilies [ "Gill Sans", "Helvetica" ] serif
+    fontFamilyMany [ "Gill Sans", "Helvetica" ] serif
 
-This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilyMany`](#fontFamilyMany).
 
 -}
 serif : Value { provides | serif : Supported }
@@ -13525,9 +13525,9 @@ serif =
 
     fontFamily sansSerif
 
-    fontFamilies [ "Georgia", "Times" ] sansSerif
+    fontFamilyMany [ "Georgia", "Times" ] sansSerif
 
-This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilyMany`](#fontFamilyMany).
 
 -}
 sansSerif : Value { provides | sansSerif : Supported }
@@ -13539,9 +13539,9 @@ sansSerif =
 
     fontFamily monospace
 
-    fontFamilies [ "Source Code Pro", "Lucida Console" ] monospace
+    fontFamilyMany [ "Source Code Pro", "Lucida Console" ] monospace
 
-This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilyMany`](#fontFamilyMany).
 
 -}
 monospace : Value { provides | monospace : Supported }
@@ -13553,9 +13553,9 @@ monospace =
 
     fontFamily cursive
 
-    fontFamilies [ "Brush Script Std", "Lucida Calligraphy" ] cursive
+    fontFamilyMany [ "Brush Script Std", "Lucida Calligraphy" ] cursive
 
-This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilyMany`](#fontFamilyMany).
 
 -}
 cursive : Value { provides | cursive : Supported }
@@ -13566,9 +13566,9 @@ cursive =
 {-| The `fantasy` [generic font family name](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family#3Cgeneric-name%3E).
 
     fontFamily fantasy
-    fontFamilies [ "Herculanum", "Harrington" ] fantasy
+    fontFamilyMany [ "Herculanum", "Harrington" ] fantasy
 
-This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilyMany`](#fontFamilyMany).
 
 -}
 fantasy : Value { provides | fantasy : Supported }
@@ -13582,11 +13582,11 @@ You may want to [read more about the system font stack](https://css-tricks.com/s
 
     fontFamily systemUi
 
-    fontFamilies [ "", "Segoe UI" ] systemUi
+    fontFamilyMany [ "", "Segoe UI" ] systemUi
 
-    fontFamilies [ "system-ui", "Segoe UI", "Roboto", "Helvetica", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" ] sansSerif
+    fontFamilyMany [ "system-ui", "Segoe UI", "Roboto", "Helvetica", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" ] sansSerif
 
-This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilyMany`](#fontFamilyMany).
 
 -}
 systemUi : Value { provides | systemUi : Supported }
@@ -13598,9 +13598,9 @@ systemUi =
 
     fontFamily uiSerif
 
-    fontFamilies [ "New York" ] uiSerif
+    fontFamilyMany [ "New York" ] uiSerif
 
-This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilyMany`](#fontFamilyMany).
 
 -}
 uiSerif : Value { provides | uiSerif : Supported }
@@ -13612,7 +13612,7 @@ uiSerif =
 
     fontFamily uiSansSerif
 
-This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilyMany`](#fontFamilyMany).
 
 -}
 uiSansSerif : Value { provides | uiSansSerif : Supported }
@@ -13624,7 +13624,7 @@ uiSansSerif =
 
     fontFamily uiMonospace
 
-This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilyMany`](#fontFamilyMany).
 
 -}
 uiMonospace : Value { provides | uiMonospace : Supported }
@@ -13636,7 +13636,7 @@ uiMonospace =
 
     fontFamily uiRounded
 
-This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilyMany`](#fontFamilyMany).
 
 -}
 uiRounded : Value { provides | uiRounded : Supported }
@@ -13648,7 +13648,7 @@ uiRounded =
 
     fontFamily math
 
-This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilyMany`](#fontFamilyMany).
 
 -}
 math : Value { provides | math : Supported }
@@ -13660,7 +13660,7 @@ math =
 
     fontFamily fangsong
 
-This can be used with [`fontFamily`](#fontFamily) and [`fontFamilies`](#fontFamilies).
+This can be used with [`fontFamily`](#fontFamily) and [`fontFamilyMany`](#fontFamilyMany).
 
 -}
 fangsong : Value { provides | fangsong : Supported }
@@ -13672,12 +13672,12 @@ fangsong =
 
 Per the CSS spec, a [generic name](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family#%3Cgeneric-name%3E) must always be at the end of this list. (The generic names are [`serif`](#serif), [`sansSerif`](#sansSerif), [`monospace`](#monospace), [`cursive`](#cursive) or [`fantasy`](#fantasy).)
 
-    fontFamilies [ "Gill Sans Extrabold", "Helvetica", "Arial" ] sansSerif
+    fontFamilyMany [ "Gill Sans Extrabold", "Helvetica", "Arial" ] sansSerif
 
 This function will automatically wrap each font family in quotation marks unless it is one of the six [generic names]((https://developer.mozilla.org/en-US/docs/Web/CSS/font-family#%3Cgeneric-name%3E)) (like `sans-serif`), which must never be quoted.
 
 -}
-fontFamilies :
+fontFamilyMany :
     List String
     ->
         Value
@@ -13696,7 +13696,7 @@ fontFamilies :
             , fangsong : Supported
             }
     -> Style
-fontFamilies list (Value genericFont) =
+fontFamilyMany list (Value genericFont) =
     case list of
         [] ->
             appendProperty ("font-family:" ++ genericFont)
@@ -14853,7 +14853,7 @@ fontVariantEmoji (Value val) =
     appendProperty <| "font-variant-emoji:" ++ val
 
 
-{-| The `emoji` value used with [`fontFamily`](#fontFamily), [`fontFamilies`](#fontFamilies) and [`fontVariantEmoji`](#fontVariantEmoji).
+{-| The `emoji` value used with [`fontFamily`](#fontFamily), [`fontFamilyMany`](#fontFamilyMany) and [`fontVariantEmoji`](#fontVariantEmoji).
 
     fontFamily emoji
 

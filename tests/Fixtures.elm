@@ -326,7 +326,7 @@ fontStylesheet =
         [ body
             [ lineHeight (px 14)
             , fontFamily serif
-            , fontFamilies
+            , fontFamilyMany
                 [ "Gill Sans Extrabold"
                 , "Helvetica"
                 ] sansSerif
