@@ -16,10 +16,80 @@ columRowStartEndTest =
     , ( gridLineSpan (Just "some-area") (Just 3), "span some-area 3" )
     ]
 
+autoRowsColumnTest = 
+    (   [ ( auto, "auto" )
+        , ( minContent, "min-content" )
+        , ( maxContent, "max-content" )
+        , ( pct 10, "10%" )
+        , ( fr 3, "3fr" )
+        ]
+        ++ CssTest.length
+        ++ CssTest.fitContentTo
+        ++ CssTest.minmax
+    )
+
+autoRowsColumnManyTest propertyUnderTest =
+    [ ( propertyUnderTest [ minContent, maxContent, auto ], "min-content max-content auto" )
+    , ( propertyUnderTest [ px 100, px 150, px 390], "100px 150px 390px" )
+    , ( propertyUnderTest [ pct 10, pct 33.3 ], "10% 33.3%" )
+    , ( propertyUnderTest [ fr 3, fr 3,fr 2 ], "3fr 3fr 2fr" )
+    , ( propertyUnderTest [ (minmax (px 100) auto), (minmax maxContent (fr 2)), (minmax (pct 20) (vmax 80))], "minmax(100px,auto) minmax(max-content,2fr) minmax(20%,80vmax)")
+    , ( propertyUnderTest [ px 100, (minmax (px 100) auto), pct 10, fr 0.5, (fitContentTo(px 400))], "100px minmax(100px,auto) 10% 0.5fr fit-content(400px)")
+    ]
+
+
+templateRowsColumnsTest =
+    [ ( none, "none" )
+    , ( trackList
+            ( lineNames ["line1", "line2"] )
+            [ px 300
+            , lineNames ["line3"]
+            ]
+        , "[line1 line2] 300px [line3]"
+        )
+    , ( autoTrackList
+            ( minmax (px 210) maxContent )
+            [ autoRepeat autoFill [px 200]
+            , pct 20
+            ]
+        , "minmax(210px,max-content) repeat(auto-fill,200px) 20%"
+        )
+    ]
+
 all : Test
 all =
     Test.concat
-        [ CssTest.property1 gridArea
+        [ CssTest.property1 gridAutoFlow
+            { functionName = "gridAutoFlow", propertyName = "grid-auto-flow" }
+            [ ( row, "row" )
+            , ( column, "column" )
+            , ( dense, "dense" )
+            ]
+        
+        , CssTest.property
+            { functionName = "gridAutoFlow2", propertyName = "grid-auto-flow" }
+            [ ( gridAutoFlow2 row dense, "row dense" )
+            , ( gridAutoFlow2 column dense, "column dense" )
+            ]
+            
+        , CssTest.property1 gridAutoRows
+            { functionName = "gridAutoRows", propertyName = "grid-auto-rows" }
+            autoRowsColumnTest
+
+        
+        , CssTest.property
+            { functionName = "gridAutoRowsMany", propertyName = "grid-auto-rows" }
+            ( autoRowsColumnManyTest gridAutoRowsMany )
+
+        , CssTest.property1 gridAutoColumns
+            { functionName = "gridAutoColumns", propertyName = "grid-auto-columns" }
+            autoRowsColumnTest        
+            
+        , CssTest.property
+            { functionName = "gridAutoColumnsMany", propertyName = "grid-auto-columns" }
+            ( autoRowsColumnManyTest gridAutoColumnsMany )
+
+        , CssTest.property1 gridArea
             { functionName = "gridArea", propertyName = "grid-area" }
             [ ( auto, "auto")
             , ( gridLineIdent "some-area" Nothing, "some-area" )
@@ -249,4 +319,12 @@ all =
             , ( gridTemplateAreasCells [ "a b b", "a c d"], "\"a b b\"\"a c d\"")
             , ( gridTemplateAreasCells [], "unset")
             ]
+
+        , CssTest.property1 gridTemplateRows
+            { functionName = "gridTemplateRows", propertyName = "grid-template-rows" }
+            templateRowsColumnsTest
+
+        , CssTest.property1 gridTemplateColumns
+            { functionName = "gridTemplateColumns", propertyName = "grid-template-columns" }
+            templateRowsColumnsTest
         ]

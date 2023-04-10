@@ -109,6 +109,56 @@ all =
                 ]
                 ++ CssTest.length4 maskBorderWidth4
             )
+
+        , CssTest.property1 maskBorderSlice
+            { functionName = "maskBorderSlice", propertyName = "mask-border-slice" }
+            (   [ ( num 4, "4" )
+                , ( pct 19, "19%" )
+                , ( fill_, "fill" )
+                ]
+            )
+        
+        , CssTest.property
+            { functionName = "maskBorderSlice2", propertyName = "mask-border-slice" }
+            (   [ ( maskBorderSlice2 (num 4) (num 12), "4 12" )
+                , ( maskBorderSlice2 (num 8) (pct 10), "8 10%" )
+                , ( maskBorderSlice2 (num 8) fill_, "8 fill" )
+                , ( maskBorderSlice2 (pct 19) (pct 20), "19% 20%" )
+                , ( maskBorderSlice2 (pct 19) (num 4), "19% 4" )
+                , ( maskBorderSlice2 (pct 19) fill_, "19% fill" )
+                , ( maskBorderSlice2 fill_ fill_, "fill fill" )
+                , ( maskBorderSlice2 fill_ (num 5), "fill 5" )
+                , ( maskBorderSlice2 fill_ (pct 10), "fill 10%" )
+                ]
+            )
+        
+        , CssTest.property
+            { functionName = "maskBorderSlice3", propertyName = "mask-border-slice" }
+            (   [ ( maskBorderSlice3 (num 4) (num 12) (num 3), "4 12 3" )
+                , ( maskBorderSlice3 (num 8) (pct 10) fill_, "8 10% fill" )
+                , ( maskBorderSlice3 (num 8) fill_ (pct 50), "8 fill 50%" )
+                , ( maskBorderSlice3 (pct 19) (pct 20) (num 2), "19% 20% 2" )
+                , ( maskBorderSlice3 (pct 19) (num 4) fill_, "19% 4 fill" )
+                , ( maskBorderSlice3 (pct 19) fill_ (pct 90), "19% fill 90%" )
+                , ( maskBorderSlice3 fill_ fill_ (num 4), "fill fill 4" )
+                , ( maskBorderSlice3 fill_ (num 5) (pct 40) , "fill 5 40%" )
+                , ( maskBorderSlice3 fill_ (pct 10) (pct 40), "fill 10% 40%" )
+                ]
+            )
+        
+        , CssTest.property
+            { functionName = "maskBorderSlice4", propertyName = "mask-border-slice" }
+            (   [ ( maskBorderSlice4 (num 4) (num 12) (num 3) (num 5), "4 12 3 5" )
+                , ( maskBorderSlice4 (num 8) (pct 10) fill_ (num 10), "8 10% fill 10" )
+                , ( maskBorderSlice4 (num 8) fill_ (pct 50) (pct 10), "8 fill 50% 10%" )
+                , ( maskBorderSlice4 (pct 19) (pct 20) (num 2) fill_, "19% 20% 2 fill" )
+                , ( maskBorderSlice4 (pct 19) (num 4) fill_ (num 5), "19% 4 fill 5" )
+                , ( maskBorderSlice4 (pct 19) fill_ (pct 90) (num 1), "19% fill 90% 1" )
+                , ( maskBorderSlice4 fill_ fill_ (num 4) fill_, "fill fill 4 fill" )
+                , ( maskBorderSlice4 fill_ (num 5) (pct 40) (pct 10), "fill 5 40% 10%" )
+                , ( maskBorderSlice4 fill_ (pct 10) (pct 40) fill_, "fill 10% 40% fill" )
+                ]
+            )
         
         , CssTest.property1 maskClip
             { functionName = "maskClip", propertyName = "mask-clip" }
@@ -168,4 +218,9 @@ all =
             , ( maskOriginMany [], "unset" )
             ]
 
+        , CssTest.property1 maskType
+            { functionName = "maskType", propertyName = "mask-type" }
+            [ ( luminance, "luminance" )
+            , ( alpha, "alpha" )
+            ]
         ]

@@ -11,6 +11,11 @@ all =
         [ CssTest.property1 listStyleType
             { functionName = "listStyleType", propertyName = "list-style-type" }
             CssTest.listStyleType
+
+        , CssTest.property1 listStyleImage
+            { functionName = "listStyleImage", propertyName = "list-style-image" }
+            CssTest.image
+
         , CssTest.property1 listStylePosition
             { functionName = "listStylePosition", propertyName = "list-style-position" }
             [ ( inside, "inside" )

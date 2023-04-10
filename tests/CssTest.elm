@@ -27,6 +27,8 @@ module CssTest exposing
     , offsetKeywordPercent
     , offsetKeywordLengthPercentPair
     , angle
+    , fitContentTo
+    , minmax
     )
 
 {-| Module for creating large-scale, fully comprehensive CSS function/value tests.
@@ -939,7 +941,7 @@ image :
 image =
     [ ( url "https://example.com", "url(https://example.com)" )
     , ( linearGradient (stop <| hex "111") (stop <| hex "222") [], "linear-gradient(#111,#222)" )
-
+    
     --TODO radialGradient
     --TODO repeatingLinearGradient
     --TODO repeatingRadialGradient
@@ -1345,3 +1347,56 @@ angle =
     , ( turn 3, "3turn" )
     , ( zero, "0" )
     ]
+
+
+
+fitContentTo :
+    List
+        ( Value
+            { provides
+                | fitContentTo : Supported
+            }
+        , String
+        )
+fitContentTo =
+    let
+        lengthPct =
+            ( pct 20, "20%" ) :: length
+
+    in
+    List.map (\ ( l1, l2 ) ->
+            ( Css.fitContentTo l1, "fit-content(" ++ l2 ++ ")" )
+        )
+        lengthPct
+
+
+
+minmax :
+    List
+        ( Value 
+            { provides
+                | minmax : Supported
+            }
+        , String
+        )
+minmax  =
+    let
+        lengthsAutoFrMinMaxContent =
+            (   [ ( auto, "auto" )
+                , ( fr 1, "1fr" )
+                , ( minContent, "min-content" )
+                , ( maxContent, "max-content" )
+                ]
+                ++ length
+            )
+
+        combinedStuff =
+            List.map (\ ( l1, l2 ) -> 
+                List.map (\ ( m1, m2 ) ->
+                    ( Css.minmax l1 m1, "minmax(" ++ l2 ++ "," ++ m2 ++ ")" )
+                    )
+                    lengthsAutoFrMinMaxContent
+                )
+                lengthsAutoFrMinMaxContent
+    in
+        List.concat combinedStuff

@@ -11276,7 +11276,7 @@ type alias TrackSizeSupported supported =
     TrackBreadthSupported (
         { supported
             | minmax : Supported
-            , fitContent : Supported
+            , fitContentTo : Supported
         }
     )
 
@@ -11285,11 +11285,7 @@ type alias TrackSizeSupported supported =
 `<track-size>` type used in grids.
 -}
 type alias TrackSize =
-    TrackBreadthSupported (
-        { minmax : Supported
-        , fitContent : Supported
-        }
-    )
+    TrackSizeSupported {}
 
 
 {-| Custom ident(s) that are only used in grid area definitions,
@@ -11364,7 +11360,7 @@ gridAutoRowsMany :
     List ( Value TrackSize )
     -> Style
 gridAutoRowsMany values =
-    appendProperty <| "grid-auto-rows" ++ valueListToString " " values
+    appendProperty <| "grid-auto-rows:" ++ valueListToString " " values
 
 
 {-| The 1-argument version of the [`grid-auto-columns`](https://css-tricks.com/almanac/properties/g/grid-auto-columns/)
@@ -11412,7 +11408,7 @@ gridAutoColumnsMany :
     List ( Value TrackSize )
     -> Style
 gridAutoColumnsMany values =
-    appendProperty <| "grid-auto-columns" ++ valueListToString " " values
+    appendProperty <| "grid-auto-columns:" ++ valueListToString " " values
 
 
 {-| The 1-argument version of the [`grid-auto-flow`](https://css-tricks.com/almanac/properties/g/grid-auto-flow/)
@@ -12009,7 +12005,7 @@ property.
     gridTemplateRows <|
         trackList [ fixedRepeat (num 4) [px 520] ]
 
-    gridTemplateRowsMany <|
+    gridTemplateRows <|
         autoTrackList
             ( minmax (px 210) maxContent )
             [ autoRepeat autoFill [px 200]
