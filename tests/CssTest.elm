@@ -29,6 +29,7 @@ module CssTest exposing
     , angle
     , fitContentTo
     , minmax
+    , resolution
     )
 
 {-| Module for creating large-scale, fully comprehensive CSS function/value tests.
@@ -51,6 +52,7 @@ module CssTest exposing
 import Css exposing (..)
 import Css.Preprocess exposing (Stylesheet, toPropertyStrings)
 import Css.Value exposing (Value(..), Supported)
+import Css.Media as Media
 import Expect
 import Test exposing (Test)
 import TestUtil
@@ -1400,3 +1402,22 @@ minmax  =
                 lengthsAutoFrMinMaxContent
     in
         List.concat combinedStuff
+
+
+resolution :
+    List
+        ( Value
+            { provides
+                | dpi : Supported
+                , dpcm : Supported
+                , dppx : Supported
+                , x : Supported
+            }
+        , String
+        )
+resolution =
+    [ ( Media.dpi 180, "180dpi" )
+    , ( Media.dpcm 300, "300dpcm" )
+    , ( Media.dppx 300, "300dppx" )
+    , ( Media.x 300, "300x" )
+    ]
