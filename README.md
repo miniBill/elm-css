@@ -2,7 +2,7 @@
 
 This package lets you write CSS in native Elm code while avoiding many pitfalls of traditional CSS typing.
 
-*This is a fork from rtfeldman's original package. To find out how this differs and why, scroll down to the section below this one.*
+*This is a fork from rtfeldman's original package. To find out how this differs and why, scroll down towards the bottom of this readme.*
 
 ```elm
 module MyCss exposing (main)
@@ -194,7 +194,7 @@ A bunch of new properties have been added. Including:
 - Grid
 - `gap`
 - Logical properties (eg. `padding-inline-end`)
-- Scrollbar customisation
+- Scroll snapping
 
 #### Extensive testing
 
@@ -220,7 +220,19 @@ I have made this fork because I really like Elm and I like using custom CSS, I n
 
 I will try to respond to things when I can, but there may be situations where I don't understand where an issue lies.
 
-### Acknowledgements
+
+---
+
+
+# Contributors
+
+If you're thinking of contributing, please check the [`code of conduct`](https://github.com/dzuk-mutant/elm-css/wiki/Code-of-conduct) before you do. ^^
+
+
+---
+
+
+# Acknowledgements
 
 I did a lot of repetitive work to try to bring the original phantom-types branch to a certain standard, but the original work was not mine. There are a lot of contributors who made this fork possible!
 
