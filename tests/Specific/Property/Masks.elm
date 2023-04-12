@@ -223,4 +223,28 @@ all =
             [ ( luminance, "luminance" )
             , ( alpha, "alpha" )
             ]
+
+        , CssTest.property1 maskPosition
+            { functionName = "maskPosition", propertyName = "mask-position" }
+            ( CssTest.offsetKeyword )
+
+        , CssTest.property1 maskRepeat
+            { functionName = "maskRepeat", propertyName = "mask-repeat" }
+            [ ( repeatX, "repeat-x" )
+            , ( repeatY, "repeat-y" )
+            , ( repeat, "repeat" )
+            , ( space, "space" )
+            , ( round_, "round" )
+            , ( noRepeat, "no-repeat" )
+            ]
+        
+        , CssTest.property1 maskSize
+            { functionName = "maskSize", propertyName = "mask-size" }
+            (   [ ( cover, "cover" )
+                , ( contain_, "contain" )
+                , ( auto, "auto" )
+                , ( pct 12, "12%" )
+                ]
+                ++ CssTest.length
+            )
         ]

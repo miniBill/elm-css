@@ -178,4 +178,57 @@ all =
               , "inset 1px 2px 3px 4px #333, 3pt 2.8rem"
               )
             ]
+
+        , CssTest.property1 textShadow
+          { functionName = "textShadow", propertyName = "text-shadow" }
+          [ ( none, "none" ) ]
+
+        , CssTest.property
+          { functionName = "textShadowMany", propertyName = "text-shadow" }
+          [   ( textShadowMany
+                  [ { offsetX = px 20 
+                    , offsetY = rem 3
+                    , blurRadius = Just (px 3)
+                    , color = Just (hex "333")
+                    }
+                  ]
+              , "20px 3rem 3px #333"
+              )
+
+            , ( textShadowMany
+                  [ { offsetX = px 20 
+                    , offsetY = rem 3
+                    , blurRadius = Just (px 3)
+                    , color = Just (hex "333")
+                    }
+                  , { offsetX = px 3 
+                    , offsetY = px 3
+                    , blurRadius = Nothing
+                    , color = Nothing
+                    }
+                  ]
+              , "20px 3rem 3px #333,3px 3px"
+              )
+              
+            , ( textShadowMany
+                  [ { offsetX = px 20 
+                    , offsetY = rem 3
+                    , blurRadius = Just (px 3)
+                    , color = Just (hex "333")
+                    }
+                  , { offsetX = px 3 
+                    , offsetY = px 3
+                    , blurRadius = Nothing
+                    , color = Nothing
+                    }
+                  , { offsetX = pct 20 
+                    , offsetY = pct 10
+                    , blurRadius = Just (pct 5)
+                    , color = Nothing
+                    }
+                  ]
+              , "20px 3rem 3px #333,3px 3px,20% 10% 5%"
+              )
+
+          ]
         ]

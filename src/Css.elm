@@ -433,7 +433,7 @@ module Css exposing
     , BoxShadowConfig
     , boxShadow, boxShadowMany, defaultBoxShadow
     , TextShadowConfig
-    , textShadow, defaultTextShadow
+    , textShadow, textShadowMany, defaultTextShadow
     
     -- transformations and perspective
     , TransformFunction, TransformFunctionSupported
@@ -1403,7 +1403,7 @@ Other values you can use for flex item alignment:
 @docs BoxShadowConfig
 @docs boxShadow, boxShadowMany, defaultBoxShadow
 @docs TextShadowConfig
-@docs textShadow, defaultTextShadow
+@docs textShadow, textShadowMany, defaultTextShadow
 
 
 ------------------------------------------------------
@@ -20472,7 +20472,7 @@ defaultBoxShadow =
 
     boxShadow none
 
-For defining shadows look at [`boxShadows`](#boxShadows).
+For defining shadows look at [`boxShadowsMany`](#boxShadowsMany).
 
 -}
 boxShadow : BaseValue { none : Supported } -> Style
@@ -20605,10 +20605,29 @@ defaultTextShadow =
     , color = Nothing
     }
 
+{-| The [`text-shadow`](https://css-tricks.com/almanac/properties/b/text-shadow/) property.
+
+    boxShadow initial
+
+    boxShadow none
+
+This 1-argument variant is for single keyword values only. 
+For defining shadows look at [`textShadowMany`](#textShadowMany).
+
+-}
+
+textShadow : BaseValue { none : Supported } -> Style
+textShadow (Value val) =
+    appendProperty ("text-shadow:" ++ val)
+
 
 {-| Sets [`text-shadow`](https://css-tricks.com/almanac/properties/t/text-shadow/).
 
-    textShadow [] -- "text-shadow: none"
+This multi-argument variant is for defining shadows only.
+For single keyword values, look at [`textShadow`](#textShadow).
+
+
+    textShadowMany [] -- "text-shadow: unset"
 
     -- "text-shadow: 3px 5px #aabbcc"
     span
@@ -20625,13 +20644,13 @@ defaultTextShadow =
         [ text "Zap!" ]
 
 -}
-textShadow : List TextShadowConfig -> Style
-textShadow configs =
+textShadowMany : List TextShadowConfig -> Style
+textShadowMany configs =
     let
         values =
             case configs of
                 [] ->
-                    "none"
+                    "unset"
 
                 _ ->
                     configs
@@ -22977,6 +22996,8 @@ property.
 maskRepeat :
     BaseValue
         { repeat : Supported
+        , repeatX : Supported
+        , repeatY : Supported
         , space : Supported
         , round_ : Supported
         , noRepeat : Supported
