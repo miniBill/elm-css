@@ -199,7 +199,7 @@ module Css exposing
     , gridAutoColumns, gridAutoColumnsMany
     , gridAutoFlow, gridAutoFlow2
     -- grid areas
-    , GridLine, gridLineIdent, gridLineSpan
+    , GridLine, gridLineIdent, gridLineSpanNum, gridLineSpanIdent
     , gridArea, gridArea2, gridArea3, gridArea4
     , gridRow, gridRow2
     , gridRowStart, gridRowEnd
@@ -979,7 +979,7 @@ Other values you can use for flex item alignment:
 @docs gridAutoFlow, gridAutoFlow2
 
 ## Grid areas
-@docs GridLine, gridLineIdent, gridLineSpan
+@docs GridLine, gridLineIdent, gridLineSpanNum, gridLineSpanIdent
 @docs gridArea, gridArea2, gridArea3, gridArea4
 @docs gridRow, gridRow2
 @docs gridRowStart, gridRowEnd
@@ -11470,22 +11470,23 @@ type alias GridLine =
     { auto : Supported
     , num : Supported
     , gridLineIdent : Supported
-    , gridLineSpan : Supported
+    , gridLineSpanNum : Supported
+    , gridLineSpanIdent : Supported
     }
 
 
 {-| Creates a grid line value with a <custom-ident> value
 and an optional integer.
 
-    gridLineIdent "footer" Nothing
+    gridLineIdent "footer" Nothing -- footer
 
-    gridLineIdent "header" (Just 1)
+    gridLineIdent "header" (Just 1) -- header 1
 
-    gridLineSpan Nothing Nothing
+    gridLineSpanNum 4 -- span 4
 
-    gridLineSpan (Just "header") Nothing
+    gridLineSpanIdent "header" Nothing -- span header
 
-    gridLineSpan (Just "footer") (Just 1)
+    gridLineSpanIdent "footer" (Just 1) -- span header 1
 
 -}
 gridLineIdent :
@@ -11504,29 +11505,48 @@ gridLineIdent val1 val2 =
 
 
 {-| Creates a grid line value with a 'span' keyword value followed by
-and an optional integer.
+an integer.
 
-    gridLineIdent "footer" Nothing
+    gridLineIdent "footer" Nothing -- footer
 
-    gridLineIdent "header" (Just 1)
+    gridLineIdent "header" (Just 1) -- header 1
 
-    gridLineSpan Nothing Nothing
+    gridLineSpanNum 4 -- span 4
 
-    gridLineSpan (Just "header") Nothing
+    gridLineSpanIdent "header" Nothing -- span header
 
-    gridLineSpan (Just "footer") (Just 1)
+    gridLineSpanIdent "footer" (Just 1) -- span header 1
+    
+-}
+gridLineSpanNum :
+    Int
+    -> Value { provides | gridLineSpanNum : Supported }
+gridLineSpanNum val =
+    Value <| "span " ++ String.fromInt val
+
+
+
+{-| Creates a grid line value with a 'span' keyword value followed by
+an ident and an optional integer.
+
+    gridLineIdent "footer" Nothing -- footer
+
+    gridLineIdent "header" (Just 1) -- header 1
+
+    gridLineSpanNum 4 -- span 4
+
+    gridLineSpanIdent "header" Nothing -- span header
+
+    gridLineSpanIdent "footer" (Just 1) -- span header 1
 
 -}
-gridLineSpan :
-    Maybe String
+gridLineSpanIdent :
+    String
     -> Maybe Int
-    -> Value { provides | gridLineSpan : Supported }
-gridLineSpan val1 val2 =
-    Value <| "span" ++
-        ( case val1 of
-            Just v -> " " ++ v
-            Nothing -> ""
-        )
+    -> Value { provides | gridLineSpanIdent : Supported }
+gridLineSpanIdent val1 val2 =
+    Value <| "span " ++
+        val1
         ++ ( case val2 of
             Just v -> " " ++ String.fromInt v
             Nothing -> ""
@@ -11545,24 +11565,24 @@ Numbers used in this should not be zero, else they won't work.
 
     gridArea inherit
 
-    gridArea <| gridLineSpan Nothing Nothing
+    gridArea <| gridLineSpanNum 4
       
     gridArea <| gridLineIdent "big-grid" (Just 4)
 
-    gridArea2Lines
+    gridArea2
         ( gridLineIdent "big-grid" (Just 4) )
-        ( gridLineSpan (Just "other-grid") Nothing )
+        ( gridLineSpanIdent "other-grid" Nothing )
 
-    gridArea3Lines
+    gridArea3
         ( gridLineIdent "big-grid" (Just 4))
-        ( gridLineSpan (Just "other-grid") Nothing)
+        ( gridLineSpanIdent "other-grid" Nothing)
         ( num 7 )
 
-    gridArea4Lines
+    gridArea4
         ( gridLineIdent "big-grid" (Just 4) )
-        ( gridLineSpan (Just "other-grid") Nothing )
+        ( gridLineSpanIdent "other-grid" Nothing )
         ( num 7 )
-        ( gridLineSpan (Just "another-grid") (Just 12) )
+        ( gridLineSpanIdent "another-grid" (Just 12) )
 
 -}
 gridArea :
@@ -11584,24 +11604,24 @@ Numbers used in this should not be zero, else they won't work.
 
     gridArea inherit
 
-    gridArea <| gridLineSpan Nothing Nothing
+    gridArea <| gridLineSpanNum 4
       
     gridArea <| gridLineIdent "big-grid" (Just 4)
 
     gridArea2
         ( gridLineIdent "big-grid" (Just 4) )
-        ( gridLineSpan (Just "other-grid") Nothing )
+        ( gridLineSpanIdent "other-grid" Nothing )
 
     gridArea3
         ( gridLineIdent "big-grid" (Just 4))
-        ( gridLineSpan (Just "other-grid") Nothing)
+        ( gridLineSpanIdent "other-grid" Nothing)
         ( num 7 )
 
     gridArea4
         ( gridLineIdent "big-grid" (Just 4) )
-        ( gridLineSpan (Just "other-grid") Nothing )
+        ( gridLineSpanIdent "other-grid" Nothing )
         ( num 7 )
-        ( gridLineSpan (Just "another-grid") (Just 12) )
+        ( gridLineSpanIdent "another-grid" (Just 12) )
 
 -}
 gridArea2 :
@@ -11624,24 +11644,24 @@ Numbers used in this should not be zero, else they won't work.
 
     gridArea inherit
 
-    gridArea <| gridLineSpan Nothing Nothing
+    gridArea <| gridLineSpanNum 4
       
     gridArea <| gridLineIdent "big-grid" (Just 4)
 
     gridArea2
         ( gridLineIdent "big-grid" (Just 4) )
-        ( gridLineSpan (Just "other-grid") Nothing )
+        ( gridLineSpanIdent "other-grid" Nothing )
 
     gridArea3
         ( gridLineIdent "big-grid" (Just 4))
-        ( gridLineSpan (Just "other-grid") Nothing)
+        ( gridLineSpanIdent "other-grid" Nothing)
         ( num 7 )
 
     gridArea4
         ( gridLineIdent "big-grid" (Just 4) )
-        ( gridLineSpan (Just "other-grid") Nothing )
+        ( gridLineSpanIdent "other-grid" Nothing )
         ( num 7 )
-        ( gridLineSpan (Just "another-grid") (Just 12) )
+        ( gridLineSpanIdent "another-grid" (Just 12) )
 
 -}
 gridArea3 :
@@ -11665,24 +11685,24 @@ Numbers used in this should not be zero, else they won't work.
 
     gridArea inherit
 
-    gridArea <| gridLineSpan Nothing Nothing
+    gridArea <| gridLineSpanNum 4
       
     gridArea <| gridLineIdent "big-grid" (Just 4)
 
     gridArea2
         ( gridLineIdent "big-grid" (Just 4) )
-        ( gridLineSpan (Just "other-grid") Nothing )
+        ( gridLineSpanIdent "other-grid" Nothing )
 
     gridArea3
         ( gridLineIdent "big-grid" (Just 4))
-        ( gridLineSpan (Just "other-grid") Nothing)
+        ( gridLineSpanIdent "other-grid" Nothing)
         ( num 7 )
 
     gridArea4
         ( gridLineIdent "big-grid" (Just 4) )
-        ( gridLineSpan (Just "other-grid") Nothing )
+        ( gridLineSpanIdent "other-grid" Nothing )
         ( num 7 )
-        ( gridLineSpan (Just "another-grid") (Just 12) )
+        ( gridLineSpanIdent "another-grid" (Just 12) )
 
 -}
 gridArea4 :
@@ -11711,7 +11731,7 @@ Numbers used in this should not be zero, else they won't work.
     gridRow <| gridLineIdent "main-grid" (Just 3)
     -- grid-row: main-grid 3
 
-    gridRow2 auto ( gridLineSpan (Just "grid-thing") (Just 5) )
+    gridRow2 auto ( gridLineSpanIdent "grid-thing" (Just 5) )
     -- grid-row: auto / span grid-thing 5
 -}
 gridRow :
@@ -11736,7 +11756,7 @@ Numbers used in this should not be zero, else they won't work.
     gridRow <| gridLineIdent "main-grid" (Just 3)
     -- grid-row: main-grid 3
 
-    gridRow2 auto ( gridLineSpan (Just "grid-thing") (Just 5) )
+    gridRow2 auto ( gridLineSpanIdent "grid-thing" (Just 5) )
     -- grid-row: auto / span grid-thing 5
 -}
 gridRow2 :
@@ -11754,7 +11774,7 @@ property.
 
     gridRowStart auto
 
-    gridRowStart <| gridLineSpan (Just "big-grid") Nothing
+    gridRowStart <| gridLineSpanIdent "big-grid" Nothing
 
     gridRowStart <| int 3
 
@@ -11775,7 +11795,7 @@ property.
 
     gridRowEnd auto
 
-    gridRowEnd <| gridLineSpan (Just "big-grid") Nothing
+    gridRowEnd <| gridLineSpanIdent "big-grid" Nothing
 
     gridRowEnd <| int 3
 
@@ -11804,8 +11824,8 @@ Numbers used in this should not be zero, else they won't work.
     gridColumn <| gridLineIdent "main-grid" (Just 3)
     -- grid-column: main-grid 3
 
-    gridColumn2 auto ( gridLineSpan (Just "grid-thing") (Just 5) )
-    -- grid-column: auto / gridLineSpan grid-thing 5
+    gridColumn2 auto ( gridLineSpanIdent "grid-thing") (Just 5) )
+    -- grid-column: auto / span grid-thing 5
 -}
 gridColumn :
     BaseValue (GridLine)
@@ -11829,8 +11849,8 @@ Numbers used in this should not be zero, else they won't work.
     gridColumn <| gridLineIdent "main-grid" (Just 3)
     -- grid-column: main-grid 3
 
-    gridColumn2 auto ( gridLineSpan (Just "grid-thing") (Just 5) )
-    -- grid-column: auto / gridLineSpan grid-thing 5
+    gridColumn2 auto ( gridLineSpanIdent "grid-thing") (Just 5) )
+    -- grid-column: auto / span grid-thing 5
 -}
 gridColumn2 :
     Value ( GridLine )
@@ -11847,7 +11867,7 @@ property.
 
     gridColumnStart auto
 
-    gridColumnStart <| gridLineSpan (Just "big-grid") Nothing
+    gridColumnStart <| gridLineSpanIdent "big-grid") Nothing
 
     gridColumnStart <| int 3
 
@@ -11867,7 +11887,7 @@ property.
 
     gridColumnEnd auto
 
-    gridColumnEnd <| gridLineSpan (Just "big-grid") Nothing
+    gridColumnEnd <| gridLineSpanIdent "big-grid") Nothing
 
     gridColumnEnd <| int 3
 

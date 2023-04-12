@@ -11,9 +11,9 @@ columRowStartEndTest =
     , ( gridLineIdent "some-area" Nothing, "some-area" )
     , ( num 2, "2" )
     , ( gridLineIdent "big-area" (Just 4), "big-area 4" )
-    , ( gridLineSpan Nothing (Just 3), "span 3" )
-    , ( gridLineSpan (Just "some-area") Nothing, "span some-area" )
-    , ( gridLineSpan (Just "some-area") (Just 3), "span some-area 3" )
+    , ( gridLineSpanNum 3, "span 3" )
+    , ( gridLineSpanIdent "some-area" Nothing, "span some-area" )
+    , ( gridLineSpanIdent "some-area" (Just 3), "span some-area 3" )
     ]
 
 autoRowsColumnTest = 
@@ -94,7 +94,7 @@ all =
             [ ( auto, "auto")
             , ( gridLineIdent "some-area" Nothing, "some-area" )
             , ( gridLineIdent "big-area" (Just 4), "big-area 4" )
-            , ( gridLineSpan (Just "big-area") (Just 4), "span big-area 4" )
+            , ( gridLineSpanIdent "big-area" (Just 4), "span big-area 4" )
             ]
         
         , CssTest.property
@@ -111,8 +111,8 @@ all =
                 , "big-area 4/another-area 2"
                 )
             , ( gridArea2
-                    ( gridLineSpan Nothing (Just 4) )
-                    ( gridLineSpan (Just "another-area") Nothing)
+                    ( gridLineSpanNum 4 )
+                    ( gridLineSpanIdent "another-area" Nothing)
                 , "span 4/span another-area"
                 )
             ]
@@ -123,7 +123,7 @@ all =
             , ( gridArea3
                     ( gridLineIdent "big-area" Nothing )
                     ( gridLineIdent "other-area" Nothing )
-                    ( gridLineSpan (Just "other-area") Nothing )
+                    ( gridLineSpanIdent "other-area" Nothing )
                 , "big-area/other-area/span other-area"
                 )
             , ( gridArea3
@@ -133,8 +133,8 @@ all =
                 , "big-area 4/another-area 2/another-area 3"
                 )
             , ( gridArea3
-                    ( gridLineSpan Nothing (Just 4) )
-                    ( gridLineSpan (Just "another-area") Nothing)
+                    ( gridLineSpanNum 4 )
+                    ( gridLineSpanIdent "another-area" Nothing)
                     ( gridLineIdent "other-area" Nothing)
                 , "span 4/span another-area/other-area"
                 )
@@ -146,7 +146,7 @@ all =
             , ( gridArea4
                     ( gridLineIdent "big-area" Nothing )
                     ( gridLineIdent "other-area" Nothing )
-                    ( gridLineSpan (Just "other-area") Nothing )
+                    ( gridLineSpanIdent "other-area" Nothing )
                     ( gridLineIdent "misc-area" Nothing )
                 , "big-area/other-area/span other-area/misc-area"
                 )
@@ -158,8 +158,8 @@ all =
                 , "big-area 4/another-area 2/another-area 3/another-area"
                 )
             , ( gridArea4
-                    ( gridLineSpan Nothing (Just 4) )
-                    ( gridLineSpan (Just "another-area") Nothing)
+                    ( gridLineSpanNum 4 )
+                    ( gridLineSpanIdent "another-area" Nothing)
                     ( gridLineIdent "big-area" (Just 4) )
                     ( gridLineIdent "another-area" (Just 2) )
                 , "span 4/span another-area/big-area 4/another-area 2"
@@ -171,7 +171,7 @@ all =
             [ ( auto, "auto" )
             , ( gridLineIdent "big-area" Nothing, "big-area" )
             , ( gridLineIdent "big-area" (Just 4), "big-area 4" )
-            , ( gridLineSpan (Just "some-area") (Just 5), "span some-area 5" )
+            , ( gridLineSpanIdent "some-area" (Just 5), "span some-area 5" )
             ]
         
         , CssTest.property
@@ -188,18 +188,18 @@ all =
                 , "big-area 4/6"
                 )
             , (  gridRow2
-                    ( gridLineSpan (Just "some-area") (Just 3) )
+                    ( gridLineSpanIdent "some-area" (Just 3) )
                     ( num 6 )
                 , "span some-area 3/6"
                 )
             , ( gridRow2
-                    ( gridLineSpan (Just "some-area") Nothing )
-                    ( gridLineSpan (Just "another-area") Nothing )
+                    ( gridLineSpanIdent "some-area" Nothing )
+                    ( gridLineSpanIdent "another-area" Nothing )
                 , "span some-area/span another-area"
                 )
             , ( gridRow2
-                    ( gridLineSpan (Just "some-area") (Just 5) )
-                    ( gridLineSpan Nothing (Just 2) )
+                    ( gridLineSpanIdent "some-area" (Just 5) )
+                    ( gridLineSpanNum 2 )
                 , "span some-area 5/span 2"
                 )
             ]
@@ -209,7 +209,7 @@ all =
             [ ( auto, "auto" )
             , ( gridLineIdent "big-area" Nothing, "big-area" )
             , ( gridLineIdent "big-area" (Just 4), "big-area 4" )
-            , ( gridLineSpan (Just "some-area") (Just 5), "span some-area 5" )
+            , ( gridLineSpanIdent "some-area" (Just 5), "span some-area 5" )
             ]
         
         , CssTest.property
@@ -226,18 +226,18 @@ all =
                 , "big-area 4/6"
                 )
             , (  gridColumn2
-                    ( gridLineSpan (Just "some-area") (Just 3) )
+                    ( gridLineSpanIdent "some-area" (Just 3) )
                     ( num 6 )
                 , "span some-area 3/6"
                 )
             , ( gridColumn2
-                    ( gridLineSpan (Just "some-area") Nothing )
-                    ( gridLineSpan (Just "another-area") Nothing )
+                    ( gridLineSpanIdent "some-area" Nothing )
+                    ( gridLineSpanIdent "another-area" Nothing )
                 , "span some-area/span another-area"
                 )
             , ( gridColumn2
-                    ( gridLineSpan (Just "some-area") (Just 5) )
-                    ( gridLineSpan Nothing (Just 2) )
+                    ( gridLineSpanIdent "some-area" (Just 5) )
+                    ( gridLineSpanNum 2 )
                 , "span some-area 5/span 2"
                 )
             ]
