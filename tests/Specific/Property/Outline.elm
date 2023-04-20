@@ -24,7 +24,7 @@ all =
             CssTest.lineWidth
         , CssTest.property1 outlineColor
             { functionName = "outlineColor", propertyName = "outline-color" }
-            (( invert, "invert" ) :: CssTest.color)
+            (( invert_, "invert" ) :: CssTest.color)
         , CssTest.property1 outlineStyle
             { functionName = "outlineStyle", propertyName = "outline-style" }
             (( auto, "auto" ) :: CssTest.lineStyleWithoutHidden)

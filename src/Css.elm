@@ -29,6 +29,7 @@ module Css exposing
     , Angle, AngleSupported, Width, WidthSupported
     , BasicShape, BasicShapeSupported
     , BlendMode, BlendModeSupported
+    , FilterFunction, FilterFunctionSupported
     , Length, LengthSupported
     , Color, ColorSupported
     , LineStyle, LineStyleSupported
@@ -52,6 +53,7 @@ module Css exposing
     , circle, circleAt, circleAt2
     , ellipse, ellipseAt, ellipseAt2
     , closestSide, farthestSide, polygon, path
+    , blur, brightness, contrast, dropShadow, grayscale, hueRotate, invert, opacity_, saturate, sepia
 
     -- common/shared/grouped keyword values
     , unset, initial, inherit, revert
@@ -153,7 +155,7 @@ module Css exposing
 
     -- outlines
     , outline, outline3, outlineWidth, outlineColor
-    , invert, outlineStyle, outlineOffset
+    , invert_, outlineStyle, outlineOffset
 
     -- overflow and resizing
     , overflow, overflow2
@@ -486,6 +488,10 @@ module Css exposing
     , maskType
     , noClip, add, subtract, intersect, exclude, alpha, luminance, matchSource
 
+    -- filters
+    , filter, filterMany
+    , backdropFilter, backdropFilterMany
+
     -- drawing
     , paintOrder, paintOrder2, paintOrder3, markers
     
@@ -613,6 +619,11 @@ functions let you define custom properties and selectors, respectively.
 ## Blend Modes
 
 @docs BlendMode, BlendModeSupported
+
+## Filter Functions
+
+@docs FilterFunction, FilterFunctionSupported
+@docs blur, brightness, contrast, dropShadow, grayscale, hueRotate, invert, opacity_, saturate, sepia
 
 ## Lines
 @docs LineStyle, LineStyleSupported
@@ -882,7 +893,7 @@ Sometimes these keywords mean other things too.
 # Outlines
 
 @docs outline, outline3, outlineWidth, outlineColor
-@docs invert, outlineStyle, outlineOffset
+@docs invert_, outlineStyle, outlineOffset
 
 
 ------------------------------------------------------
@@ -1496,6 +1507,14 @@ Other values you can use for flex item alignment:
 @docs maskSize, maskSize2
 @docs maskType
 @docs noClip, add, subtract, intersect, exclude, alpha, luminance, matchSource
+
+
+------------------------------------------------------
+
+
+## Filters
+@docs filter, filterMany
+@docs backdropFilter, backdropFilterMany
 
 
 ------------------------------------------------------
@@ -2745,6 +2764,29 @@ type alias BlendModeSupported supported =
 -}
 type alias BlendMode =
     BlendModeSupported {}
+
+{-| A type alias used to accept a [filter function](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function),
+among other values.
+-}
+type alias FilterFunctionSupported supported =
+    { supported
+        | blur : Supported
+        , brightness : Supported
+        , contrast : Supported
+        , dropShadow : Supported
+        , grayscale : Supported
+        , hueRotate : Supported
+        , invert : Supported
+        , opacity_ : Supported
+        , saturate : Supported
+        , sepia : Supported
+    }
+
+{-| A type alias used to accept a [filter function](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function).
+-}
+type alias FilterFunction =
+    FilterFunctionSupported {}
+
 
 {-| A type alias used to accept an [time](https://developer.mozilla.org/en-US/docs/Web/CSS/time)
 among other values.
@@ -4148,6 +4190,239 @@ The input string needs to be a valid SVG path string.
 path : String -> Value { provides | path : Supported }
 path svgPathDef =
     Value <| "path(\"" ++ svgPathDef ++ "\")"
+
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+----------------------- FILTER-FUNCTION VALUES -------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+
+{-| Provides a [`blur()` filter function value](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/blur).
+
+    backdropFilter <| blur (px 20)
+    -- backdrop-filter: blur(20px);
+-}
+blur :
+    Value ( Length )
+    -> Value { provides | blur : Supported }
+blur (Value val) =
+    Value <| "blur(" ++ val ++ ")"
+
+
+{-| Provides a [`brightness()` filter function value](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/brightness).
+
+    filter <| brightness (pct 20)
+    -- backdrop-filter: brightness(20%);
+
+    filter <| brightness zero -- completely black
+    
+    backdropFilter <| contrast (num 1) -- no effect
+
+    filter <| brightness (num 0.4)
+
+-}
+brightness :
+    Value
+        { zero : Supported
+        , pct : Supported
+        , num : Supported
+        }
+    -> Value { provides | brightness : Supported }
+brightness (Value val) =
+    Value <| "brightness(" ++ val ++ ")"
+
+
+{-| Provides a [`contrast()` filter function value](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/contrast).
+
+    backdropFilter <| contrast (pct 20)
+    -- backdrop-filter: contrast(20%);
+
+    backdropFilter <| contrast zero -- completely gray
+
+    backdropFilter <| contrast (num 1) -- no effect
+
+    backdropFilter <| contrast (num 0.4)
+
+-}
+contrast :
+    Value
+        { zero : Supported
+        , pct : Supported
+        , num : Supported
+        }
+    -> Value { provides | contrast : Supported }
+contrast (Value val) =
+    Value <| "contrast(" ++ val ++ ")"
+
+
+{-| Provides a [`drop-shadow()` filter function value](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow).
+
+    filter <| dropShadow (px 20) (px 3) (Just <| px 30) (Just <| hex "#fff")
+    -- filter: drop-shadow(20px 4px 30px #fff);
+-}
+dropShadow :
+    Value ( Length )
+    -> Value ( Length )
+    -> Maybe ( Value Length )
+    -> Maybe ( Value Color )
+    -> Value { provides | dropShadow : Supported }
+dropShadow (Value xOffset) (Value yOffset) maybeBlurRadius maybeColor =
+    Value <| "drop-shadow("
+        ++ xOffset
+        ++ " "
+        ++ yOffset
+        ++ ( case maybeBlurRadius of
+                Just ( Value r )  -> " " ++ r
+                Nothing -> "" 
+            )
+        ++ ( case maybeColor of
+                Just ( Value c )  -> " " ++ c
+                Nothing -> "" 
+            )
+        ++ ")"
+
+
+{-| Provides a [`grayscale()` filter function value](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/grayscale).
+
+    backdropFilter <| grayscale (pct 20)
+    -- backdrop-filter: grayscale(20%);
+
+    backdropFilter <| grayscale zero -- no effect
+
+    backdropFilter <| grayscale (num 1) -- completely grayscale
+
+    backdropFilter <| grayscale (num 0.4) -- 40% grayscale
+
+-}
+grayscale :
+    Value
+        { zero : Supported
+        , pct : Supported
+        , num : Supported
+        }
+    -> Value { provides | grayscale : Supported }
+grayscale (Value val) =
+    Value <| "grayscale(" ++ val ++ ")"
+
+
+{-| Provides a [`hue-rotate()` filter function value](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/hue-rotate).
+
+    backdropFilter <| hueRotate (deg -180)
+    -- backdrop-filter: hue-rotate(-180deg);
+
+-}
+hueRotate :
+    Value Angle
+    -> Value { provides | hueRotate : Supported }
+hueRotate (Value val) =
+    Value <| "hue-rotate(" ++ val ++ ")"
+
+
+{-| Provides a [`invert()` filter function value](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/invert).
+
+    backdropFilter <| invert (pct 20)
+    -- backdrop-filter: invert(20%);
+
+    backdropFilter <| invert zero -- no effect
+
+    backdropFilter <| invert (num 1) -- completely inverted
+
+    backdropFilter <| invert (num 0.4) -- 40% inversion
+
+-}
+invert :
+    Value
+        { zero : Supported
+        , pct : Supported
+        , num : Supported
+        }
+    -> Value { provides | invert : Supported }
+invert (Value val) =
+    Value <| "invert(" ++ val ++ ")"
+
+
+{-| Provides a [`opacity()` filter function value](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/opacity).
+
+    backdropFilter <| opacity_ (pct 20)
+    -- backdrop-filter: opacity(20%);
+
+    backdropFilter <| opacity_ zero -- completely transparent
+
+    backdropFilter <| opacity_ (num 1) -- no effect
+
+    backdropFilter <| opacity_ (num 0.4) -- 40% transparent
+
+Note: This is called `opacity_` instead of `opacity` because [`opacity`](#opacity) is already used as a property function.
+-}
+opacity_ :
+    Value
+        { zero : Supported
+        , pct : Supported
+        , num : Supported
+        }
+    -> Value { provides | opacity_ : Supported }
+opacity_ (Value val) =
+    Value <| "opacity(" ++ val ++ ")"
+
+
+{-| Provides a [`saturate()` filter function value](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/saturate).
+
+    filter <| saturate (pct 20)
+    -- filter: saturate(20%);
+
+    filter <| saturate zero -- completely desaturated
+
+    filter <| saturate (num 1) -- no effect
+
+    filter <| saturate (num 2) -- double saturation
+
+    filter <| saturate (num 0.4) -- 40% saturated
+
+-}
+saturate :
+    Value
+        { zero : Supported
+        , pct : Supported
+        , num : Supported
+        }
+    -> Value { provides | saturate : Supported }
+saturate (Value val) =
+    Value <| "saturate(" ++ val ++ ")"
+
+
+
+{-| Provides a [`sepia()` filter function value](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/sepia).
+
+    filter <| sepia (pct 20)
+    -- filter: sepia(20%);
+
+    filter <| sepia zero -- no effect
+
+    filter <| sepia (num 1) -- completely sepia
+
+    filter <| sepia (num 0.4) -- 40% sepia
+
+-}
+sepia :
+    Value
+        { zero : Supported
+        , pct : Supported
+        , num : Supported
+        }
+    -> Value { provides | sepia : Supported }
+sepia (Value val) =
+    Value <| "sepia(" ++ val ++ ")"
 
 
 ------------------------------------------------------------------------
@@ -9876,7 +10151,7 @@ outline :
             (LineStyleSupported
                 (ColorSupported
                     { auto : Supported
-                    , invert : Supported
+                    , invert_ : Supported
                     }
                 )
             )
@@ -9894,7 +10169,7 @@ outline (Value val) =
 outline3 :
     Value LineWidth
     -> Value (LineStyleSupported { auto : Supported })
-    -> Value (ColorSupported { invert : Supported })
+    -> Value (ColorSupported { invert_ : Supported })
     -> Style
 outline3 (Value widthVal) (Value styleVal) (Value colorVal) =
     appendProperty
@@ -9923,21 +10198,23 @@ outlineWidth (Value val) =
 
     outlineColor (hex "eee")
 
-    outlineColor invert
+    outlineColor invert_
 
 -}
-outlineColor : BaseValue (ColorSupported { invert : Supported }) -> Style
+outlineColor : BaseValue (ColorSupported { invert_ : Supported }) -> Style
 outlineColor (Value val) =
     appendProperty ("outline-color:" ++ val)
 
 
 {-| The `invert` value used by properties such as [`outlineColor`](#outlineColor)
 
-    outlineColor invert
+    outlineColor invert_
+
+Note: This is called `invert_` instead of `invert` because [`invert`](#invert) is already used as a filter-function value.
 
 -}
-invert : Value { provides | invert : Supported }
-invert =
+invert_ : Value { provides | invert_ : Supported }
+invert_ =
     Value "invert"
 
 
@@ -23235,6 +23512,132 @@ luminance =
 matchSource : Value { provides | matchSource : Supported }
 matchSource =
     Value "match-source"
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------- FILTERS --------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+
+{-| The [`filter`](https://css-tricks.com/almanac/properties/f/filter/) property.
+
+This single-argument version lets you use global value keywords, as
+well as `none`, URLs to SVG filters and single filter functions.
+
+If you want to stack filter functions, use [`filterMany`](#filterMany).
+
+    filter <| blur (px 6)
+
+    filter <| grayscale (pct 60)
+
+    filter <| url "thing.svg#filter1"
+
+    filter none
+
+    filter inherit
+
+    filterMany [] -- unset
+
+    filterMany [ invert (pct 70), sepia(pct 50) ]
+-}
+filter :
+    BaseValue
+        ( FilterFunctionSupported
+            (   { url : Supported
+                , none : Supported
+                }
+            )
+        )
+    -> Style
+filter (Value val) =
+    appendProperty ("filter:" ++ val)
+
+
+{-| The [`filter`](https://css-tricks.com/almanac/properties/b/backdrop-filter/) property.
+
+This multi-argument version lets you stack multiple filter functions and URLs to SVG filters.
+An empty list will create an `unset` value.
+
+    filterMany [] -- unset
+
+    filterMany [ invert (pct 70), sepia(pct 50) ]
+
+-}
+filterMany :
+    List ( Value 
+            ( FilterFunctionSupported
+                { url : Supported }
+            )
+        )
+    -> Style
+filterMany values =
+    appendProperty <| "filter:" ++ valueListToString " " values
+
+
+{-| The [`backdrop-filter`](https://css-tricks.com/almanac/properties/b/backdrop-filter/) property.
+
+This single-argument version lets you use global value keywords, as
+well as `none`, URLs to SVG filters and single filter functions.
+
+If you want to stack filter functions, use [`backdropFilterMany`](#backdropFilterMany).
+
+    backdropFilter <| blur (px 6)
+
+    backdropFilter <| grayscale (pct 60)
+
+    backdropFilter <| url "thing.svg#filter1"
+
+    backdropFilter none
+
+    backdropFilter inherit
+
+    backdropFilterMany [] -- unset
+
+    backdropFilterMany [ invert (pct 70), sepia(pct 50) ]
+
+-}
+backdropFilter :
+    BaseValue
+        ( FilterFunctionSupported
+            (   { url : Supported
+                , none : Supported
+                }
+            )
+        )
+    -> Style
+backdropFilter (Value val) =
+    appendProperty ("backdrop-filter:" ++ val)
+
+
+{-| The [`backdrop-filter`](https://css-tricks.com/almanac/properties/b/backdrop-filter/) property.
+
+This multi-argument version lets you stack multiple filter functions and URLs to SVG filters.
+An empty list will create an `unset` value.
+
+    backdropFilterMany [] -- unset
+
+    backdropFilterMany [ invert (pct 70), sepia(pct 50) ]
+
+-}
+backdropFilterMany :
+    List ( Value 
+            ( FilterFunctionSupported
+                { url : Supported }
+            )
+        )
+    -> Style
+backdropFilterMany values =
+    appendProperty <| "backdrop-filter:" ++ valueListToString " " values
 
 
 ------------------------------------------------------------------------

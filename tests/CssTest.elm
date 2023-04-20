@@ -30,6 +30,7 @@ module CssTest exposing
     , fitContentTo
     , minmax
     , resolution
+    , filterFunction
     )
 
 {-| Module for creating large-scale, fully comprehensive CSS function/value tests.
@@ -171,8 +172,6 @@ expectStylesheetWorks functionName ( sheet, expectedStr ) =
         --         )
         --     ]
         -- ]
-
-
 
 
 {-| Adds full testing sets for Length types to a CSS property that
@@ -1421,3 +1420,101 @@ resolution =
     , ( Media.dppx 300, "300dppx" )
     , ( Media.x 300, "300x" )
     ]
+
+
+
+encapsulateValueListInFunction : ( a -> b ) -> String -> List ( a, String ) -> List ( b, String )
+encapsulateValueListInFunction func funcAsString =
+    List.map
+        (\ ( val, valAsString ) -> 
+            ( func val, funcAsString ++ "(" ++ valAsString ++ ")")     
+        )
+        
+
+
+filterFunction :
+    List
+        ( Value
+            { provides
+                | blur : Supported
+                , brightness : Supported
+                , contrast : Supported
+                , dropShadow : Supported
+                , grayscale : Supported
+                , hueRotate : Supported
+                , invert : Supported
+                , opacity_ : Supported
+                , saturate : Supported
+                , sepia : Supported
+            }
+        , String
+        )
+filterFunction =
+    List.concat
+        [ encapsulateValueListInFunction blur "blur" length
+        
+        , encapsulateValueListInFunction brightness "brightness"
+            [ ( num 0.4, "0.4" )
+            , ( num 20, "20" )
+            , ( pct 5, "5%")
+            ]
+
+        , encapsulateValueListInFunction contrast "contrast"
+            [ ( zero, "0" )
+            , ( num 2, "2" )
+            , ( num 0.2, "0.2" )
+            , ( pct 45, "45%" )
+            , ( pct 200, "200%" )
+            ]
+    
+        ,   [ ( dropShadow (px 30) (px 10) (Just <| px 2) (Just <| hex "44d") , "drop-shadow(30px 10px 2px #44d)" )
+            , ( dropShadow zero zero (Just <| rem 0.5 ) (Just <| hex "#ff0000"), "drop-shadow(0 0 0.5rem #ff0000)" )
+            , ( dropShadow zero (px 3) Nothing (Just <| rgb 0 23 144), "drop-shadow(0 3px rgb(0,23,144))")
+            , ( dropShadow (em 30) (mm 12) Nothing Nothing, "drop-shadow(30em 12mm)")
+            ]
+        
+        , encapsulateValueListInFunction grayscale "grayscale"
+            [ ( zero, "0" )
+            , ( num 2, "2" )
+            , ( num 0.2, "0.2" )
+            , ( pct 45, "45%" )
+            , ( pct 100, "100%" )
+            ]
+        
+        , encapsulateValueListInFunction hueRotate "hue-rotate"
+            angle
+        
+        , encapsulateValueListInFunction invert "invert"
+            [ ( zero, "0" )
+            , ( num 2, "2" )
+            , ( num 0.2, "0.2" )
+            , ( pct 45, "45%" )
+            , ( pct 100, "100%" )
+            ]
+
+        , encapsulateValueListInFunction opacity_ "opacity"
+            [ ( zero, "0" )
+            , ( num 2, "2" )
+            , ( num 0.2, "0.2" )
+            , ( pct 45, "45%" )
+            , ( pct 100, "100%" )
+            ]
+        
+        , encapsulateValueListInFunction saturate "saturate"
+            [ ( zero, "0" )
+            , ( num 2, "2" )
+            , ( num 0.2, "0.2" )
+            , ( pct 45, "45%" )
+            , ( pct 200, "200%" )
+            ]
+
+        , encapsulateValueListInFunction sepia "sepia"
+            [ ( zero, "0" )
+            , ( num 2, "2" )
+            , ( num 0.2, "0.2" )
+            , ( pct 45, "45%" )
+            , ( pct 100, "100%" )
+            ]
+        
+        
+        ]
