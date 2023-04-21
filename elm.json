@@ -3,35 +3,35 @@
     "name": "dzuk-mutant/elm-css",
     "summary": "Typed CSS in Elm.",
     "license": "BSD-3-Clause",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "exposed-modules": {
-      "Css": [
-        "Css",
-        "Css.Media",
-        "Css.Global",
-        "Css.Value"
-      ],
-      "Html.Styled": [
-        "Html.Styled",
-        "Html.Styled.Attributes",
-        "Html.Styled.Events",
-        "Html.Styled.Keyed",
-        "Html.Styled.Lazy"
-      ],
-      "Svg.Styled": [
-        "Svg.Styled",
-        "Svg.Styled.Attributes",
-        "Svg.Styled.Events",
-        "Svg.Styled.Keyed",
-        "Svg.Styled.Lazy"
-      ]
+        "Css": [
+            "Css",
+            "Css.Media",
+            "Css.Global",
+            "Css.Value"
+        ],
+        "Html.Styled": [
+            "Html.Styled",
+            "Html.Styled.Attributes",
+            "Html.Styled.Events",
+            "Html.Styled.Keyed",
+            "Html.Styled.Lazy"
+        ],
+        "Svg.Styled": [
+            "Svg.Styled",
+            "Svg.Styled.Attributes",
+            "Svg.Styled.Events",
+            "Svg.Styled.Keyed",
+            "Svg.Styled.Lazy"
+        ]
     },
     "elm-version": "0.19.0 <= v < 0.20.0",
     "dependencies": {
-        "robinheghan/murmur3": "1.0.0 <= v < 2.0.0",
         "elm/core": "1.0.0 <= v < 2.0.0",
         "elm/json": "1.0.0 <= v < 2.0.0",
         "elm/virtual-dom": "1.0.0 <= v < 2.0.0",
+        "robinheghan/murmur3": "1.0.0 <= v < 2.0.0",
         "rtfeldman/elm-hex": "1.0.0 <= v < 2.0.0"
     },
     "test-dependencies": {
