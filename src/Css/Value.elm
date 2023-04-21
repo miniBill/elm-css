@@ -1,6 +1,9 @@
 module Css.Value exposing (Value(..), Supported(..), unpack)
 {-| A module for handling elm-css's phantom types.
 
+Unless you want to create functionality on top of the way
+Elm CSS properties and values work, you don't need to use this module.
+
 @docs Value, unpack, Supported
 -}
 

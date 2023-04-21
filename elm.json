@@ -8,7 +8,8 @@
       "Css": [
         "Css",
         "Css.Media",
-        "Css.Global"
+        "Css.Global",
+        "Css.Value"
       ],
       "Html.Styled": [
         "Html.Styled",
