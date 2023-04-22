@@ -46,6 +46,10 @@ module Css.Media exposing
     -- color gamut
     , colorGamut, srgb, p3, rec2020
 
+    -- visual preferences
+    , prefersColorScheme, prefersContrast, prefersReducedMotion, forcedColors
+    , light, dark, more, less, noPreference, reduce, custom, active_
+
     -- interaction features
     , PointingAccuracySupported, PointingAccuracy
     , pointer, anyPointer
@@ -140,6 +144,11 @@ or the size of a printed page.
 @docs srgb, p3, rec2020
 
 -------------------------------
+
+# Visual preferences
+
+@docs prefersColorScheme, prefersContrast, prefersReducedMotion, forcedColors
+@docs light, dark, more, less, noPreference, reduce, custom, active_
 
 # Interaction Media Features
 
@@ -1122,6 +1131,205 @@ This is the widest gamut that `colorGamut` accepts.
 -}
 rec2020 : Value { provides | rec2020 : Supported }
 rec2020 = Value "rec2020"
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------- VISUAL PREFERENCES ---------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+
+{-| The [`prefers-color-scheme`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme)
+CSS media feature.
+
+```
+withMedia [only screen [prefersColorScheme light]] [ ... ]
+
+withMedia [only screen [prefersColorScheme dark]] [ ... ]
+```
+-}
+prefersColorScheme :
+    Value
+        { light : Supported
+        , dark : Supported
+        }
+    -> Expression
+prefersColorScheme (Value val) =
+    feature "prefers-color-scheme" val
+
+
+{-| The [`prefers-contrast`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-contrast)
+CSS media feature.
+
+When `prefersContrast` is `custom`, it indicates the user has notified the system to use
+a particular set of colours, and the implied contrast of this set of colours does
+not match the `more` or `less` keywords. The value will match the palette specified
+by [`forcedColors active`](#forcedColors).
+```
+withMedia [only screen [prefersContrast noPreference]] [ ... ]
+
+withMedia [only screen [prefersContrast more]] [ ... ]
+```
+-}
+prefersContrast :
+    Value
+        { noPreference : Supported
+        , more : Supported
+        , less : Supported
+        , custom : Supported
+        }
+    -> Expression
+prefersContrast (Value val) =
+    feature "prefers-contrast" val
+
+
+{-| The [`prefers-reduced-motion`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)
+CSS media feature.
+
+- `noPreference` means that the user has not indicated they want motion reduced (essentially equivalent to False).
+- `reduce` means the user has indicated they want motion reduced (essentially equivalent to True).
+
+
+    withMedia [only screen [prefersReducedMotion noPreference]] [ ... ]
+
+    withMedia [only screen [prefersReducedMotion reduce]] [ ... ]
+
+-}
+prefersReducedMotion :
+    Value
+        { noPreference : Supported
+        , reduce : Supported
+        }
+    -> Expression
+prefersReducedMotion (Value val) =
+    feature "prefers-reduced-motion" val
+
+
+{-| The [`forced-colors`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/forced-colors)
+CSS media feature.
+
+- `none` means that forced-colors is not active (essentially equivalent to False).
+- `active_` means that forced-colors is active (essentially equivalent to True).
+
+
+    withMedia [only screen [forcedColors Css.none]] [ ... ]
+
+    withMedia [only screen [forcedColors active_]] [ ... ]
+
+-}
+forcedColors :
+    Value
+        { none : Supported
+        , active_ : Supported
+        }
+    -> Expression
+forcedColors (Value val) =
+    feature "forced-colors" val
+
+
+{-| The `light` value for the [`prefersColorScheme`](#prefersColorScheme) CSS media feature.
+
+This means the user has indicated that they are using a
+light (dark content on light background) theme.
+
+    withMedia [only screen [prefersColorScheme light]] [ ... ]
+-}
+light : Value { provides | light : Supported }
+light = Value "light"
+
+
+{-| The `dark` value for the [`prefersColorScheme`](#prefersColorScheme) CSS media feature.
+
+This means the user has indicated that they are using a
+dark (dark content on dark background) theme.
+
+    withMedia [only screen [prefersColorScheme dark]] [ ... ]
+-}
+dark : Value { provides | dark : Supported }
+dark = Value "dark"
+
+
+{-| The `less` value for the [`prefersContrast`](#prefersContrast) CSS media feature.
+
+This means the user has indicated that they prefer an
+interface with a lower level of contrast.
+
+    withMedia [only screen [prefersContrast less]] [ ... ]
+-}
+less : Value { provides | less : Supported }
+less = Value "less"
+
+
+{-| The `more` value for the [`prefersContrast`](#prefersContrast) CSS media feature.
+
+This means the user has indicated that they prefer an
+interface with a higher level of contrast.
+
+    withMedia [only screen [prefersContrast more]] [ ... ]
+-}
+more : Value { provides | more : Supported }
+more = Value "more"
+
+
+{-| The `no-preference` value for the [`prefersContrast`](#prefersContrast)
+and [`prefersReducedMotion`](#prefersReducedMotion) CSS media features.
+
+- In `prefersContrast`, it means that the user has no preference either way.
+- In `prefersReducedMotion`, it means the user **does not** prefer reduced motion (essentially equivalent to False).
+
+```
+    withMedia [only screen [prefersContrast noPreference]] [ ... ]
+
+    withMedia [only screen [prefersReducedMotion noPreference]] [ ... ]
+```
+-}
+noPreference : Value { provides | noPreference : Supported }
+noPreference = Value "no-preference"
+
+
+{-| The `reduce` value for the [`prefersReducedMotion`](#prefersReducedMotion) CSS media feature.
+
+This means the user has indicated that they prefer
+reduced motion (essentially equivalent to True).
+
+    withMedia [only screen [prefersReducedMotion reduce]] [ ... ]
+-}
+reduce : Value { provides | reduce : Supported }
+reduce = Value "reduce"
+
+
+{-| The `custom` value for the [`prefersContrast`](#prefersContrast) CSS media feature.
+
+it indicates the user has notified the system to use
+a particular set of colours, and the implied contrast of this set of colours does
+not match the `more` or `less` keywords. The value will match the palette specified
+by [`forcedColors active`](#forcedColors).
+
+    withMedia [only screen [prefersContrast custom]] [ ... ]
+-}
+custom : Value { provides | custom : Supported }
+custom = Value "custom"
+
+
+{-| The `active_` value for the [`forcedColors`](#forcedColors) CSS media feature.
+
+This means the user has indicated that forced colors is active (essentially equivalent to True).
+
+Note: This is called `active_` instead of `active` to prevent conflicts with `Css.active`.
+
+    withMedia [only screen [forcedColors active_]] [ ... ]
+-}
+active_ : Value { provides | active_ : Supported }
+active_ = Value "active"
 
 
 ------------------------------------------------------------------------

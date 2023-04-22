@@ -103,7 +103,7 @@ mediaFeatures =
 
         , CssTest.stylesheet "maxResolution"
             ( repeatWithValueLists maxResolution "max-resolution" CssTest.resolution )
-        
+
 
         -- scanning process
 
@@ -127,7 +127,9 @@ mediaFeatures =
             [ withMediaTest ( maxColor 128 ) "max-color: 128" ]
 
         , CssTest.stylesheet "monochrome"
-            [ withMediaTest ( monochrome True ) "monochrome" ]
+            [ withMediaTest ( monochrome True ) "monochrome"
+            , withMediaTest ( monochrome False ) "monochrome: 0"
+            ]
         , CssTest.stylesheet "minMonochrome"
             [ withMediaTest ( minMonochrome 128 ) "min-monochrome: 128" ]
         , CssTest.stylesheet "maxMonochrome"
@@ -146,6 +148,30 @@ mediaFeatures =
             [ withMediaTest ( colorGamut srgb ) "color-gamut: srgb"
             , withMediaTest ( colorGamut p3 ) "color-gamut: p3"
             , withMediaTest ( colorGamut rec2020 ) "color-gamut: rec2020"
+            ]
+
+        
+        -- visual preferences
+        , CssTest.stylesheet "prefersColorScheme"
+            [ withMediaTest ( prefersColorScheme light ) "prefers-color-scheme: light"
+            , withMediaTest ( prefersColorScheme dark ) "prefers-color-scheme: dark"
+            ]
+        
+        , CssTest.stylesheet "prefersContrast"
+            [ withMediaTest ( prefersContrast noPreference ) "prefers-contrast: no-preference"
+            , withMediaTest ( prefersContrast more ) "prefers-contrast: more"
+            , withMediaTest ( prefersContrast less ) "prefers-contrast: less"
+            , withMediaTest ( prefersContrast custom ) "prefers-contrast: custom"
+            ]
+
+        , CssTest.stylesheet "prefersReducedMotion"
+            [ withMediaTest ( prefersReducedMotion noPreference ) "prefers-reduced-motion: no-preference"
+            , withMediaTest ( prefersReducedMotion reduce ) "prefers-reduced-motion: reduce"
+            ]
+        
+        , CssTest.stylesheet "forcedColors"
+            [ withMediaTest ( forcedColors Css.none ) "forced-colors: none"
+            , withMediaTest ( forcedColors active_ ) "forced-colors: active"
             ]
 
         -- pointers and hover
