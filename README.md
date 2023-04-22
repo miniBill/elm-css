@@ -193,10 +193,13 @@ Documentation on properties is far more comprehensive, gives you much more infor
 
 A bunch of new properties have been added. Including:
 
-- Grid
-- `gap`
-- Logical properties (eg. `padding-inline-end`)
-- Scroll snapping
+- Grid (all properties apart from `grid` itself)
+- All Logical property variants (eg. `margin-inline-end`, `padding-block-start`, `inset-block`, etc.)
+- Scroll snapping and overscroll (`scroll-margin*`, `scroll-padding*`, `overscroll-behavior*`, etc.)
+- Various font-related properties (`font-variant-emoji`, `font-variant-east-asian`)
+- Filter properties (`filter`, `backdrop-filter`)
+- Visual accessibility @media features (`prefers-reduced-motion`, `prefers-color-scheme`, `prefers-contrast`, `forced-colors`)
+
 
 #### Extensive testing
 
@@ -214,7 +217,9 @@ If a CSS value or property is experimental and was in the other fork, I have rem
 
 #### I have not fully checked parity
 
-This is an incomplete upgrade. I needed to start using this fork for my own personal work so I have been working on getting this usable as a package over completely filling out every single CSS component that exists. [Here's a checklist of what has been covered so far](https://gist.github.com/dzuk-mutant/89bd30b02fedf270ebff720527a0f936)
+This is an incomplete upgrade. I needed to start using this fork for my own personal work so I have been working on getting this usable as a package over completely filling out every single CSS component that exists. [Here's a checklist of what has been covered so far](https://gist.github.com/dzuk-mutant/89bd30b02fedf270ebff720527a0f936).
+
+I do know that transitions are a big block that this package currently doesn't cover.
 
 #### I am not a professional and programming isn't my job
 
