@@ -179,6 +179,8 @@ This is a fork of rtfeldman's elm-css module, where I wanted to try to resolve a
 
 ### Improvements
 
+[Check out this migration guide if you're interested in moving to this package!](https://github.com/dzuk-mutant/elm-css/wiki/Some-useful-tips-for-migrating)
+
 #### Phantom types
 This uses phantom types (drawing from the hard work of rtfeldman and others who worked in the `phantom-types` branch of the original repo). In short, it means you get more readable compiler errors and more readable type annotations.
 
