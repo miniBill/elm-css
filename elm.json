@@ -3,7 +3,7 @@
     "name": "dzuk-mutant/elm-css",
     "summary": "Typed CSS in Elm.",
     "license": "BSD-3-Clause",
-    "version": "2.2.0",
+    "version": "3.0.0",
     "exposed-modules": {
         "Css": [
             "Css",
