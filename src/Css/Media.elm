@@ -1312,7 +1312,7 @@ reduce = Value "reduce"
 it indicates the user has notified the system to use
 a particular set of colours, and the implied contrast of this set of colours does
 not match the `more` or `less` keywords. The value will match the palette specified
-by [`forcedColors active`](#forcedColors).
+by [`forcedColors active_`](#forcedColors).
 
     withMedia [only screen [prefersContrast custom]] [ ... ]
 -}

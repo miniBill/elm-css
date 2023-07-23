@@ -54,6 +54,7 @@ module Css exposing
     , ellipse, ellipseAt, ellipseAt2
     , closestSide, farthestSide, polygon, path
     , blur, brightness, contrast, dropShadow, grayscale, hueRotate, invert, opacity_, saturate, sepia
+    , multiply, screen, overlay, darken, lighten, colorDodge, colorBurn, hardLight, softLight, difference, exclusion, hue, saturation, color_, luminosity
 
     -- common/shared/grouped keyword values
     , unset, initial, inherit, revert
@@ -226,7 +227,6 @@ module Css exposing
     , backgroundColor
     , backgroundAttachment, backgroundAttachmentMany, local
     , backgroundBlendMode, backgroundBlendModeMany
-    , multiply, screen, overlay, darken, lighten, colorDodge, colorBurn, hardLight, softLight, difference, exclusion, hue, saturation, color_, luminosity
     , backgroundClip, backgroundClipMany
     , backgroundOrigin, backgroundOriginMany
     , backgroundImage, backgroundImageMany
@@ -619,6 +619,7 @@ functions let you define custom properties and selectors, respectively.
 ## Blend Modes
 
 @docs BlendMode, BlendModeSupported
+@docs multiply, screen, overlay, darken, lighten, colorDodge, colorBurn, hardLight, softLight, difference, exclusion, hue, saturation, color_, luminosity
 
 ## Filter Functions
 
@@ -1027,7 +1028,6 @@ Other values you can use for flex item alignment:
 @docs backgroundAttachment, backgroundAttachmentMany
 @docs local
 @docs backgroundBlendMode, backgroundBlendModeMany
-@docs multiply, screen, overlay, darken, lighten, colorDodge, colorBurn, hardLight, softLight, difference, exclusion, hue, saturation, color_, luminosity
 @docs backgroundClip, backgroundClipMany
 @docs backgroundOrigin, backgroundOriginMany
 @docs backgroundImage, backgroundImageMany
@@ -4190,6 +4190,174 @@ The input string needs to be a valid SVG path string.
 path : String -> Value { provides | path : Supported }
 path svgPathDef =
     Value <| "path(\"" ++ svgPathDef ++ "\")"
+
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+----------------------- BLEND MODE VALUES -------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+
+{-| The `multiply` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values).
+
+    backgroundBlendMode multiply
+
+-}
+multiply : Value { provides | multiply : Supported }
+multiply =
+    Value "multiply"
+
+
+{-| The `screen` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values).
+
+    backgroundBlendMode screen
+
+-}
+screen : Value { provides | screen : Supported }
+screen =
+    Value "screen"
+
+
+{-| The `overlay` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values).
+
+    backgroundBlendMode overlay
+
+-}
+overlay : Value { provides | overlay : Supported }
+overlay =
+    Value "overlay"
+
+
+{-| The `darken` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values).
+
+    backgroundBlendMode darken
+
+-}
+darken : Value { provides | darken : Supported }
+darken =
+    Value "darken"
+
+
+{-| The `lighten` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values).
+
+    backgroundBlendMode lighten
+
+-}
+lighten : Value { provides | lighten : Supported }
+lighten =
+    Value "lighten"
+
+
+{-| The `color-dodge` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values).
+
+    backgroundBlendMode color - colorDodge
+
+-}
+colorDodge : Value { provides | colorDodge : Supported }
+colorDodge =
+    Value "color-dodge"
+
+
+{-| The `color-burn` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values).
+
+    backgroundBlendMode colorBurn
+
+-}
+colorBurn : Value { provides | colorBurn : Supported }
+colorBurn =
+    Value "color-burn"
+
+
+{-| The `hard-light` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values).
+
+    backgroundBlendMode hardLight
+
+-}
+hardLight : Value { provides | hardLight : Supported }
+hardLight =
+    Value "hard-light"
+
+
+{-| The `soft-light` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values).
+
+    backgroundBlendMode softLight
+
+-}
+softLight : Value { provides | softLight : Supported }
+softLight =
+    Value "soft-light"
+
+
+{-| The `difference` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values).
+
+    backgroundBlendMode difference
+
+-}
+difference : Value { provides | difference : Supported }
+difference =
+    Value "difference"
+
+
+{-| The `exclusion` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values).
+
+    backgroundBlendMode exclusion
+
+-}
+exclusion : Value { provides | exclusion : Supported }
+exclusion =
+    Value "exclusion"
+
+
+{-| The `hue` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values).
+
+    backgroundBlendMode hue
+
+-}
+hue : Value { provides | hue : Supported }
+hue =
+    Value "hue"
+
+
+{-| The `saturation` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values).
+
+    backgroundBlendMode saturation
+
+-}
+saturation : Value { provides | saturation : Supported }
+saturation =
+    Value "saturation"
+
+
+{-| The `color` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values).
+
+    backgroundBlendMode color_
+
+Not to be confused with [`color`](#color).
+
+-}
+color_ : Value { provides | color_ : Supported }
+color_ =
+    Value "color"
+
+
+{-| The `luminosity` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values).
+
+    backgroundBlendMode luminosity
+
+-}
+luminosity : Value { provides | luminosity : Supported }
+luminosity =
+    Value "luminosity"
 
 
 
@@ -10899,8 +11067,6 @@ alignSelf2 (Value overflowPosition) (Value selfPosition) =
 
     justifyContent flexStart
 
-**Note:** This function takes [`left_`](#left_) and [`right_`](#right_) values.
-
 -}
 justifyContent :
     BaseValue
@@ -10925,8 +11091,6 @@ justifyContent (Value val) =
 {-| Sets [`justify-content`](https://css-tricks.com/almanac/properties/j/justify-content/).
 
     justifyContent2 safe flexStart
-
-**Note:** This function takes [`left_`](#left_) and [`right_`](#right_) values.
 
 -}
 justifyContent2 :
@@ -10953,6 +11117,7 @@ justifyContent2 (Value overflowPosition) (Value contentPosition) =
 
     justifyItems center
 
+Note: This property is ignored when used in flexbox or table cell layouts.
 -}
 justifyItems :
     BaseValue
@@ -10984,6 +11149,7 @@ justifyItems (Value val) =
 
     justifyItems2 unsafe right_
 
+Note: This property is ignored when used in flexbox or table cell layouts.
 -}
 justifyItems2 :
     Value
@@ -11011,8 +11177,7 @@ justifyItems2 (Value overflowPosition) (Value selfPosition) =
 
     jusitfySelf left_
 
-**Note:** This function takes [`left_`](#left_) and [`right_`](#right_) values.
-
+Note: This property is ignored when used in flexbox or table cell layouts.
 -}
 justifySelf :
     BaseValue
@@ -11041,7 +11206,7 @@ justifySelf (Value val) =
 
     justifySelf2 unsafe left_
 
-**Note:** This function takes [`left_`](#left_) and [`right_`](#right_) values.
+Note: This property is ignored when used in flexbox or table cell layouts.
 
 -}
 justifySelf2 :
@@ -11143,7 +11308,9 @@ This one-argument version only accepts global values.
 
 -}
 placeItems :
-    BaseValue {}
+    BaseValue
+        { center : Supported
+        }
     -> Style
 placeItems (Value value) =
     appendProperty ("place-items:" ++ value)
@@ -12946,159 +13113,6 @@ backgroundBlendModeMany values =
     appendProperty ("background-blend-mode:" ++ valueListToString "," values )
 
 
-{-| The `multiply` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
-
-    backgroundBlendMode multiply
-
--}
-multiply : Value { provides | multiply : Supported }
-multiply =
-    Value "multiply"
-
-
-{-| The `screen` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
-
-    backgroundBlendMode screen
-
--}
-screen : Value { provides | screen : Supported }
-screen =
-    Value "screen"
-
-
-{-| The `overlay` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
-
-    backgroundBlendMode overlay
-
--}
-overlay : Value { provides | overlay : Supported }
-overlay =
-    Value "overlay"
-
-
-{-| The `darken` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
-
-    backgroundBlendMode darken
-
--}
-darken : Value { provides | darken : Supported }
-darken =
-    Value "darken"
-
-
-{-| The `lighten` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
-
-    backgroundBlendMode lighten
-
--}
-lighten : Value { provides | lighten : Supported }
-lighten =
-    Value "lighten"
-
-
-{-| The `color-dodge` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
-
-    backgroundBlendMode color - colorDodge
-
--}
-colorDodge : Value { provides | colorDodge : Supported }
-colorDodge =
-    Value "color-dodge"
-
-
-{-| The `color-burn` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
-
-    backgroundBlendMode colorBurn
-
--}
-colorBurn : Value { provides | colorBurn : Supported }
-colorBurn =
-    Value "color-burn"
-
-
-{-| The `hard-light` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
-
-    backgroundBlendMode hardLight
-
--}
-hardLight : Value { provides | hardLight : Supported }
-hardLight =
-    Value "hard-light"
-
-
-{-| The `soft-light` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
-
-    backgroundBlendMode softLight
-
--}
-softLight : Value { provides | softLight : Supported }
-softLight =
-    Value "soft-light"
-
-
-{-| The `difference` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
-
-    backgroundBlendMode difference
-
--}
-difference : Value { provides | difference : Supported }
-difference =
-    Value "difference"
-
-
-{-| The `exclusion` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
-
-    backgroundBlendMode exclusion
-
--}
-exclusion : Value { provides | exclusion : Supported }
-exclusion =
-    Value "exclusion"
-
-
-{-| The `hue` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
-
-    backgroundBlendMode hue
-
--}
-hue : Value { provides | hue : Supported }
-hue =
-    Value "hue"
-
-
-{-| The `saturation` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
-
-    backgroundBlendMode saturation
-
--}
-saturation : Value { provides | saturation : Supported }
-saturation =
-    Value "saturation"
-
-
-{-| The `color` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
-
-    backgroundBlendMode color_
-
-Not to be confused with [`color`](#color).
-
--}
-color_ : Value { provides | color_ : Supported }
-color_ =
-    Value "color"
-
-
-{-| The `luminosity` [`background-blend-mode` value](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode#Values)
-
-    backgroundBlendMode luminosity
-
--}
-luminosity : Value { provides | luminosity : Supported }
-luminosity =
-    Value "luminosity"
-
-
-
 {-| Sets [`background-clip`](https://css-tricks.com/almanac/properties/b/background-clip/).
 Note that this takes an argument of [`text`](#text), not [`color`](#color)!
 
@@ -14314,7 +14328,8 @@ weight =
 {-| The 1-argument variant of the [`font-variation-settings`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variation-settings)
 property.
 
-For controlling aspects of variable fonts.
+This lets you control variable font axes directly by their tag.
+
 Use [`fontVariationSettingsMany`](#fontVariationSettingsMany) to work with variable font tags.
 
     fontVariationSettings normal
@@ -14322,6 +14337,10 @@ Use [`fontVariationSettingsMany`](#fontVariationSettingsMany) to work with varia
     fontVariationSettings inherit
 
     fontVariationSettingsMany [ ("XHGT", 0.7) ]
+
+**This is designed to let you set variable features where none exist already. If you've
+got a variable axis already covered by a property (eg. [`fontWeight`](#fontWeight),
+[`fontStyle`](#fontStyle)), you should use those instead.**
 -}
 fontVariationSettings :
     BaseValue
@@ -14343,6 +14362,10 @@ For using single keywords with this property, use [`fontVariationSettings`](#fon
     fontVariationSettingsMany [ ("XHGT", 0.7) ]
 
     fontVariationSettingsMany [] -- font-variation-settings: unset;
+
+**This is designed to let you set variable features where none exist already. If you've
+got a variable axis already covered by a property (eg. [`fontWeight`](#fontWeight),
+[`fontStyle`](#fontStyle)), you should use those instead.**
 -}
 fontVariationSettingsMany :
     List

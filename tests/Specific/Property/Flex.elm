@@ -295,4 +295,9 @@ all =
             [ ( int 1, "1" )
             , ( int -4, "-4" )
             ]
+        
+        , CssTest.property1 placeItems
+            { functionName = "placeItems", propertyName = "place-items" }
+            [ ( center, "center" )
+            ]
         ]
