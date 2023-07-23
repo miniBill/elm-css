@@ -1122,8 +1122,7 @@ p3 = Value "p3"
 
 This will enable specific CSS for when a device is using the
 [ITU Recommendation BT.2020](https://en.wikipedia.org/wiki/Rec._2020)
-(Rec. 2020 for short) colour space. This is often what is commonly
-referred to as High Dynamic Range (HDR).
+(Rec. 2020 for short) colour space.
 
 This is the widest gamut that `colorGamut` accepts.
 
