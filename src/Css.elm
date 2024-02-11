@@ -5607,7 +5607,7 @@ text =
 
 {-| Sets the `style` value for:
 
-  - [`contain`](#contain). **(This value is considered at-risk from being depreciated for this property.)**
+  - [`contain`](#contain). **(This value is considered at-risk from being deprecated for this property.)**
   - [`fontSynthesis`](#fontSynthesis)
 
 ```
@@ -5632,6 +5632,9 @@ style =
 
     textOverflow clip
 
+
+Looking for the `clip` property? [It's been deprecated](https://developer.mozilla.org/en-US/docs/Web/CSS/clip) and not supported in this version of elm-css. You should use [`clipPath`](#clipPath) instead.
+
 -}
 clip : Value { provides | clip : Supported }
 clip =
@@ -5650,7 +5653,6 @@ backgroundSize cover
 
 strokeSize cover
 ```
-
 -}
 cover : Value { provides | cover : Supported }
 cover =
@@ -6504,7 +6506,7 @@ can use for this property.
 
     contain4 size layout style paint
 
-**Note: The `style` value is considered at-risk from being depreciated.**
+**Note: The `style` value is considered at-risk from being deprecated.**
 
 -}
 contain4 :
@@ -15449,7 +15451,7 @@ tabSize (Value val) =
 
 {-| Sets [`word-break`](https://css-tricks.com/almanac/properties/w/word-break/)
 
-**Note: `breakWord` has been depreciated.**
+**Note: `breakWord` has been deprecated.**
 
       wordBreak normal
       wordBreak breakAll
@@ -18439,7 +18441,7 @@ page =
 
 {-| Sets [`page-break-before`](https://css-tricks.com/almanac/properties/p/page-break/)
 
-**This property has been depreciated and replaced with
+**This property has been deprecated and replaced with
 [`breakBefore`](#breakBefore), but is still included for backwards
 compatibility.**
 
@@ -18469,7 +18471,7 @@ pageBreakBefore (Value val) =
 
 {-| Sets [`page-break-after`](https://css-tricks.com/almanac/properties/p/page-break/)
 
-**This property has been depreciated and replaced with
+**This property has been deprecated and replaced with
 [`breakAfter`](#breakAfter), but is still included for backwards
 compatibility.**
 
