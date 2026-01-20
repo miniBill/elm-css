@@ -1,4 +1,4 @@
-module Css.Structure.Output exposing (mediaQueryToString, prettyPrint, selectorToString)
+module Css.Structure.Output exposing (mediaQueryToString, prettyPrint, selectorToString, mediaExpressionToString)
 
 import Css.String
 import Css.Structure exposing (..)

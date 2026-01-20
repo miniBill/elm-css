@@ -58,6 +58,9 @@ module Css.Media exposing
 
     -- scripting
     , scripting, initialOnly, enabled
+
+    -- interop
+    , expressionToString
     )
 
 {-| Functions for building [`@media` queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries).
@@ -163,12 +166,17 @@ or the size of a printed page.
 
 @docs scripting
 @docs enabled, initialOnly
+
+# Interoperability
+
+@docs expressionToString
 -}
 
 import Css exposing (Style)
 import Css.Preprocess as Preprocess
 import Css.Structure as Structure exposing (..)
 import Css.Value exposing (Value(..), Supported)
+import Css.Structure.Output
 
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
@@ -1537,3 +1545,11 @@ This is for scripting that is allowed and active on the current document.
 enabled : Value { provides | enabled : Supported }
 enabled = Value "enabled"
 
+
+{-| Convert a media expression to a string.
+
+This is for use in `media` attributes for `a`, `area`, `link`, `source`, or `style` tags.
+-}
+expressionToString : Expression -> String 
+expressionToString expr =
+    Css.Structure.Output.mediaExpressionToString expr
